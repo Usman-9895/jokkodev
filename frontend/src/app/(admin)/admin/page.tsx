@@ -1,0 +1,1 @@
+export default function AdminPage() { return <><h1>Administration</h1><p>Emplacement provisoire pour les signalements, le masquage des contenus et la suspension des comptes.</p><p className="mt-4 text-muted">Page publique sans données administrateur. Ce layout ne constitue pas un contrôle d’accès.</p></>; }

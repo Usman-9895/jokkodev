@@ -1,0 +1,14 @@
+packages:
+  - frontend
+  - backend
+  - packages/*
+ignoredOptionalDependencies:
+  - sharp
+ignoredBuiltDependencies:
+  - '@scarf/scarf'
+strictPeerDependencies: true
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - '@prisma/engines'
+  - prisma
+  - unrs-resolver

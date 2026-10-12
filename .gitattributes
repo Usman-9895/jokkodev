@@ -1,0 +1,12 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
+# Notices de tiers conservées à l'identique, blancs et fins de ligne inclus
+docs/licenses/third-party-notices.txt -text -whitespace

@@ -1,0 +1,33 @@
+{
+  "name": "jokkodev",
+  "private": true,
+  "packageManager": "pnpm@10.34.6",
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @jokkodev/frontend --filter @jokkodev/backend dev",
+    "dev:frontend": "pnpm --filter @jokkodev/frontend dev",
+    "dev:backend": "pnpm --filter @jokkodev/backend dev",
+    "build": "pnpm -r build",
+    "lint": "eslint .",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm --filter @jokkodev/backend test && node --test tests/*.test.mjs",
+    "db:generate": "pnpm --filter @jokkodev/backend db:generate",
+    "db:validate": "pnpm --filter @jokkodev/backend db:validate",
+    "db:migrate:dev": "pnpm --filter @jokkodev/backend db:migrate:dev",
+    "db:migrate:deploy": "pnpm --filter @jokkodev/backend db:migrate:deploy",
+    "api:export": "pnpm --filter @jokkodev/backend api:export",
+    "api:generate": "pnpm api:export && pnpm --filter @jokkodev/api-client generate",
+    "licenses:inventory": "node scripts/licenses.mjs",
+    "test:smoke": "node scripts/smoke.mjs"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "eslint": "10.12.0",
+    "@eslint/js": "10.0.1",
+    "typescript-eslint": "8.71.1",
+    "@types/node": "24.19.2",
+    "@next/eslint-plugin-next": "16.4.0"
+  }
+}

@@ -1,0 +1,1 @@
+export default function DeveloperPage() { return <><h1>Espace développeur</h1><p>Emplacement provisoire pour le profil, les questions, les réponses, les projets et les candidatures.</p><p className="mt-4 text-muted">Page publique sans données privées. Le contrôle d’accès reste à implémenter côté backend.</p></>; }

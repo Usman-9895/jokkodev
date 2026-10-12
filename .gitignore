@@ -1,0 +1,47 @@
+# Dépendances et sorties générées
+node_modules/
+.cache/
+.pnpm-store/
+.next/
+dist/
+coverage/
+*.tsbuildinfo
+frontend/next-env.d.ts
+backend/src/generated/
+
+# Environnements réels ; seuls les exemples peuvent être publiés
+.env
+.env.*
+!.env.example
+.envrc
+.npmrc.local
+
+# Secrets et configuration personnelle
+.aws/
+.ssh/
+.codex/
+.agents/
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+
+# Rapports privés, sauvegardes et fichiers temporaires
+/reports/
+docs/private/
+backups/
+dumps/
+*.dump
+*.sql.gz
+*.log
+*.tmp
+*.temp
+tmp/
+temp/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.idea/
