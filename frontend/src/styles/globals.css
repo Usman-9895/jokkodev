@@ -1,21 +1,30 @@
 @import "tailwindcss";
-@theme {
-  --color-night: #03263A;
-  --color-petrol: #006B80;
-  --color-turquoise: #009DA8;
-  --color-ink: #172B3A;
-  --color-muted: #526674;
-  --color-background: #F4F7F8;
-  --color-surface: #FFFFFF;
-  --color-border: #D6E1E5;
-  --color-success: #18734B;
-  --color-warning: #8A5600;
-  --color-danger: #B42318;
-  --font-sans: Inter, Arial, sans-serif;
-  --font-heading: "Source Serif 4", Georgia, serif;
-  --font-mono: "JetBrains Mono", Consolas, monospace;
+@import "./tokens.css";
+@import "./components.css";
+
+body {
+  background: var(--color-background);
+  color: var(--color-ink);
+  font-family: var(--font-inter), Arial, sans-serif;
+  font-size: var(--jd-text-body);
+  line-height: var(--jd-leading-body);
 }
-body { background: var(--color-background); color: var(--color-ink); font-family: var(--font-sans); }
-h1 { font-family: var(--font-heading); font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; }
+h1 {
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-size: var(--jd-text-page);
+  font-weight: var(--jd-weight-bold);
+  line-height: var(--jd-leading-title);
+  color: var(--color-night);
+  margin-bottom: var(--jd-space-4);
+}
 a { text-underline-offset: .25em; }
-a:focus-visible, button:focus-visible { outline: 3px solid var(--color-petrol); outline-offset: 4px; }
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: var(--jd-focus);
+  outline-offset: var(--jd-focus-offset);
+}
+code, pre { font-family: var(--font-jetbrains-mono), Consolas, monospace; }
+.jd-skip-link { position: fixed; z-index: 50; top: 8px; left: 8px; padding: 12px 16px; background: white; color: var(--color-petrol); transform: translateY(-200%); border-radius: 8px; }
+.jd-skip-link:focus { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

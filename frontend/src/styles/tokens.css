@@ -1,0 +1,65 @@
+@theme {
+  --color-night: #03263A;
+  --color-petrol: #006B80;
+  --color-turquoise: #009DA8;
+  --color-ink: #172B3A;
+  --color-muted: #526674;
+  --color-background: #F4F7F8;
+  --color-surface: #FFFFFF;
+  --color-border: #D6E1E5;
+  --color-success: #18734B;
+  --color-warning: #8A5600;
+  --color-danger: #B42318;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), Arial, sans-serif;
+  --font-heading: var(--font-source-serif), Georgia, serif;
+  --font-mono: var(--font-jetbrains-mono), Consolas, monospace;
+}
+
+:root {
+  --jd-space-1: 4px;
+  --jd-space-2: 8px;
+  --jd-space-3: 12px;
+  --jd-space-4: 16px;
+  --jd-space-5: 24px;
+  --jd-space-6: 32px;
+  --jd-space-7: 48px;
+  --jd-space-8: 64px;
+  --jd-radius-button: 8px;
+  --jd-radius-card: 12px;
+  --jd-radius-badge: 6px;
+  --jd-shadow-card: 0 2px 8px rgb(3 38 58 / 4%);
+  --jd-text-display: clamp(2rem, 1.25rem + 3vw, 3.5rem);
+  --jd-text-page: clamp(1.75rem, 1.25rem + 2vw, 2.5rem);
+  --jd-text-section: clamp(1.375rem, 1.1rem + 1vw, 1.875rem);
+  --jd-text-card: 1.5rem;
+  --jd-text-body: 1rem;
+  --jd-text-small: .875rem;
+  --jd-text-caption: .75rem;
+  --jd-weight-regular: 400;
+  --jd-weight-semibold: 600;
+  --jd-weight-bold: 700;
+  --jd-leading-display: 1.08;
+  --jd-leading-title: 1.2;
+  --jd-leading-body: 1.5;
+  --jd-leading-small: 1.4;
+  --jd-focus: 2px solid var(--color-petrol);
+  --jd-focus-offset: 2px;
+  --jd-control-height: 44px;
+  --jd-container: 72rem;
+  --jd-gutter: 16px;
+  --jd-duration: 160ms;
+  --jd-surface-help: color-mix(in srgb, var(--color-turquoise) 5%, white);
+  --jd-surface-project: color-mix(in srgb, var(--color-warning) 5%, white);
+  --jd-surface-info: color-mix(in srgb, var(--color-petrol) 7%, white);
+  --jd-surface-success: color-mix(in srgb, var(--color-success) 8%, white);
+  --jd-surface-warning: color-mix(in srgb, var(--color-warning) 8%, white);
+  --jd-surface-error: color-mix(in srgb, var(--color-danger) 7%, white);
+  --jd-control-border: var(--color-muted);
+}
+
+@media (min-width: 48rem) {
+  :root { --jd-gutter: 32px; }
+}
