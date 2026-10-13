@@ -55,7 +55,7 @@ frontend/                 Next.js, routes publiques et pages provisoires
   src/app/                /, /connexion, /espace, /admin et états d’interface
   src/components/         Composants UI et layouts
   src/lib/                Clients HTTP navigateur/serveur et config privée
-  src/styles/             Tokens et polices de repli
+  src/styles/             Tokens, polices locales et animations communes
 backend/                  NestJS REST /api/v1
   src/common/             Erreurs, validation et emplacements transversaux
   src/config/             Validation de configuration
@@ -81,3 +81,5 @@ Synchroniser toute évolution de contrat via `pnpm api:generate`. Voir [contribu
 `main` est destinée aux versions stables ; `develop` à l’intégration. Chaque fonctionnalité part de `develop` dans une branche dédiée et passe par une PR vers `develop`. La promotion de `develop` vers `main` passe par une PR après recette. Ousmane et Serge relisent ; aucun commit, push ou fusion sans validation explicite, et aucune fusion automatique.
 
 La publication initiale est préparée selon le [plan de publication](docs/publication/initial-publication.md), qui précise son état et les protections réellement disponibles. Les règles documentées ne sont pas automatiquement imposées par GitHub. Le code original n’a pas de licence attribuée ; la décision appartient à l’équipe.
+
+L’accueil pilote du lot 2 est accessible sur `/` avec `pnpm dev:frontend`. Navigation publique, illustration animée et aperçu de questions fictives ; les destinations métier restent des pages d’attente. Voir le [guide de l’accueil et des animations](docs/frontend/homepage.md). Le [catalogue du lot 1](docs/frontend/design-system.md) reste réservé au développement.
