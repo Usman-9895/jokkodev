@@ -1,0 +1,32 @@
+[
+  {
+    "family": "inter",
+    "file": "Inter[opsz,wght].ttf",
+    "source": "https://github.com/google/fonts/blob/main/ofl/inter/Inter[opsz,wght].ttf",
+    "sha": "047c92f6e2212473dc436020afed689527076d44",
+    "license": "https://github.com/google/fonts/blob/main/ofl/inter/OFL.txt",
+    "sha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031",
+    "immutableSource": "https://api.github.com/repos/google/fonts/git/blobs/047c92f6e2212473dc436020afed689527076d44",
+    "localFile": "frontend/src/styles/fonts/Inter-Variable.ttf"
+  },
+  {
+    "family": "sourceserif4",
+    "file": "SourceSerif4[opsz,wght].ttf",
+    "source": "https://github.com/google/fonts/blob/main/ofl/sourceserif4/SourceSerif4[opsz,wght].ttf",
+    "sha": "40bbb58cb58e893ad0470f0bb291e096c73d3554",
+    "license": "https://github.com/google/fonts/blob/main/ofl/sourceserif4/OFL.txt",
+    "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+    "immutableSource": "https://api.github.com/repos/google/fonts/git/blobs/40bbb58cb58e893ad0470f0bb291e096c73d3554",
+    "localFile": "frontend/src/styles/fonts/SourceSerif4-Variable.ttf"
+  },
+  {
+    "family": "jetbrainsmono",
+    "file": "JetBrainsMono[wght].ttf",
+    "source": "https://github.com/google/fonts/blob/main/ofl/jetbrainsmono/JetBrainsMono[wght].ttf",
+    "sha": "aa310be8b717fe3774f9444dd89d5f4101cc6d10",
+    "license": "https://github.com/google/fonts/blob/main/ofl/jetbrainsmono/OFL.txt",
+    "sha256": "48715a42ec242c21e9f02692891e147d022299a52e48d5e413e1a942193ffeda",
+    "immutableSource": "https://api.github.com/repos/google/fonts/git/blobs/aa310be8b717fe3774f9444dd89d5f4101cc6d10",
+    "localFile": "frontend/src/styles/fonts/JetBrainsMono-Variable.ttf"
+  }
+]

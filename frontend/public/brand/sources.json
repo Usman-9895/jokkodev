@@ -1,0 +1,37 @@
+[
+  {
+    "file": "jokkodev-favicon-fond-sombre.svg",
+    "source": "jokkodev-ui-fidelity/assets/logos/jokkodev-favicon-fond-sombre.svg",
+    "sha256": "1054bca6f05802b6550385e07b4181d5ed9d35ad6e9a767ca8a683e05366ea45"
+  },
+  {
+    "file": "jokkodev-favicon.svg",
+    "source": "jokkodev-ui-fidelity/assets/logos/jokkodev-favicon.svg",
+    "sha256": "961dc4dda170758e9fb70e0914b47f55bb38c8fbe80774218922dd5918448538"
+  },
+  {
+    "file": "jokkodev-horizontal-fond-sombre.svg",
+    "source": "jokkodev-ui-fidelity/assets/logos/jokkodev-horizontal-fond-sombre.svg",
+    "sha256": "0c6c00cd5a614fe8ef31019c969b2cd8049d87f7c0a56ad7abc2213dc969b649"
+  },
+  {
+    "file": "jokkodev-horizontal.svg",
+    "source": "jokkodev-ui-fidelity/assets/logos/jokkodev-horizontal.svg",
+    "sha256": "089eed8835dfca5151a15a444ad52eef58c943b991bd911d03722ea7dda77a25"
+  },
+  {
+    "file": "jokkodev-icone-fond-sombre.svg",
+    "source": "jokkodev-ui-fidelity/assets/logos/jokkodev-icone-fond-sombre.svg",
+    "sha256": "8ef04c46dfa22b40f61cde995434b43abdd7e3d3fd221b623506b66c6d4cc890"
+  },
+  {
+    "file": "jokkodev-icone.svg",
+    "source": "jokkodev-ui-fidelity/assets/logos/jokkodev-icone.svg",
+    "sha256": "f393310d30c4dd05425a1d574787b1f255a9aaea788d883199ea84a95efa640c"
+  },
+  {
+    "file": "../../src/app/favicon.ico",
+    "source": "jokkodev-ui-fidelity/assets/logos/favicon.ico",
+    "sha256": "ad160adc1489b453dbb934c827f9f5317ec835676539506c92c33cde4e809706"
+  }
+]

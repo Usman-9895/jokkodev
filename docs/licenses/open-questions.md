@@ -4,7 +4,7 @@ Le contexte CADEV exclut GPL, LGPL et AGPL. Confirmer avec les organisateurs si 
 
 L’inventaire automatisé couvre les dépendances installées directes et transitives sur cette machine, outils compris. Les licences déclarées ne suffisent pas à prouver la conformité : lire les fichiers LICENSE/NOTICE et les licences des bibliothèques embarquées. Les alternatives multiples, valeurs inconnues ou ambiguës sont à arbitrer avant publication. Compléter l’inventaire sur Linux lors du premier build Linux, car les paquets natifs optionnels diffèrent.
 
-Inter, Source Serif 4 et JetBrains Mono sont seulement des préférences CSS avec polices de repli. Avant ajout des fichiers : provenance, version, licence, notices et droits de redistribution. Même exigence pour le logo validé, illustrations et images système.
+Depuis le lot 1 frontend, Inter, Source Serif 4 et JetBrains Mono sont distribuées localement avec leurs notices SIL OFL 1.1 : provenance et empreintes exactes dans [fonts/](fonts/README.md). Les logos validés du skill sont intégrés sans modification, avec empreintes de provenance. Le périmètre CADEV sur les polices et les droits de distribution des ressources de marque restent des points de validation de l’équipe ; aucune conformité juridique globale n’est annoncée. Les illustrations et images système futures gardent la même exigence de provenance et de notices.
 
 Le code original JokkoDev reste sans licence attribuée ; décision explicite de l’équipe requise. Conserver les notices originales des dépendances lors des distributions, puis établir un dossier de notices pour le livrable final selon son contenu effectif.
 
