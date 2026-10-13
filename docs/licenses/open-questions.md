@@ -8,6 +8,8 @@ Depuis le lot 1 frontend, Inter, Source Serif 4 et JetBrains Mono sont distribu�
 
 Le code original JokkoDev reste sans licence attribuée ; décision explicite de l’équipe requise. Conserver les notices originales des dépendances lors des distributions, puis établir un dossier de notices pour le livrable final selon son contenu effectif.
 
+Lot 2 : le logo original fourni et la silhouette Afrique Natural Earth ont leur [fiche de provenance](home-assets.md). Aucune bibliothèque supplémentaire installée. La signature officielle DevTeranga reste à obtenir ; la présentation actuelle est explicitement provisoire dans la documentation du lot.
+
 Prévention retenue : `sharp`, optionnel dans Next.js, est exclu de l’installation et l’optimisation d’images est désactivée. Éviter ainsi l’ajout automatique de libvips ne dispense pas de la revue des autres composants natifs et des alternatives de licences signalées dans l’inventaire.
 
 ## Résultat du premier inventaire Windows
