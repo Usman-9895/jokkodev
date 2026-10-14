@@ -1,0 +1,2 @@
+import { ComingSoon } from '../../../../components/layout/coming-soon';
+export default function ActionsPage(){return <ComingSoon title="Contributions et signalements — prochainement">La réponse, la modification, l’acceptation d’une solution et le signalement nécessiteront les contrats et permissions du backend. Aucun contenu n’est envoyé et aucune action de modération n’est simulée.</ComingSoon>;}
