@@ -4,6 +4,7 @@
 @import "./motion.css";
 @import "./home.css";
 @import "./jokkohelp.css";
+@import "./accounts.css";
 
 body {
   background: var(--color-background);
