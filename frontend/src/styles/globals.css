@@ -3,6 +3,7 @@
 @import "./components.css";
 @import "./motion.css";
 @import "./home.css";
+@import "./jokkohelp.css";
 
 body {
   background: var(--color-background);
