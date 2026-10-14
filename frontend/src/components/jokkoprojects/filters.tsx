@@ -1,0 +1,8 @@
+'use client';
+import {useRouter} from 'next/navigation';
+import {useTransition} from 'react';
+import Link from 'next/link';
+import {Button,TextField,SelectField} from '../ui';
+import {parseProjectCriteria,projectListHref,projectTechnologies} from '../../lib/jokkoprojects/query';
+import type {ProjectCriteria} from '../../lib/jokkoprojects/query';
+export function ProjectFilters({criteria}:{criteria:ProjectCriteria}){const router=useRouter();const [pending,startTransition]=useTransition();return <form action="/projets" method="get" className="help-filters projects-filters" aria-busy={pending} onSubmit={event=>{event.preventDefault();const f=new FormData(event.currentTarget);startTransition(()=>router.push(projectListHref(parseProjectCriteria({q:String(f.get('q')??''),technology:String(f.get('technology')??''),status:String(f.get('status')??'')})),{scroll:false}));}}><TextField id="project-search" type="search" label="Rechercher un projet" name="q" defaultValue={criteria.q} placeholder="Rechercher un projet…" maxLength={200}/><SelectField id="project-technology" name="technology" label="Compétence" defaultValue={criteria.technology}><option value="">Toutes</option>{projectTechnologies.map(t=><option key={t}>{t}</option>)}</SelectField><SelectField id="project-status" name="status" label="Filtrer par recrutement" defaultValue={criteria.status}><option value="all">Tous les projets</option><option value="open">Recrutement ouvert</option><option value="closed">Recrutement fermé</option></SelectField><Button type="submit" loading={pending}>Rechercher</Button>{(criteria.q||criteria.technology||criteria.status!=='all')&&<Link className="help-reset" href="/projets">Réinitialiser les filtres</Link>}</form>;}
