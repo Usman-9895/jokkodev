@@ -1,17 +1,11 @@
-import { displayDate } from '../../../../lib/jokkohelp/presentation';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { Container } from '../../../../components/layout/container';
-import { Card, Heading, Avatar, TechnologyBadge, StatusBadge } from '../../../../components/ui';
-import { QuestionContent } from '../../../../components/jokkohelp/content';
-import { DemoNotice } from '../../../../components/jokkohelp/shared';
-import { helpSource } from '../../../../lib/jokkohelp/source';
-import { parseCriteria, listHref, detailHref } from '../../../../lib/jokkohelp/query';
-import type { SearchValues } from '../../../../lib/jokkohelp/query';
-import { questionExamples } from '../../../../lib/jokkohelp/fixtures';
-export default async function DetailPage({params,searchParams}:{params:Promise<{id:string}>;searchParams:Promise<SearchValues>}) {
-  const {id}=await params; const criteria=parseCriteria(await searchParams); const question=await helpSource.detail(id);
-  if(!question)notFound();
-  const similar=questionExamples.filter(other=>other.id!==id&&other.technologies.some(t=>question.technologies.includes(t))).slice(0,4);
-  return <Container className="help-detail"><nav aria-label="Fil d’Ariane" className="help-breadcrumb"><Link href={listHref(criteria)}>Questions</Link><span aria-hidden="true">/</span><span>{question.technologies[0]}</span></nav><DemoNotice /><div className="help-detail-grid"><article><div className="help-detail-title"><Heading as="h1" size="page">{question.title}</Heading><StatusBadge tone={question.acceptedAnswerId?'success':'info'}>{question.acceptedAnswerId?'Résolue':'Non résolue'}</StatusBadge></div><div className="help-detail-author"><Avatar name={question.author.name} decorative /><div><strong>{question.author.name}</strong><p>Posée le <time dateTime={question.date}>{displayDate(question.date)}</time>{question.updated&&<> · Modifiée le <time dateTime={question.updated}>{displayDate(question.updated)}</time></>}</p></div><div className="help-tags">{question.technologies.map(t=><TechnologyBadge key={t}>{t}</TechnologyBadge>)}</div></div><Card><QuestionContent blocks={question.content} /></Card><section className="help-answers" aria-labelledby="answers-title"><h2 id="answers-title">{question.answers.length} réponse{question.answers.length!==1?'s':''}</h2>{question.answers.length?question.answers.map(answer=><Card key={answer.id} className={answer.id===question.acceptedAnswerId?'help-answer help-answer--accepted':'help-answer'}><div className="help-answer-head"><Avatar name={answer.author.name} decorative /><div><strong>{answer.author.name}</strong><p><time dateTime={answer.date}>{displayDate(answer.date)}</time></p></div>{answer.id===question.acceptedAnswerId&&<StatusBadge tone="success">Solution acceptée</StatusBadge>}</div><QuestionContent blocks={answer.content} /></Card>):<Card className="help-no-answers"><Heading as="h3" size="card">Cette question n’a pas encore de réponse</Heading><p>La consultation reste ouverte. Le formulaire de réponse arrivera dans un prochain lot.</p></Card>}</section><Card className="help-future-actions"><Heading as="h2" size="card">Participer à la discussion</Heading><p>Répondre, modifier, accepter une solution et signaler un contenu seront disponibles dans les prochains lots. Aucune session n’est simulée.</p><div><Link className="jd-button jd-button--secondary" href="/questions/actions">Voir les actions à venir</Link><Link className="jd-action-link" href={listHref(criteria)}>Retour à la liste</Link></div></Card></article><aside><Card className="help-similar"><Heading as="h2" size="card">Questions similaires</Heading>{similar.length?similar.map(other=><div key={other.id}><Link href={detailHref(other.id,criteria)}>{other.title}</Link><div className="help-tags">{other.technologies.slice(0,2).map(t=><TechnologyBadge key={t}>{t}</TechnologyBadge>)}</div></div>):<p>Aucun autre exemple similaire.</p>}</Card></aside></div></Container>;
+import {notFound} from 'next/navigation';
+import {QuestionDetail} from '../../../../components/jokkohelp/question-detail';
+import {helpSource} from '../../../../lib/jokkohelp/source';
+import {parseCriteria} from '../../../../lib/jokkohelp/query';
+import type {SearchValues} from '../../../../lib/jokkohelp/query';
+import {questionExamples} from '../../../../lib/jokkohelp/fixtures';
+export default async function DetailPage({params,searchParams}:{params:Promise<{id:string}>;searchParams:Promise<SearchValues>}){
+ const {id}=await params;const criteria=parseCriteria(await searchParams);const question=await helpSource.detail(id);if(!question)notFound();
+ const similar=questionExamples.filter(other=>other.id!==id&&other.technologies.some(t=>question.technologies.includes(t))).slice(0,4);
+ return <QuestionDetail question={question} criteria={criteria} similar={similar}/>;
 }
