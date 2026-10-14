@@ -88,7 +88,7 @@ try {
       await load(route,width,height);await widthCheck();
       const data=await evaluate("({title:document.querySelector('h1').textContent,fonts:Array.from(document.fonts).map(f=>({family:f.family,status:f.status})),images:Array.from(document.images).every(i=>i.naturalWidth>0),code:Array.from(document.querySelectorAll('.help-code pre')).map(e=>({width:e.clientWidth,scroll:e.scrollWidth,font:getComputedStyle(e).fontFamily}))})");
       assert.ok(data.images);assert.ok(data.fonts.some(f=>f.family==='inter'&&f.status==='loaded'));assert.ok(data.fonts.some(f=>f.family==='sourceSerif'&&f.status==='loaded'));
-      if(name==='detail'){assert.ok(data.fonts.some(f=>f.family==='jetbrainsMono'&&f.status==='loaded'));assert.equal(await evaluate("document.querySelectorAll('.help-answer--accepted').length"),1);assert.equal(await evaluate("Array.from(document.querySelectorAll('button')).some(b=>/Accepter|Publier|Retirer/.test(b.textContent))"),false);}
+      if(name==='detail'){assert.ok(data.fonts.some(f=>f.family==='jetbrainsMono'&&f.status==='loaded'));assert.equal(await evaluate("document.querySelectorAll('.help-answer--accepted').length"),1);assert.equal(await evaluate("Array.from(document.querySelectorAll('button')).some(b=>!b.disabled&&/Accepter|Publier|Retirer/.test(b.textContent))"),false);}
       reports.push({name,width,height,...data});await capture(name+'-'+width+'.png',true);
     }
     console.log('Liste et détail contrôlés : '+width+'px');

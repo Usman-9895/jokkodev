@@ -1,2 +1,3 @@
-import { ComingSoon } from '../../../../components/layout/coming-soon';
-export default function AskPage() { return <ComingSoon title="Poser une question — bientôt disponible">Le formulaire et le contrôle de session ne sont pas encore implémentés. Aucune question ne peut être publiée à cette étape.</ComingSoon>; }
+import {Container} from '../../../../components/layout/container';
+import {QuestionForm} from '../../../../components/jokkohelp/contributions/question-form';
+export default function AskPage(){return <Container className="contribution-page"><QuestionForm/></Container>;}
