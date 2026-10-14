@@ -1,0 +1,30 @@
+import {notFound} from 'next/navigation';
+import type {Metadata} from 'next';
+import Link from 'next/link';
+import {PublicHeader} from '../../../../components/layout/public-header';
+import {PublicFooter} from '../../../../components/layout/public-footer';
+import {Container} from '../../../../components/layout/container';
+import {Card,Heading,Message} from '../../../../components/ui';
+import {ProjectForm} from '../../../../components/jokkoprojects/form';
+import {MyProjects} from '../../../../components/jokkoprojects/mine';
+import {ProjectList} from '../../../../components/jokkoprojects/list';
+import {ProjectDetail} from '../../../../components/jokkoprojects/detail';
+import {ProjectFilters} from '../../../../components/jokkoprojects/filters';
+import {ProjectHero,ProjectNotice,ProjectLoading,ProjectReadState} from '../../../../components/jokkoprojects/shared';
+import {ProjectPreviewError} from '../../../../components/jokkoprojects/preview-error';
+import {projectExamples} from '../../../../lib/jokkoprojects/fixtures';
+import {parseProjectCriteria,selectProjects} from '../../../../lib/jokkoprojects/query';
+import {canEditProject,emptyProjectDraft,projectDraftFrom} from '../../../../lib/jokkoprojects/presentation';
+import type {ProjectPerspective} from '../../../../lib/jokkoprojects/model';
+export const metadata:Metadata={title:'Projets — aperçu local',robots:{index:false,follow:false}};
+const views=['list','detail','create','edit','mine'],perspectives=['visitor','owner','member','administrator','suspended'];
+const statesByView:Record<string,string[]>={list:['initial','loading','empty','error'],detail:['initial','long','missing','not-found','unavailable'],create:['initial','empty','long','sending','error','success'],edit:['initial','empty','long','sending','error','success'],mine:['initial','loading','empty','error','unavailable']};
+export default async function Preview({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}){
+ if(process.env.NODE_ENV!=='development')notFound();const p=await searchParams;
+ const view=typeof p.view==='string'&&views.includes(p.view)?p.view:'create',states=statesByView[view],state=typeof p.state==='string'&&states.includes(p.state)?p.state:'initial';
+ const perspective:ProjectPerspective=typeof p.perspective==='string'&&perspectives.includes(p.perspective)?p.perspective as ProjectPerspective:view==='detail'||view==='list'?'visitor':'owner';
+ const tab=p.tab==='created'||p.tab==='joined'?p.tab:'all',original=projectExamples.find(x=>x.id===p.project)??projectExamples[0],criteria=parseProjectCriteria(p);
+ const project=state==='long'?{...original,title:'ProjetLongSansEspaces'.repeat(30),objective:'ObjectifLongSansEspaces'.repeat(100),technologies:[...original.technologies,'CompétenceLongueSansEspaces'.repeat(8)]}:state==='missing'?{...original,members:undefined,availability:undefined,technologies:[],summary:''}:original;
+ const initial=state==='empty'?emptyProjectDraft():projectDraftFrom(project),result=selectProjects(criteria,state==='empty'?[]:projectExamples);
+ return <div className="public-site"><PublicHeader/><main id="contenu" tabIndex={-1}><Container className="contribution-preview-tools"><p>Développement uniquement · projets fictifs · aucune session ou sauvegarde réelle</p><details><summary>Choisir un écran, un état et une perspective fictive</summary><nav aria-label="Écrans projets">{views.map(v=><Link key={v} href={'/dev/jokkoprojects?view='+v}>{v}</Link>)}</nav><nav aria-label="États projets">{states.map(s=><Link key={s} href={'/dev/jokkoprojects?view='+view+'&state='+s+'&perspective='+perspective}>{s}</Link>)}</nav><nav aria-label="Perspectives fictives">{perspectives.map(v=><Link key={v} href={'/dev/jokkoprojects?view='+view+'&perspective='+v}>{v}</Link>)}</nav></details></Container>{view==='mine'?<MyProjects state={state} tab={tab} perspective={perspective}/>:view==='detail'?state==='not-found'||state==='unavailable'?<Container><ProjectReadState kind={state}/></Container>:<ProjectDetail project={project} criteria={criteria} demo perspective={perspective}/>:<Container className="projects-page">{view==='list'?state==='loading'?<><ProjectHero/><ProjectNotice/><ProjectFilters criteria={criteria}/><ProjectLoading/></>:state==='error'?<><ProjectHero/><ProjectNotice/><ProjectFilters criteria={criteria}/><ProjectPreviewError criteria={criteria}/></>:<ProjectList criteria={{...criteria,page:result.meta.page}} result={result}/>:view==='edit'&&!canEditProject(perspective)?<Card><Heading as="h1">Modification réservée au responsable</Heading><Message title="Permission indisponible">Ni un membre ni un administrateur ne reçoit automatiquement ce droit. Aucune autorisation serveur n’est implémentée ici.</Message></Card>:<ProjectForm key={view+state+original.id} mode={view==='edit'?'edit':'create'} initial={initial} state={state}/>}</Container>}</main><PublicFooter/></div>;
+}

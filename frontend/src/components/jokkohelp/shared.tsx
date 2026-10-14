@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import {CommunityMap} from '../layout/community-map';
 import { Avatar, Card, Heading, Icon, StatusBadge, TechnologyBadge, LoadingIndicator, Skeleton } from '../ui';
 import type { QuestionView } from '../../lib/jokkohelp/model';
 import type { Criteria } from '../../lib/jokkohelp/query';
@@ -7,7 +7,7 @@ import { detailHref, listHref } from '../../lib/jokkohelp/query';
 import { displayDate } from '../../lib/jokkohelp/presentation';
 
 export function QuestionHero() {
-  return <section className="help-hero"><div><Heading as="h1" size="display">Trouve une solution,<br /><span>partage ton savoir</span></Heading><p>Une communauté de développeurs africains pour poser vos questions,<br className="help-desktop-break" /> obtenir des réponses et collaborer sur des projets.</p><Link className="jd-button jd-button--primary" href="/questions/poser"><Icon name="plus" />Poser une question</Link></div><div className="help-map" aria-hidden="true"><Image src="/illustrations/africa-natural-earth.svg" width={340} height={340} alt="" /><svg viewBox="0 0 340 340" fill="none"><path d="M60 70 140 92 211 69 247 145 161 229 208 291M60 70 247 145M140 92 161 229 208 291" />{[[60,70],[140,92],[211,69],[247,145],[161,229],[208,291]].map(([cx,cy],i)=><circle key={i} cx={cx} cy={cy} r="6" />)}</svg><p>Des développeurs,<br />une Afrique plus forte</p></div></section>;
+  return <section className="help-hero"><div><Heading as="h1" size="display">Trouve une solution,<br /><span>partage ton savoir</span></Heading><p>Une communauté de développeurs africains pour poser vos questions,<br className="help-desktop-break" /> obtenir des réponses et collaborer sur des projets.</p><Link className="jd-button jd-button--primary" href="/questions/poser"><Icon name="plus" />Poser une question</Link></div><CommunityMap/></section>;
 }
 export function DemoNotice() { return <p className="help-demo-notice">Consultation de démonstration · questions, auteurs et réponses fictifs.</p>; }
 export function QuestionCard({ question, criteria }: { question: QuestionView; criteria: Criteria }) {

@@ -6,6 +6,7 @@
 @import "./jokkohelp.css";
 @import "./accounts.css";
 @import "./contributions.css";
+@import "./projects.css";
 
 body {
   background: var(--color-background);

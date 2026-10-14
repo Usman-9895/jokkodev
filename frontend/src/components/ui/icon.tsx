@@ -1,8 +1,11 @@
 import type { SVGProps } from 'react';
 
-export type IconName = 'arrow-right' | 'plus' | 'check' | 'info' | 'alert' | 'close' | 'code' | 'users';
+export type IconName = 'arrow-right' | 'plus' | 'check' | 'info' | 'alert' | 'close' | 'code' | 'users' | 'clock' | 'target' | 'book';
 export function Icon({ name, ...props }: SVGProps<SVGSVGElement> & { name: IconName }) {
   const paths = {
+    clock: <><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></>,
+    target: <><circle cx="11" cy="13" r="8"/><circle cx="11" cy="13" r="4"/><path d="m11 13 9-9m-5 0h5v5"/></>,
+    book: <><path d="M12 5v15M3 5c4-2 6-1 9 1 3-2 5-3 9-1v14c-4-2-6-1-9 1-3-2-5-3-9-1V5Z"/></>,
     'arrow-right': <><path d="M5 12h14M13 6l6 6-6 6" /></>,
     plus: <path d="M12 5v14M5 12h14" />,
     check: <><circle cx="12" cy="12" r="9" /><path d="m8 12 3 3 5-6" /></>,
