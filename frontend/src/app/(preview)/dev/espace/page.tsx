@@ -1,0 +1,30 @@
+import {notFound} from 'next/navigation';
+import type {Metadata} from 'next';
+import Link from 'next/link';
+import {PublicHeader} from '../../../../components/layout/public-header';
+import {PublicFooter} from '../../../../components/layout/public-footer';
+import {DeveloperNavigation} from '../../../../components/layout/developer-navigation';
+import {DeveloperDashboard} from '../../../../components/applications/dashboard';
+import {SentApplications} from '../../../../components/applications/sent';
+import {ReceivedApplications} from '../../../../components/applications/received';
+import {ApplicationForm} from '../../../../components/applications/application-form';
+import {MyQuestions} from '../../../../components/jokkohelp/contributions/my-questions';
+import {MyProjects} from '../../../../components/jokkoprojects/mine';
+import {Message} from '../../../../components/ui';
+import {ProjectDetail} from '../../../../components/jokkoprojects/detail';
+import {parseProjectCriteria} from '../../../../lib/jokkoprojects/query';
+import {projectExamples} from '../../../../lib/jokkoprojects/fixtures';
+import {parseApplicationFilter,developerPreviewHref} from '../../../../lib/applications/presentation';
+import type {DemoPerspective,DemoDecisionResult} from '../../../../lib/applications/presentation';
+export const metadata:Metadata={title:'Espace développeur — aperçu',robots:{index:false,follow:false}};
+const views=['dashboard','sent','received','apply','questions','projects'] as const;
+const statesByView:Record<string,string[]>={dashboard:['initial','loading','empty','error','expired'],sent:['initial','loading','empty','error','expired','no-results'],received:['initial','loading','empty','error','expired','denied','no-results','sending'],apply:['initial','sending','error','success'],questions:['initial','loading','empty','error','expired'],projects:['initial','loading','empty','error','expired']};
+const perspectives=['eligible','visitor','pending','member','owner','closed','administrator','expired'] as const;
+export default async function Preview({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}) {
+ if(process.env.NODE_ENV!=='development')notFound();const p=await searchParams;
+ const view=views.find(v=>v===p.view)??'dashboard',states=statesByView[view],state=states.find(s=>s===p.state)??'initial';
+ const perspective:DemoPerspective=perspectives.find(v=>v===p.perspective)??(view==='received'?'owner':'eligible');
+ const outcome:DemoDecisionResult=p.outcome==='error'||p.outcome==='conflict'||p.outcome==='expired'?p.outcome:'success';
+ const filter=parseApplicationFilter(p.filter),receivedFilter=p.filter===undefined?'pending':filter;
+ return <div className="public-site"><PublicHeader/><main id="contenu" tabIndex={-1}><div className="developer-preview-tools"><Message title="Développement uniquement — espace fictif">Aucune session, lecture privée ou candidature réelle. Tous les compteurs, permissions et décisions sont des démonstrations.</Message><details><summary>Choisir une vue, un état ou une permission fictive</summary><nav aria-label="Vues de démonstration">{views.map(v=><Link key={v} href={developerPreviewHref(v)}>{v}</Link>)}</nav><nav aria-label="États de démonstration">{states.map(s=><Link key={s} href={developerPreviewHref(view,{state:s,perspective})}>{s}</Link>)}</nav><nav aria-label="Permissions fictives">{perspectives.map(v=><Link key={v} href={developerPreviewHref(view,{perspective:v})}>{v}</Link>)}</nav><nav aria-label="Résultats des décisions fictives">{['success','error','conflict','expired'].map(value=><Link key={value} href={developerPreviewHref('received',{outcome:value})}>{value}</Link>)}</nav></details></div><div className="developer-space"><DeveloperNavigation active={view==='apply'?'projects':view}/><div className="developer-content">{view==='dashboard'?<DeveloperDashboard state={perspective==='visitor'||perspective==='expired'?'expired':state}/>:view==='sent'?<SentApplications state={perspective==='expired'||perspective==='visitor'?'expired':state} filter={filter}/>:view==='received'?<ReceivedApplications key={state+perspective+outcome} state={state} perspective={perspective} filter={receivedFilter} outcome={outcome}/>:view==='questions'?<MyQuestions embedded state={state==='expired'||perspective==='visitor'||perspective==='expired'?'unavailable':state} filter={p.filter==='resolved'||p.filter==='open'?p.filter:'all'} baseHref="/dev/espace?view=questions"/>:view==='projects'?<MyProjects embedded state={state==='expired'?'unavailable':state} tab={p.tab==='created'||p.tab==='joined'?p.tab:'all'} perspective={perspective==='visitor'?'visitor':perspective==='expired'?'suspended':perspective==='administrator'?'administrator':perspective==='member'?'member':'owner'} baseHref="/dev/espace?view=projects"/>:<ProjectDetail project={perspective==='closed'?{...projectExamples[0],recruitment:'closed'}:projectExamples[0]} criteria={parseProjectCriteria({})} demo contributionPanel={<ApplicationForm key={perspective+state} perspective={perspective} state={state}/>}/>}</div></div></main><PublicFooter/></div>;
+}
