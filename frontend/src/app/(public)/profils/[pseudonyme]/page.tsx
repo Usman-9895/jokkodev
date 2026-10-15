@@ -1,3 +1,4 @@
+export const metadata = {"title":"Profil public — indisponible | JokkoDev","description":"Interface préparée ; opération backend encore indisponible."};
 import Link from 'next/link';
 import {Container} from '../../../../components/layout/container';
 import {Card,Heading,Message} from '../../../../components/ui';

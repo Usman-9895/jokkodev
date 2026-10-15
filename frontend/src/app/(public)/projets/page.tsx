@@ -1,3 +1,4 @@
+export const metadata = {"title":"Projets | JokkoDev","description":"Interface préparée ; opération backend encore indisponible."};
 import {redirect} from 'next/navigation';
 import {Container} from '../../../components/layout/container';
 import {ProjectList} from '../../../components/jokkoprojects/list';
