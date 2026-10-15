@@ -1,3 +1,3 @@
 import type { ReactNode } from 'react';
-import { Shell } from '../../../components/layout/shell';
-export default function AdminLayout({ children }: { children: ReactNode }) { return <Shell label="Administration">{children}</Shell>; }
+import {AdminShell} from '../../../components/layout/admin-shell';
+export default function AdminLayout({ children }: { children: ReactNode }) { return <AdminShell>{children}</AdminShell>; }
