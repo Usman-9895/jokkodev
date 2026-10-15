@@ -8,6 +8,9 @@
 @import "./contributions.css";
 @import "./projects.css";
 @import "./developer.css";
+@import "./moderation.css";
+
+/* Signalements : styles publics et administration minimale. */
 
 body {
   background: var(--color-background);

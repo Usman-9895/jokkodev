@@ -1,0 +1,7 @@
+import Link from 'next/link';
+import {Card,Heading,LoadingIndicator,Message,Skeleton} from '../ui';
+export function ModerationReadState({state,retry='/dev/moderation'}:{state:string;retry?:string}) {
+  if(state==='loading')return <div className="moderation-loading"><LoadingIndicator label="Chargement des signalements…"/>{[0,1,2].map(i=><Card key={i}><Skeleton style={{width:'55%',height:24}}/><Skeleton/></Card>)}</div>;
+  const title=state==='expired'?'Ta session a expiré':state==='denied'?'Accès non autorisé':state==='visitor'?'Connexion nécessaire':state==='error'?'Impossible de charger les signalements':state==='empty'?'Aucun signalement':state==='not-found'?'Ce signalement est introuvable':'Aucun signalement ne correspond';
+  return <Card className="moderation-read-state"><Heading as="h2">{title}</Heading><Message tone={state==='error'?'error':'info'} title="État de démonstration">{['expired','denied','visitor'].includes(state)?'Aucune donnée de signalement ni identité de déclarant affichée. Les permissions réelles attendent le contrat serveur.':'État injecté localement, sans lecture d’une API de signalements.'}</Message>{state==='expired'||state==='visitor'?<Link className="jd-button jd-button--primary" href="/connexion">Aller à la connexion</Link>:state==='denied'?<Link className="jd-button jd-button--secondary" href="/">Retour au site</Link>:<Link className="jd-button jd-button--secondary" href={retry}>{state==='error'?'Réessayer l’aperçu':'Retour aux exemples'}</Link>}</Card>;
+}
