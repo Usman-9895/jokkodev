@@ -1,3 +1,4 @@
+export const metadata = {"title":"Accueil | JokkoDev","description":"Interface préparée ; opération backend encore indisponible."};
 import Link from 'next/link';
 import { detailHref } from '../../lib/jokkohelp/query';
 import { Container } from '../../components/layout/container';

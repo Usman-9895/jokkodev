@@ -1,3 +1,4 @@
+export const metadata = {"title":"Détail d’une question | JokkoDev","description":"Interface préparée ; opération backend encore indisponible."};
 import {notFound} from 'next/navigation';
 import {QuestionDetail} from '../../../../components/jokkohelp/question-detail';
 import {helpSource} from '../../../../lib/jokkohelp/source';

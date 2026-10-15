@@ -1,3 +1,4 @@
+export const metadata = {"title":"Questions | JokkoDev","description":"Interface préparée ; opération backend encore indisponible."};
 import { Container } from '../../../components/layout/container';
 import { QuestionFilters } from '../../../components/jokkohelp/filters';
 import { DemoNotice, QuestionCard, QuestionHero, QuestionPagination, QuestionTips, ReadState } from '../../../components/jokkohelp/shared';
