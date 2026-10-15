@@ -7,6 +7,7 @@
 @import "./accounts.css";
 @import "./contributions.css";
 @import "./projects.css";
+@import "./developer.css";
 
 body {
   background: var(--color-background);
@@ -34,3 +35,4 @@ code, pre { font-family: var(--font-jetbrains-mono), Consolas, monospace; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+/* Espace développeur : styles partagés chargés après les lots existants. */
