@@ -4,11 +4,11 @@ import type { Prisma } from '../../generated/prisma/client';
 import type { AuthenticatedUser } from '../../common/auth/auth-context';
 import { ApiException } from '../../common/http/api-exception';
 import { type Page, pageWindow, type PageQueryDto } from '../../common/http/pagination';
-import { cleanText, excerptOf, likeContains } from '../../common/http/text';
+import { cleanText, excerptOf } from '../../common/http/text';
 import { RateLimiter } from '../../common/rate-limit/rate-limiter.service';
 import { technologySelect } from '../technologies/technologies.dto';
 import { TechnologiesService } from '../technologies/technologies.service';
-import { technologyFilter } from '../technologies/technology-filter';
+import { searchPage } from '../../common/http/search';
 import { publicAuthorSelect, toPublicAuthor } from '../users/projections';
 import { QUESTION_BODY_MAX, type AnswerDto, type AnswerWithQuestionDto, type CreateAnswerDto, type CreateQuestionDto, type OwnQuestionQueryDto, type OwnQuestionSummaryDto, type QuestionDetailDto, type QuestionListQueryDto, type QuestionSummaryDto, type UpdateAnswerDto, type UpdateQuestionDto } from './questions.dto';
 
@@ -35,17 +35,10 @@ export class QuestionsService {
   constructor(private readonly database: DatabaseService, private readonly technologies: TechnologiesService, private readonly limiter: RateLimiter) {}
 
   async list(query: QuestionListQueryDto): Promise<Page<QuestionSummaryDto>> {
-    const words = (query.q ?? '').trim().split(/\s+/).filter(Boolean).slice(0, 8);
-    const where: Prisma.QuestionWhereInput = {
-      visibility: 'VISIBLE',
-      AND: words.map(word => {
-        const contains = { contains: likeContains(word), mode: 'insensitive' as const };
-        return { OR: [{ title: contains }, { context: contains }, { expected: contains }, { actual: contains }, { attempts: contains }, { author: { username: contains } }, { technologies: { some: { technology: { name: contains } } } }] };
-      }),
-      technologies: technologyFilter(query.technology),
-      acceptedAnswerId: resolvedFilter(query.status)
-    };
-    return this.page(where, query, row => this.toSummary(row));
+    return searchPage(this.database.prisma, 'question', query, async (tx, ids) => {
+      const rows = await tx.question.findMany({ where: { id: { in: ids } }, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], select: summarySelect });
+      return rows.map(row => this.toSummary(row));
+    });
   }
 
   async listByAuthor(userId: string, query: PageQueryDto): Promise<Page<QuestionSummaryDto>> {

@@ -11,7 +11,7 @@
 | Inscription avec un email existant | 409 `EMAIL_TAKEN` (révèle l'existence du compte) | Décision 003 |
 | Bibliothèque CSRF | `csrf-csrf` 4.0.3 | Décision 003 |
 | Règle du pseudonyme | `[A-Za-z0-9_]{3,30}`, sans accents | Décision 002 |
-| Contenu des questions | Quatre rubriques nommées et code facultatif, sans langage du code | Décision 002 |
+| Contenu des questions | Quatre rubriques nommées, code et codeLanguage facultatifs (alignement #18) | Décision 002 |
 | Catalogue des technologies | 50 entrées | `backend/src/database/seed.ts` |
 | Limites de publication | 10 questions, 30 réponses, 5 projets, 20 candidatures, 20 signalements par heure et par compte | Services correspondants |
 | Fournisseur SMTP et domaine expéditeur | Non choisi | Runbook, section 7 |

@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsArray, IsIn, IsOptional, IsString, IsUUID, Matches, MaxLength, MinLength } from 'class-validator';
 import { PageQueryDto } from '../../common/http/pagination';
-import { HasText } from '../../common/http/validators';
+import { HasText, OptionalButNotNull } from '../../common/http/validators';
 import { TechnologyDto } from '../technologies/technologies.dto';
 import { PublicAuthorDto } from '../users/projections';
 
@@ -57,7 +57,7 @@ export class QuestionDetailDto extends QuestionSummaryDto {
 }
 
 export class QuestionListQueryDto extends PageQueryDto {
-  @ApiPropertyOptional({ maxLength: 200, description: 'Mots recherchés dans le titre, les rubriques, le pseudonyme de l’auteur et les technologies ; tous doivent apparaître.' }) @IsOptional() @IsString() @MaxLength(200) q?: string;
+  @ApiPropertyOptional({ maxLength: 200, description: 'Tous les mots, sans distinction de casse ni accents NFD ; titre, texte, pseudonyme et technologies. % et _ sont littéraux.' }) @IsOptional() @IsString() @MaxLength(200) q?: string;
   @ApiPropertyOptional({ example: 'TypeScript', maxLength: 50, description: 'Nom affiché ou slug d’une technologie du catalogue, sans tenir compte de la casse.' }) @IsOptional() @IsString() @MaxLength(50) technology?: string;
   @ApiPropertyOptional({ enum: ['all', 'resolved', 'open'], default: 'all' }) @IsOptional() @IsIn(['all', 'resolved', 'open']) status?: 'all' | 'resolved' | 'open';
 }
@@ -74,14 +74,14 @@ export class CreateQuestionDto {
 }
 
 export class UpdateQuestionDto {
-  @ApiPropertyOptional({ minLength: TITLE_MIN, maxLength: TITLE_MAX }) @IsOptional() @IsString() @HasText() @MinLength(TITLE_MIN) @MaxLength(TITLE_MAX) title?: string;
-  @ApiPropertyOptional() @IsOptional() @IsString() @HasText() @MaxLength(QUESTION_BODY_MAX) context?: string;
-  @ApiPropertyOptional() @IsOptional() @IsString() @HasText() @MaxLength(QUESTION_BODY_MAX) expected?: string;
-  @ApiPropertyOptional() @IsOptional() @IsString() @HasText() @MaxLength(QUESTION_BODY_MAX) actual?: string;
-  @ApiPropertyOptional() @IsOptional() @IsString() @HasText() @MaxLength(QUESTION_BODY_MAX) attempts?: string;
+  @ApiPropertyOptional({ minLength: TITLE_MIN, maxLength: TITLE_MAX }) @OptionalButNotNull() @IsString() @HasText() @MinLength(TITLE_MIN) @MaxLength(TITLE_MAX) title?: string;
+  @ApiPropertyOptional() @OptionalButNotNull() @IsString() @HasText() @MaxLength(QUESTION_BODY_MAX) context?: string;
+  @ApiPropertyOptional() @OptionalButNotNull() @IsString() @HasText() @MaxLength(QUESTION_BODY_MAX) expected?: string;
+  @ApiPropertyOptional() @OptionalButNotNull() @IsString() @HasText() @MaxLength(QUESTION_BODY_MAX) actual?: string;
+  @ApiPropertyOptional() @OptionalButNotNull() @IsString() @HasText() @MaxLength(QUESTION_BODY_MAX) attempts?: string;
   @ApiPropertyOptional({ nullable: true, type: String, maxLength: CODE_MAX, description: 'null retire le code.' }) @IsOptional() @IsString() @MaxLength(CODE_MAX) code?: string | null;
   @ApiPropertyOptional(codeLanguageDoc) @IsOptional() @IsString() @Matches(CODE_LANGUAGE_PATTERN) codeLanguage?: string | null;
-  @ApiPropertyOptional({ type: [String], minItems: 1, maxItems: 5 }) @IsOptional() @IsArray() @ArrayMinSize(1) @ArrayMaxSize(5) @ArrayUnique() @IsUUID('all', { each: true }) technologyIds?: string[];
+  @ApiPropertyOptional({ type: [String], minItems: 1, maxItems: 5 }) @OptionalButNotNull() @IsArray() @ArrayMinSize(1) @ArrayMaxSize(5) @ArrayUnique() @IsUUID('all', { each: true }) technologyIds?: string[];
 }
 
 export class AcceptAnswerDto {
@@ -95,7 +95,7 @@ export class CreateAnswerDto {
 }
 
 export class UpdateAnswerDto {
-  @ApiPropertyOptional({ minLength: ANSWER_MIN, maxLength: ANSWER_MAX }) @IsOptional() @IsString() @HasText() @MinLength(ANSWER_MIN) @MaxLength(ANSWER_MAX) body?: string;
+  @ApiPropertyOptional({ minLength: ANSWER_MIN, maxLength: ANSWER_MAX }) @OptionalButNotNull() @IsString() @HasText() @MinLength(ANSWER_MIN) @MaxLength(ANSWER_MAX) body?: string;
   @ApiPropertyOptional({ nullable: true, type: String, maxLength: CODE_MAX }) @IsOptional() @IsString() @MaxLength(CODE_MAX) code?: string | null;
   @ApiPropertyOptional(codeLanguageDoc) @IsOptional() @IsString() @Matches(CODE_LANGUAGE_PATTERN) codeLanguage?: string | null;
 }

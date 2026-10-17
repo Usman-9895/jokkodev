@@ -2,6 +2,8 @@
 
 Pour remplacer les sources fictives du frontend (lots 3 à 9) par l'API. Toutes les routes sont sous `/api/v1`, types générés dans `packages/api-client/src/schema.d.ts`. Session et CSRF : voir la [décision 003](../decisions/003-sessions-csrf.md), section « Intégration frontend ».
 
+Le transport partagé prépare les paramètres typés depuis OpenAPI dans l’option `query` et expose uniquement le délai serveur sûr `HttpError.retryAfterSeconds`. Les écrans ne sont pas encore connectés. Exemple : `api('/questions', { query: { q: 'sécurité NestJS', technology: 'nestjs', status: 'open', page: 1, pageSize: 3 } })`. Le chemin reste séparé et refuse `?`, fragments, destinations externes et remontées encodées.
+
 ## Pages et routes
 
 | Page frontend | Appels API |
@@ -40,10 +42,12 @@ Les paramètres d'URL du frontend sont repris tels quels :
 
 | Liste | `q` | `technology` | `status` | `page` |
 |---|---|---|---|---|
-| Questions | Titre, rubriques, pseudonyme de l'auteur, noms de technologies ; tous les mots requis | Nom affiché (« TypeScript ») ou slug, sans casse | `all`, `resolved`, `open` | À partir de 1 |
-| Projets | Titre, objectif, pseudonyme du responsable, technologies | Idem | `all`, `open`, `closed` (recrutement) | À partir de 1 |
+| Questions | Titre, rubriques, pseudonyme de l'auteur, noms de technologies ; tous les mots requis, casse et accents NFD ignorés | Nom affiché (« TypeScript ») ou slug, sans casse | `all`, `resolved`, `open` | À partir de 1 |
+| Projets | Titre, objectif, pseudonyme du responsable, technologies ; tous les mots requis, casse et accents NFD ignorés | Idem | `all`, `open`, `closed` (recrutement) | À partir de 1 |
 
 `pageSize` vaut 20 par défaut (50 au plus) ; le frontend peut envoyer ses tailles actuelles (3 et 4). La réponse fournit `meta.total` ; le nombre de pages se calcule côté frontend. Une technologie inconnue renvoie une liste vide, pas une erreur. Les listes de technologies codées en dur dans `jokkohelp/query.ts` et `jokkoprojects/query.ts` sont à remplacer par `GET /technologies`.
+
+La recherche découpe tous les mots sur les espaces, sans limite arbitraire de huit mots, et exige chacun dans au moins un champ documenté (les mots peuvent être répartis entre texte, auteur et technologies). Normalisation NFD et retrait des marques U+0300–U+036F, puis minuscules, comme les sources frontend ; cela ne constitue pas une translittération universelle. `%`, `_` et `\` sont littéraux, jamais des jokers ; NUL est refusé en 400 et la limite de `q` reste 200 caractères. Un `q` vide ou composé d’espaces ne filtre pas. Le filtre technologie est une égalité sur nom/slug, sans casse ni espaces de bord, indépendante de `q`. Statuts exacts ci-dessus, inconnus refusés en 400. Tous les filtres et la visibilité s’appliquent côté PostgreSQL avant le total et la pagination, tri date décroissante puis identifiant décroissant, dans un même instantané. Une page excessive est vide et conserve le total global. Aucun filtrage d’une seule page côté navigateur.
 
 ## Correspondance des modèles
 
@@ -78,3 +82,11 @@ Les erreurs de validation arrivent dans `fieldErrors`, indexées par le nom du c
 - Après une erreur `CSRF_TOKEN_INVALID`, redemander un jeton et proposer de renvoyer le formulaire.
 - `429 RATE_LIMITED` porte l'en-tête `Retry-After` en secondes.
 - Répéter une décision de candidature déjà appliquée renvoie 200 avec l'état courant : un double clic ne produit pas d'erreur.
+
+## PATCH et transport partagé
+
+Un champ absent conserve sa valeur. Les valeurs valides sont mises à jour. Seuls `bio`, `countryCode`, `code`, `codeLanguage` et `availability` autorisent `null` pour leur route respective ; sans code, son langage est effacé. `username`, titres, rubriques, corps de réponse, collections et statut de recrutement refusent `null` en 400 `VALIDATION_ERROR` avec `fieldErrors`. `[]` vide liens/compétences ; les technologies de question/projet restent soumises à leur minimum existant. Les DTO Nest et les types générés font référence.
+
+Les clés/valeurs de `HttpOptions.query` proviennent des opérations générées (q, technology, status, page, pageSize, role, limit selon la route), pas d’un dictionnaire non typé. Les valeurs absentes sont omises, une chaîne vide est encodée comme vide et zéro est conservé pour que le serveur applique sa validation ; les paramètres booléens ne sont pas déclarés par les listes actuelles. Ne pas envoyer `resolved=false` : utiliser `status=open`. Les paramètres ne sont jamais concaténés au chemin.
+
+Sur 429, le formulaire peut lire `error.retryAfterSeconds` (secondes entières ou HTTP-date valide convertie au moment de la réponse). Si absent/invalide, la propriété vaut undefined : ne pas inventer de compteur. Le statut et le corps structuré (code, fieldErrors, requestId) restent dans status/details, y compris sans délai. Aucun rejeu automatique de mutation. Aucun accès global aux en-têtes ni cookies. CORS expose Retry-After et X-Request-Id seulement ; le proxy Next laisse passer le délai serveur, testé par le smoke dédié. nginx peut aussi produire un 429 sans Retry-After ni JSON : le client le signale comme erreur de protocole avec le statut, sans délai fabriqué. La chaîne HTTPS nginx complète reste à valider.

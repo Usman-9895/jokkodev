@@ -4,11 +4,11 @@ import type { Prisma } from '../../generated/prisma/client';
 import type { AuthenticatedUser } from '../../common/auth/auth-context';
 import { ApiException } from '../../common/http/api-exception';
 import { type Page, pageWindow, type PageQueryDto } from '../../common/http/pagination';
-import { cleanText, excerptOf, likeContains, optionalText } from '../../common/http/text';
+import { cleanText, excerptOf, optionalText } from '../../common/http/text';
 import { RateLimiter } from '../../common/rate-limit/rate-limiter.service';
 import { technologySelect } from '../technologies/technologies.dto';
 import { TechnologiesService } from '../technologies/technologies.service';
-import { technologyFilter } from '../technologies/technology-filter';
+import { searchPage } from '../../common/http/search';
 import { publicAuthorSelect, toPublicAuthor } from '../users/projections';
 import type { CreateProjectDto, MemberDto, OwnProjectQueryDto, OwnProjectSummaryDto, ProjectDetailDto, ProjectListQueryDto, ProjectSummaryDto, UpdateProjectDto } from './projects.dto';
 
@@ -34,16 +34,10 @@ export class ProjectsService {
   constructor(private readonly database: DatabaseService, private readonly technologies: TechnologiesService, private readonly limiter: RateLimiter) {}
 
   list(query: ProjectListQueryDto): Promise<Page<ProjectSummaryDto>> {
-    const words = (query.q ?? '').trim().split(/\s+/).filter(Boolean).slice(0, 8);
-    return this.page({
-      visibility: 'VISIBLE',
-      recruitmentStatus: query.status === 'open' ? 'OPEN' : query.status === 'closed' ? 'CLOSED' : undefined,
-      technologies: technologyFilter(query.technology),
-      AND: words.map(word => {
-        const contains = { contains: likeContains(word), mode: 'insensitive' as const };
-        return { OR: [{ title: contains }, { objective: contains }, { owner: { username: contains } }, { technologies: { some: { technology: { name: contains } } } }] };
-      })
-    }, query, row => this.toSummary(row));
+    return searchPage(this.database.prisma, 'project', query, async (tx, ids) => {
+      const rows = await tx.project.findMany({ where: { id: { in: ids } }, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], select: summarySelect });
+      return rows.map(row => this.toSummary(row));
+    });
   }
 
   /** Projets visibles créés ou rejoints ; le responsable étant membre, chaque projet n'apparaît qu'une fois. */

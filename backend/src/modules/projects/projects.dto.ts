@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsArray, IsIn, IsOptional, IsString, IsUUID, MaxLength, MinLength } from 'class-validator';
 import { PageQueryDto } from '../../common/http/pagination';
-import { HasText } from '../../common/http/validators';
+import { HasText, OptionalButNotNull } from '../../common/http/validators';
 import { TechnologyDto } from '../technologies/technologies.dto';
 import { PublicAuthorDto } from '../users/projections';
 
@@ -48,7 +48,7 @@ export class OwnProjectSummaryDto extends ProjectSummaryDto {
 
 export class ProjectListQueryDto extends PageQueryDto {
   @ApiPropertyOptional({ enum: ['all', 'open', 'closed'], default: 'all', description: 'État du recrutement.' }) @IsOptional() @IsIn(['all', 'open', 'closed']) status?: 'all' | 'open' | 'closed';
-  @ApiPropertyOptional({ maxLength: 200, description: 'Mots recherchés dans le titre, l’objectif, le pseudonyme du responsable et les technologies.' }) @IsOptional() @IsString() @MaxLength(200) q?: string;
+  @ApiPropertyOptional({ maxLength: 200, description: 'Tous les mots, sans distinction de casse ni accents NFD ; titre, texte, pseudonyme et technologies. % et _ sont littéraux.' }) @IsOptional() @IsString() @MaxLength(200) q?: string;
   @ApiPropertyOptional({ example: 'React', maxLength: 50, description: 'Nom affiché ou slug d’une technologie.' }) @IsOptional() @IsString() @MaxLength(50) technology?: string;
 }
 
@@ -61,13 +61,13 @@ export class CreateProjectDto {
   @ApiProperty({ minLength: OBJECTIVE_MIN, maxLength: OBJECTIVE_MAX }) @IsString() @HasText() @MinLength(OBJECTIVE_MIN) @MaxLength(OBJECTIVE_MAX) objective!: string;
   @ApiProperty({ type: [String], minItems: 1, maxItems: 10, description: 'Compétences recherchées (technologies du catalogue).' }) @IsArray() @ArrayMinSize(1) @ArrayMaxSize(10) @ArrayUnique() @IsUUID('all', { each: true }) technologyIds!: string[];
   @ApiPropertyOptional({ nullable: true, type: String, maxLength: AVAILABILITY_MAX, example: '5 heures par semaine, en soirée' }) @IsOptional() @IsString() @MaxLength(AVAILABILITY_MAX) availability?: string | null;
-  @ApiPropertyOptional({ enum: RECRUITMENT, default: 'OPEN' }) @IsOptional() @IsIn(RECRUITMENT) recruitmentStatus?: Recruitment;
+  @ApiPropertyOptional({ enum: RECRUITMENT, default: 'OPEN' }) @OptionalButNotNull() @IsIn(RECRUITMENT) recruitmentStatus?: Recruitment;
 }
 
 export class UpdateProjectDto {
-  @ApiPropertyOptional({ minLength: 10, maxLength: 150 }) @IsOptional() @IsString() @HasText() @MinLength(10) @MaxLength(150) title?: string;
-  @ApiPropertyOptional({ minLength: OBJECTIVE_MIN, maxLength: OBJECTIVE_MAX }) @IsOptional() @IsString() @HasText() @MinLength(OBJECTIVE_MIN) @MaxLength(OBJECTIVE_MAX) objective?: string;
-  @ApiPropertyOptional({ type: [String], minItems: 1, maxItems: 10 }) @IsOptional() @IsArray() @ArrayMinSize(1) @ArrayMaxSize(10) @ArrayUnique() @IsUUID('all', { each: true }) technologyIds?: string[];
+  @ApiPropertyOptional({ minLength: 10, maxLength: 150 }) @OptionalButNotNull() @IsString() @HasText() @MinLength(10) @MaxLength(150) title?: string;
+  @ApiPropertyOptional({ minLength: OBJECTIVE_MIN, maxLength: OBJECTIVE_MAX }) @OptionalButNotNull() @IsString() @HasText() @MinLength(OBJECTIVE_MIN) @MaxLength(OBJECTIVE_MAX) objective?: string;
+  @ApiPropertyOptional({ type: [String], minItems: 1, maxItems: 10 }) @OptionalButNotNull() @IsArray() @ArrayMinSize(1) @ArrayMaxSize(10) @ArrayUnique() @IsUUID('all', { each: true }) technologyIds?: string[];
   @ApiPropertyOptional({ nullable: true, type: String, maxLength: AVAILABILITY_MAX }) @IsOptional() @IsString() @MaxLength(AVAILABILITY_MAX) availability?: string | null;
-  @ApiPropertyOptional({ enum: RECRUITMENT, description: 'CLOSED bloque les nouvelles candidatures ; les demandes en attente restent traitables.' }) @IsOptional() @IsIn(RECRUITMENT) recruitmentStatus?: Recruitment;
+  @ApiPropertyOptional({ enum: RECRUITMENT, description: 'CLOSED bloque les nouvelles candidatures ; les demandes en attente restent traitables.' }) @OptionalButNotNull() @IsIn(RECRUITMENT) recruitmentStatus?: Recruitment;
 }
