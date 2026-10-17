@@ -4,7 +4,7 @@ import type { Prisma } from '../../generated/prisma/client';
 import type { AuthenticatedUser } from '../../common/auth/auth-context';
 import { ApiException } from '../../common/http/api-exception';
 import { type Page, pageWindow, type PageQueryDto } from '../../common/http/pagination';
-import { cleanText, likeContains } from '../../common/http/text';
+import { cleanText, excerptOf, likeContains } from '../../common/http/text';
 import { RateLimiter } from '../../common/rate-limit/rate-limiter.service';
 import { technologySelect } from '../technologies/technologies.dto';
 import { TechnologiesService } from '../technologies/technologies.service';
@@ -189,7 +189,7 @@ export class QuestionsService {
 
   private toSummary(row: SummaryRow): QuestionSummaryDto {
     return {
-      id: row.id, title: row.title, excerpt: excerpt(row.context), author: toPublicAuthor(row.author), technologies: row.technologies.map(t => t.technology),
+      id: row.id, title: row.title, excerpt: excerptOf(row.context), author: toPublicAuthor(row.author), technologies: row.technologies.map(t => t.technology),
       resolved: row.acceptedAnswerId !== null, answerCount: row._count.answers, createdAt: row.createdAt.toISOString(), updatedAt: row.updatedAt.toISOString()
     };
   }
@@ -205,11 +205,6 @@ export class QuestionsService {
 
 function toAnswer(row: AnswerRow, acceptedAnswerId: string | null): AnswerDto {
   return { id: row.id, questionId: row.questionId, author: toPublicAuthor(row.author), body: row.body, code: row.code, accepted: row.id === acceptedAnswerId, createdAt: row.createdAt.toISOString(), updatedAt: row.updatedAt.toISOString() };
-}
-
-function excerpt(text: string): string {
-  const flat = text.replace(/\s+/g, ' ').trim();
-  return flat.length <= 200 ? flat : `${flat.slice(0, 199).trimEnd()}…`;
 }
 
 function assertBodyLength(content: { context: string; expected: string; actual: string; attempts: string }): void {

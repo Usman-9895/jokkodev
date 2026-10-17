@@ -1231,6 +1231,409 @@
           "users"
         ]
       }
+    },
+    "/api/v1/projects": {
+      "get": {
+        "operationId": "ProjectsController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "recruitment",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "OPEN",
+                "CLOSED"
+              ]
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Mots recherchés dans le titre et l’objectif.",
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          },
+          {
+            "name": "technology",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "react",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projets visibles, plus récents d’abord ; filtres combinables.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectSummaryPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "post": {
+        "operationId": "ProjectsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Le responsable est la session ; il devient membre dans la même transaction.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "projects"
+        ]
+      }
+    },
+    "/api/v1/projects/{id}": {
+      "get": {
+        "operationId": "ProjectsController_detail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDetailDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "PROJECT_NOT_FOUND : inexistant ou masqué.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "patch": {
+        "operationId": "ProjectsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDetailDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "NOT_OWNER.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "projects"
+        ]
+      }
+    },
+    "/api/v1/projects/{id}/members": {
+      "get": {
+        "operationId": "ProjectsController_members",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profils publics des membres, responsable en premier.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberPageDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      }
+    },
+    "/api/v1/users/me/projects": {
+      "get": {
+        "operationId": "UserProjectsController_own",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "role",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "OWNER",
+                "MEMBER"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projets créés ou rejoints par la session, masqués compris.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnProjectSummaryPageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/{id}/projects": {
+      "get": {
+        "operationId": "UserProjectsController_ofUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projets visibles créés ou rejoints, sans doublon.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectSummaryPageDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
     }
   },
   "info": {
@@ -2193,6 +2596,388 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AnswerWithQuestionDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "ProjectSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Début de l’objectif, 200 caractères au plus."
+          },
+          "owner": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "technologies": {
+            "description": "Compétences recherchées.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "availability": {
+            "type": "string",
+            "nullable": true
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "Membres, responsable compris."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "owner",
+          "technologies",
+          "recruitmentStatus",
+          "memberCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ProjectSummaryPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectSummaryDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "CreateProjectDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 150
+          },
+          "objective": {
+            "type": "string",
+            "minLength": 30,
+            "maxLength": 5000
+          },
+          "technologyIds": {
+            "minItems": 1,
+            "maxItems": 10,
+            "description": "Compétences recherchées (technologies du catalogue).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "availability": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 300,
+            "example": "5 heures par semaine, en soirée"
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ],
+            "default": "OPEN"
+          }
+        },
+        "required": [
+          "title",
+          "objective",
+          "technologyIds"
+        ]
+      },
+      "MemberDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string",
+            "example": "awa_dev"
+          },
+          "countryCode": {
+            "type": "string",
+            "example": "SN",
+            "nullable": true
+          },
+          "isOwner": {
+            "type": "boolean",
+            "description": "Responsable du projet."
+          },
+          "joinedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "isOwner",
+          "joinedAt"
+        ]
+      },
+      "ProjectDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Début de l’objectif, 200 caractères au plus."
+          },
+          "owner": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "technologies": {
+            "description": "Compétences recherchées.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "availability": {
+            "type": "string",
+            "nullable": true
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "Membres, responsable compris."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "objective": {
+            "type": "string"
+          },
+          "members": {
+            "description": "Les 50 premiers membres ; liste complète via /projects/:id/members.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberDto"
+            }
+          },
+          "viewerRole": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "MEMBER"
+            ],
+            "nullable": true,
+            "description": "Rôle de la session courante dans le projet."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "owner",
+          "technologies",
+          "recruitmentStatus",
+          "memberCount",
+          "createdAt",
+          "updatedAt",
+          "objective",
+          "members"
+        ]
+      },
+      "UpdateProjectDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 150
+          },
+          "objective": {
+            "type": "string",
+            "minLength": 30,
+            "maxLength": 5000
+          },
+          "technologyIds": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "availability": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 300
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ],
+            "description": "CLOSED bloque les nouvelles candidatures ; les demandes en attente restent traitables."
+          }
+        }
+      },
+      "MemberPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "OwnProjectSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Début de l’objectif, 200 caractères au plus."
+          },
+          "owner": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "technologies": {
+            "description": "Compétences recherchées.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "availability": {
+            "type": "string",
+            "nullable": true
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "Membres, responsable compris."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "MEMBER"
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "VISIBLE",
+              "HIDDEN"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "owner",
+          "technologies",
+          "recruitmentStatus",
+          "memberCount",
+          "createdAt",
+          "updatedAt",
+          "role",
+          "visibility"
+        ]
+      },
+      "OwnProjectSummaryPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OwnProjectSummaryDto"
             }
           },
           "meta": {

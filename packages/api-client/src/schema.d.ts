@@ -356,6 +356,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ProjectsController_list"];
+        put?: never;
+        post: operations["ProjectsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ProjectsController_detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ProjectsController_update"];
+        trace?: never;
+    };
+    "/api/v1/projects/{id}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ProjectsController_members"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UserProjectsController_own"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/{id}/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UserProjectsController_ofUser"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -672,6 +752,123 @@ export interface components {
         };
         AnswerWithQuestionPageDto: {
             data: components["schemas"]["AnswerWithQuestionDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        ProjectSummaryDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description Début de l’objectif, 200 caractères au plus. */
+            summary: string;
+            owner: components["schemas"]["PublicAuthorDto"];
+            /** @description Compétences recherchées. */
+            technologies: components["schemas"]["TechnologyDto"][];
+            /** @enum {string} */
+            recruitmentStatus: "OPEN" | "CLOSED";
+            availability?: string | null;
+            /** @description Membres, responsable compris. */
+            memberCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ProjectSummaryPageDto: {
+            data: components["schemas"]["ProjectSummaryDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        CreateProjectDto: {
+            title: string;
+            objective: string;
+            /** @description Compétences recherchées (technologies du catalogue). */
+            technologyIds: string[];
+            /** @example 5 heures par semaine, en soirée */
+            availability?: string | null;
+            /**
+             * @default OPEN
+             * @enum {string}
+             */
+            recruitmentStatus: "OPEN" | "CLOSED";
+        };
+        MemberDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example awa_dev */
+            username: string;
+            /** @example SN */
+            countryCode?: string | null;
+            /** @description Responsable du projet. */
+            isOwner: boolean;
+            /** Format: date-time */
+            joinedAt: string;
+        };
+        ProjectDetailDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description Début de l’objectif, 200 caractères au plus. */
+            summary: string;
+            owner: components["schemas"]["PublicAuthorDto"];
+            /** @description Compétences recherchées. */
+            technologies: components["schemas"]["TechnologyDto"][];
+            /** @enum {string} */
+            recruitmentStatus: "OPEN" | "CLOSED";
+            availability?: string | null;
+            /** @description Membres, responsable compris. */
+            memberCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            objective: string;
+            /** @description Les 50 premiers membres ; liste complète via /projects/:id/members. */
+            members: components["schemas"]["MemberDto"][];
+            /**
+             * @description Rôle de la session courante dans le projet.
+             * @enum {string|null}
+             */
+            viewerRole?: "OWNER" | "MEMBER" | null;
+        };
+        UpdateProjectDto: {
+            title?: string;
+            objective?: string;
+            technologyIds?: string[];
+            availability?: string | null;
+            /**
+             * @description CLOSED bloque les nouvelles candidatures ; les demandes en attente restent traitables.
+             * @enum {string}
+             */
+            recruitmentStatus?: "OPEN" | "CLOSED";
+        };
+        MemberPageDto: {
+            data: components["schemas"]["MemberDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        OwnProjectSummaryDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description Début de l’objectif, 200 caractères au plus. */
+            summary: string;
+            owner: components["schemas"]["PublicAuthorDto"];
+            /** @description Compétences recherchées. */
+            technologies: components["schemas"]["TechnologyDto"][];
+            /** @enum {string} */
+            recruitmentStatus: "OPEN" | "CLOSED";
+            availability?: string | null;
+            /** @description Membres, responsable compris. */
+            memberCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @enum {string} */
+            role: "OWNER" | "MEMBER";
+            /** @enum {string} */
+            visibility: "VISIBLE" | "HIDDEN";
+        };
+        OwnProjectSummaryPageDto: {
+            data: components["schemas"]["OwnProjectSummaryDto"][];
             meta: components["schemas"]["PageMetaDto"];
         };
     };
@@ -1515,6 +1712,227 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AnswerWithQuestionPageDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ProjectsController_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                recruitment?: "OPEN" | "CLOSED";
+                /** @description Mots recherchés dans le titre et l’objectif. */
+                q?: string;
+                technology?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Projets visibles, plus récents d’abord ; filtres combinables. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectSummaryPageDto"];
+                };
+            };
+        };
+    };
+    ProjectsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateProjectDto"];
+            };
+        };
+        responses: {
+            /** @description Le responsable est la session ; il devient membre dans la même transaction. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectDetailDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ProjectsController_detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectDetailDto"];
+                };
+            };
+            /** @description PROJECT_NOT_FOUND : inexistant ou masqué. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ProjectsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProjectDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectDetailDto"];
+                };
+            };
+            /** @description NOT_OWNER. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ProjectsController_members: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Profils publics des membres, responsable en premier. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberPageDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    UserProjectsController_own: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                role?: "OWNER" | "MEMBER";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Projets créés ou rejoints par la session, masqués compris. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OwnProjectSummaryPageDto"];
+                };
+            };
+        };
+    };
+    UserProjectsController_ofUser: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Projets visibles créés ou rejoints, sans doublon. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectSummaryPageDto"];
                 };
             };
             404: {
