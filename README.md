@@ -40,11 +40,13 @@ Frontend : http://localhost:3000 ; backend : http://127.0.0.1:3001 ; Swagger de 
 | `pnpm db:validate` / `pnpm db:generate` | Validation du schéma / génération Prisma |
 | `pnpm db:migrate:dev` | Migration de développement, seulement après vérification de destination et autorisation |
 | `pnpm db:migrate:deploy` | Application contrôlée des migrations versionnées ; jamais `db push` |
+| `pnpm db:seed` | Catalogue des technologies, idempotent |
+| `pnpm test:integration` | Contraintes PostgreSQL sur la base `TEST_DATABASE_URL`, dans un schéma temporaire |
 | `pnpm api:export` | Export OpenAPI sans base ni secret de production |
 | `pnpm api:generate` | Export puis génération des types partagés |
 | `pnpm licenses:inventory` | Inventaire direct et transitif des licences installées |
 
-La première génération Prisma suit l’installation et la copie de l’exemple d’environnement. Aucun modèle artificiel n’est ajouté. Les migrations n’ont pas à être exécutées pour ce socle sans modèle.
+La première génération Prisma suit l’installation et la copie de l’exemple d’environnement. Le modèle de données et sa migration initiale sont décrits dans le [modèle de données](docs/architecture/data-model.md) ; la préparation de la base est détaillée dans [infra/README.md](infra/README.md).
 
 Les ports 3000 et 3001 doivent être libres avant `test:smoke`. Les caches locaux sont ignorés par Git. Sur la machine de préparation, les fichiers `.env` locaux ont été créés à partir des exemples ; la connexion PostgreSQL reste à adapter. Les résultats et les adaptations liées à l’environnement Windows restreint sont détaillés dans le rapport de vérification.
 
@@ -62,7 +64,7 @@ backend/                  NestJS REST /api/v1
   src/database/           Prisma et cycle de vie différé
   src/health/             Liveness et readiness
   src/modules/            Responsabilités des futurs domaines, sans faux CRUD
-  prisma/                 Schéma sans tables métier
+  prisma/                 Schéma, migrations versionnées
   test/                   Tests de comportement
 packages/api-client/      Types OpenAPI générés et transport HTTP
 docs/                     Architecture, contrat, décisions, sécurité, licences

@@ -81,3 +81,23 @@ L’installation de la copie propre a nécessité des autorisations étendues po
 La liste exacte des fichiers et les résultats détaillés locaux restent dans `.cache/publication/`, exclu de Git. Après les contrôles, seuls des ajustements de documentation et d’exclusions ont été apportés ; le code exécutable et le verrouillage testés sont conservés. Aucun contrôle Linux ni PostgreSQL réel supplémentaire n’est revendiqué. Les limites métier, sécurité et licences ci-dessus restent applicables : les fondations ne sont pas un MVP fonctionnel.
 
 Voir [plan de publication](publication/initial-publication.md). GitHub renvoie 403 pour les rulesets du dépôt privé et demande une mise à niveau du compte ; aucune protection n’a été appliquée par cette préparation et la fusion automatique reste désactivée.
+
+## Base PostgreSQL et modèle initial — 17 octobre 2026
+
+Exécution par Serge sur Linux (Ubuntu 24.04), Node.js 24.15.0, pnpm 10.34.6, branche `feature/database-schema`. Base dédiée PostgreSQL 17.11 dans un conteneur local publié sur 127.0.0.1 uniquement, rôle applicatif `jokkodev` distinct du superutilisateur, bases `jokkodev` et `jokkodev_test`. Aucune base partagée ni de production utilisée.
+
+| Contrôle exécuté | Résultat |
+|---|---|
+| `pnpm install --frozen-lockfile` sur Linux | Réussi, verrouillage inchangé |
+| Readiness sur base réelle | 200 ; base arrêtée : 503 avec liveness 200 ; base relancée : 200 sans redémarrer NestJS |
+| `pnpm db:validate` / `pnpm db:generate` | Schéma du modèle initial valide, client généré |
+| `prisma migrate dev` (base de développement vide) | Migration `init` appliquée |
+| `prisma migrate diff` base / schéma | Vide : les CHECK et index partiels ajoutés en SQL ne créent pas de dérive |
+| `prisma migrate deploy` sur une base de validation distincte | Migration appliquée, puis rejeu sans migration en attente ; `migrate status` à jour |
+| `pnpm db:seed` exécuté deux fois | 50 technologies créées, puis 0 |
+| `pnpm test:integration` | 14 tests réussis sur PostgreSQL réel ; schéma temporaire supprimé |
+| `pnpm lint`, `pnpm typecheck`, `pnpm build` | Réussis |
+| `pnpm test` | 6 tests backend et 26 tests frontend/client réussis |
+| `pnpm api:generate` | Contrat OpenAPI et types inchangés (aucune route ajoutée) |
+
+Non exécuté sur cette branche : `pnpm test:smoke`, `pnpm licenses:inventory` (aucune dépendance ajoutée). L'exécution Linux du socle est désormais vérifiée pour l'installation, le lint, le typage, les tests et les builds.
