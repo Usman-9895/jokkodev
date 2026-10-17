@@ -484,6 +484,86 @@ export interface paths {
         patch: operations["ApplicationsController_decide"];
         trace?: never;
     };
+    "/api/v1/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReportsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AdminController_reports"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/reports/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AdminController_report"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/reports/{id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminController_resolve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/moderation-actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AdminController_actions"];
+        put?: never;
+        post: operations["AdminController_act"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -969,6 +1049,139 @@ export interface components {
              * @enum {string}
              */
             status: "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+        };
+        CreateReportDto: {
+            /** @enum {string} */
+            targetType: "QUESTION" | "ANSWER" | "PROJECT";
+            /** Format: uuid */
+            targetId: string;
+            reason: string;
+        };
+        CreatedReportDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            status: "OPEN";
+            /** @enum {string} */
+            targetType: "QUESTION" | "ANSWER" | "PROJECT";
+            /** Format: uuid */
+            targetId: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        AdminUserDto: {
+            /** Format: uuid */
+            id: string;
+            username: string;
+            /** @enum {string} */
+            status: "ACTIVE" | "SUSPENDED";
+            /** @enum {string} */
+            role: "MEMBER" | "ADMIN";
+        };
+        ReportTargetDto: {
+            /** @enum {string} */
+            type: "QUESTION" | "ANSWER" | "PROJECT";
+            /** Format: uuid */
+            id: string;
+            /** @description Titre de la question, de la question parente d’une réponse, ou du projet. */
+            title: string;
+            /** @description Extrait du contenu signalé. */
+            excerpt: string;
+            /** @enum {string} */
+            visibility: "VISIBLE" | "HIDDEN";
+            /** @description Auteur ou responsable : compte visé par une suspension. */
+            author: components["schemas"]["AdminUserDto"];
+            /**
+             * Format: uuid
+             * @description Question parente, pour une réponse.
+             */
+            questionId?: string | null;
+        };
+        ReportDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            status: "OPEN" | "CLOSED";
+            /** @description Motif du déclarant, réservé aux administrateurs. */
+            reason: string;
+            reporter: components["schemas"]["AdminUserDto"];
+            target: components["schemas"]["ReportTargetDto"];
+            /** @enum {string|null} */
+            decision?: "NO_ACTION" | "HIDE_CONTENT" | "SUSPEND_ACCOUNT" | null;
+            closedBy?: components["schemas"]["AdminUserDto"] | null;
+            /** Format: date-time */
+            closedAt?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ReportPageDto: {
+            data: components["schemas"]["ReportDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        ModerationTargetRefDto: {
+            /** @enum {string} */
+            type: "QUESTION" | "ANSWER" | "PROJECT" | "USER";
+            /** Format: uuid */
+            id: string;
+        };
+        ModerationActionDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            decision: "NO_ACTION" | "HIDE_CONTENT" | "SUSPEND_ACCOUNT";
+            reason: string;
+            admin: components["schemas"]["AdminUserDto"];
+            /** Format: uuid */
+            reportId?: string | null;
+            target: components["schemas"]["ModerationTargetRefDto"];
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ReportDetailDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            status: "OPEN" | "CLOSED";
+            /** @description Motif du déclarant, réservé aux administrateurs. */
+            reason: string;
+            reporter: components["schemas"]["AdminUserDto"];
+            target: components["schemas"]["ReportTargetDto"];
+            /** @enum {string|null} */
+            decision?: "NO_ACTION" | "HIDE_CONTENT" | "SUSPEND_ACCOUNT" | null;
+            closedBy?: components["schemas"]["AdminUserDto"] | null;
+            /** Format: date-time */
+            closedAt?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** @description Signalements encore ouverts sur la même cible, celui-ci compris. */
+            openReportsOnTarget: number;
+            /** @description Actions déjà prises sur ce contenu ou sur le compte de son auteur, plus récentes d’abord. */
+            history: components["schemas"]["ModerationActionDto"][];
+        };
+        ResolveReportDto: {
+            /**
+             * @description SUSPEND_ACCOUNT vise l’auteur du contenu signalé, déterminé par le serveur.
+             * @enum {string}
+             */
+            decision: "NO_ACTION" | "HIDE_CONTENT" | "SUSPEND_ACCOUNT";
+            /** @description Motif de la décision, conservé dans l’historique. */
+            reason: string;
+        };
+        DirectActionDto: {
+            /** @enum {string} */
+            decision: "HIDE_CONTENT" | "SUSPEND_ACCOUNT";
+            /**
+             * @description HIDE_CONTENT : QUESTION, ANSWER ou PROJECT. SUSPEND_ACCOUNT : USER.
+             * @enum {string}
+             */
+            targetType: "QUESTION" | "ANSWER" | "PROJECT" | "USER";
+            /** Format: uuid */
+            targetId: string;
+            reason: string;
+        };
+        ModerationActionPageDto: {
+            data: components["schemas"]["ModerationActionDto"][];
+            meta: components["schemas"]["PageMetaDto"];
         };
     };
     responses: never;
@@ -2210,6 +2423,252 @@ export interface operations {
                 };
             };
             /** @description INVALID_TRANSITION : demande déjà traitée. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ReportsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReportDto"];
+            };
+        };
+        responses: {
+            /** @description Signalement ouvert ; le contenu reste visible tant qu’aucune action ne le masque. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatedReportDto"];
+                };
+            };
+            /** @description TARGET_NOT_FOUND : cible inexistante ou déjà non publique. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description REPORT_ALREADY_OPEN. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AdminController_reports: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: "OPEN" | "CLOSED";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Plus récents d’abord, filtrables par état. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportPageDto"];
+                };
+            };
+            /** @description Réservé au rôle ADMIN. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AdminController_report: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportDetailDto"];
+                };
+            };
+            /** @description Réservé au rôle ADMIN. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AdminController_resolve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResolveReportDto"];
+            };
+        };
+        responses: {
+            /** @description Action appliquée, historique écrit et signalement clôturé atomiquement. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportDetailDto"];
+                };
+            };
+            /** @description Réservé au rôle ADMIN. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description REPORT_ALREADY_CLOSED ou CANNOT_SUSPEND_ADMIN. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AdminController_actions: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Historique complet, plus récent d’abord. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationActionPageDto"];
+                };
+            };
+            /** @description Réservé au rôle ADMIN. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AdminController_act: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DirectActionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationActionDto"];
+                };
+            };
+            /** @description Réservé au rôle ADMIN. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description ALREADY_HIDDEN, ALREADY_SUSPENDED ou CANNOT_SUSPEND_ADMIN. */
             409: {
                 headers: {
                     [name: string]: unknown;

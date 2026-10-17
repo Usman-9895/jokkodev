@@ -16,6 +16,10 @@ Provisionnement administrateur hors API : `pnpm admin:grant <email>` sur le serv
 
 Limite connue : les compteurs de limitation sont en mémoire et propres à un processus. Un déploiement à plusieurs processus devra les partager. `TRUST_PROXY` doit lister le seul relais du point d'entrée Datacloud pour que l'IP cliente soit fiable.
 
+## Modération (lot B08)
+
+Signalement par un membre actif sur une question, réponse ou projet visible ; déclarant tiré de la session ; un signalement ouvert par déclarant et cible garanti par index unique partiel. Un signalement seul ne masque rien. Les routes `/admin/*` exigent le rôle ADMIN à chaque requête ; identité du déclarant et motif ne sont exposés qu'à ces routes. Traitement atomique (action, historique, clôture) sous verrou du signalement ; la suspension vise l'auteur de la cible déterminé par le serveur, révoque ses sessions et ne masque pas ses contenus. Masquer une réponse acceptée retire la solution dans la même transaction, sous le même verrou que l'acceptation. Un administrateur ne peut pas suspendre un autre administrateur par l'API. Aucune suppression définitive ni édition générale des comptes ; l'administrateur n'a pas accès aux candidatures privées.
+
 ## À implémenter avant toute donnée privée
 
 Validation et assainissement des contenus utilisateurs, politique des liens et du HTML (lots métier).

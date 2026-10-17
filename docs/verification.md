@@ -133,3 +133,7 @@ Branche `feature/projects`. `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm a
 ## Candidatures — 17 octobre 2026
 
 Branche `feature/applications`. `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm api:generate` réussis ; `pnpm test` : 10 backend et 26 frontend/client ; `pnpm test:integration` : 57 tests sur PostgreSQL réel, réussis trois fois de suite, dont 9 pour les candidatures (parcours complet, message privé absent des vues publiques et refusé aux tiers comme à l'administrateur, trois envois simultanés pour une seule demande, règles de candidature, fermeture avec demandes en attente traitables, cinq candidatures concurrentes d'une fermeture, transitions par partie, décisions simultanées sur cinq tours avec une seule issue et une adhésion cohérente, projet masqué).
+
+## Signalements et modération — 17 octobre 2026
+
+Branche `feature/moderation`. `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm api:generate` réussis ; `pnpm test` : 10 backend et 26 frontend/client ; `pnpm test:integration` : 69 tests sur PostgreSQL réel, réussis trois fois de suite, dont 12 pour ce lot (doublons simultanés, cibles invalides, refus membre et visiteur sur toutes les routes admin, clôture sans action, masquage de la solution acceptée, masquage concurrent d'une acceptation sur cinq tours, suspension effective sur session ouverte, décisions simultanées de deux administrateurs, actions directes).
