@@ -117,3 +117,7 @@ Branche `feature/auth`, mêmes environnement et base dédiée que ci-dessus.
 | `pnpm licenses:inventory` | Exécuté ; nouvelles dépendances relevées dans `docs/licenses/open-questions.md`, fichiers générés non versionnés dans cette PR |
 
 Non vérifié : envoi SMTP réel (fournisseur non choisi), cookies `__Host-` en HTTPS (aucun environnement HTTPS disponible), `pnpm test:smoke`.
+
+## Profils et technologies — 17 octobre 2026
+
+Branche `feature/profiles`. `pnpm lint`, `pnpm typecheck`, `pnpm build` et `pnpm api:generate` réussis ; `pnpm test` : 10 tests backend et 26 frontend/client ; `pnpm test:integration` : 31 tests sur PostgreSQL réel (ajout du catalogue, du profil public/privé, des champs protégés, des URLs refusées, des compteurs visibles et du caractère NUL rejeté).

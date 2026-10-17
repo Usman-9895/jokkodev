@@ -5,5 +5,7 @@ import { RateLimitModule } from './common/rate-limit/rate-limit.module';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { MailModule } from './modules/mail/mail.module';
-@Module({ imports: [ConfigModule, DatabaseModule, RateLimitModule, MailModule, AuthModule, HealthModule] })
+import { TechnologiesModule } from './modules/technologies/technologies.module';
+import { UsersModule } from './modules/users/users.module';
+@Module({ imports: [ConfigModule, DatabaseModule, RateLimitModule, MailModule, AuthModule, HealthModule, TechnologiesModule, UsersModule] })
 export class AppModule {}

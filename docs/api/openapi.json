@@ -376,6 +376,170 @@
           "health"
         ]
       }
+    },
+    "/api/v1/technologies": {
+      "get": {
+        "operationId": "TechnologiesController_list",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Recherche dans le nom, sans tenir compte de la casse.",
+            "schema": {
+              "maxLength": 50,
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 200,
+              "default": 200,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Catalogue commun trié par nom.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnologyListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "technologies"
+        ]
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "operationId": "UsersController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "UsersController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnProfileDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation, technologie inconnue ou champ non modifiable (email, role, status).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "USERNAME_TAKEN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/{reference}": {
+      "get": {
+        "operationId": "UsersController_profile",
+        "parameters": [
+          {
+            "name": "reference",
+            "required": true,
+            "in": "path",
+            "description": "Identifiant ou pseudonyme.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicProfileDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
     }
   },
   "info": {
@@ -592,6 +756,217 @@
         },
         "required": [
           "status"
+        ]
+      },
+      "TechnologyDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "TypeScript"
+          },
+          "slug": {
+            "type": "string",
+            "example": "typescript"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ]
+      },
+      "TechnologyListDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "ProfileStatsDto": {
+        "type": "object",
+        "properties": {
+          "questions": {
+            "type": "number",
+            "description": "Questions visibles."
+          },
+          "answers": {
+            "type": "number",
+            "description": "Réponses visibles dont la question est visible."
+          },
+          "projects": {
+            "type": "number",
+            "description": "Projets visibles créés ou rejoints."
+          }
+        },
+        "required": [
+          "questions",
+          "answers",
+          "projects"
+        ]
+      },
+      "OwnProfileDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string",
+            "example": "awa_dev"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true,
+            "example": "SN",
+            "description": "ISO 3166-1 alpha-2."
+          },
+          "links": {
+            "example": [
+              "https://github.com/awa-dev"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "memberSince": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/ProfileStatsDto"
+          },
+          "email": {
+            "type": "string",
+            "example": "awa@example.com",
+            "description": "Privé : visible uniquement par le titulaire."
+          },
+          "emailVerified": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "links",
+          "skills",
+          "memberSince",
+          "stats",
+          "email",
+          "emailVerified"
+        ]
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_]{3,30}$"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true,
+            "example": "SN"
+          },
+          "links": {
+            "maxItems": 3,
+            "description": "URLs HTTPS absolues de 2048 caractères au plus.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skillIds": {
+            "maxItems": 15,
+            "description": "Identifiants de technologies du catalogue.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PublicProfileDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string",
+            "example": "awa_dev"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true,
+            "example": "SN",
+            "description": "ISO 3166-1 alpha-2."
+          },
+          "links": {
+            "example": [
+              "https://github.com/awa-dev"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "memberSince": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/ProfileStatsDto"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "links",
+          "skills",
+          "memberSince",
+          "stats"
         ]
       }
     }
