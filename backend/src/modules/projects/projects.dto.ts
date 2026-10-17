@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsArray, IsIn, IsOptional, IsString, IsUUID, Matches, MaxLength, MinLength } from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsArray, IsIn, IsOptional, IsString, IsUUID, MaxLength, MinLength } from 'class-validator';
 import { PageQueryDto } from '../../common/http/pagination';
 import { HasText } from '../../common/http/validators';
 import { TechnologyDto } from '../technologies/technologies.dto';
@@ -47,9 +47,9 @@ export class OwnProjectSummaryDto extends ProjectSummaryDto {
 }
 
 export class ProjectListQueryDto extends PageQueryDto {
-  @ApiPropertyOptional({ enum: RECRUITMENT }) @IsOptional() @IsIn(RECRUITMENT) recruitment?: Recruitment;
-  @ApiPropertyOptional({ maxLength: 200, description: 'Mots recherchés dans le titre et l’objectif.' }) @IsOptional() @IsString() @MaxLength(200) q?: string;
-  @ApiPropertyOptional({ example: 'react' }) @IsOptional() @IsString() @Matches(/^[a-z0-9-]{1,50}$/) technology?: string;
+  @ApiPropertyOptional({ enum: ['all', 'open', 'closed'], default: 'all', description: 'État du recrutement.' }) @IsOptional() @IsIn(['all', 'open', 'closed']) status?: 'all' | 'open' | 'closed';
+  @ApiPropertyOptional({ maxLength: 200, description: 'Mots recherchés dans le titre, l’objectif, le pseudonyme du responsable et les technologies.' }) @IsOptional() @IsString() @MaxLength(200) q?: string;
+  @ApiPropertyOptional({ example: 'React', maxLength: 50, description: 'Nom affiché ou slug d’une technologie.' }) @IsOptional() @IsString() @MaxLength(50) technology?: string;
 }
 
 export class OwnProjectQueryDto extends PageQueryDto {

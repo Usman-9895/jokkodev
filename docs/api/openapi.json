@@ -420,6 +420,32 @@
         ]
       }
     },
+    "/api/v1/users/me/dashboard": {
+      "get": {
+        "operationId": "DashboardController_summary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Compteurs du tableau de bord de Mon espace.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      }
+    },
     "/api/v1/users/me": {
       "get": {
         "operationId": "UsersController_me",
@@ -570,7 +596,7 @@
             "name": "q",
             "required": false,
             "in": "query",
-            "description": "Mots recherchés dans le titre et les rubriques ; tous doivent apparaître.",
+            "description": "Mots recherchés dans le titre, les rubriques, le pseudonyme de l’auteur et les technologies ; tous doivent apparaître.",
             "schema": {
               "maxLength": 200,
               "type": "string"
@@ -580,21 +606,24 @@
             "name": "technology",
             "required": false,
             "in": "query",
-            "description": "Slug d’une technologie du catalogue.",
+            "description": "Nom affiché ou slug d’une technologie du catalogue, sans tenir compte de la casse.",
             "schema": {
-              "example": "typescript",
+              "maxLength": 50,
+              "example": "TypeScript",
               "type": "string"
             }
           },
           {
-            "name": "resolved",
+            "name": "status",
             "required": false,
             "in": "query",
             "schema": {
+              "default": "all",
               "type": "string",
               "enum": [
-                "true",
-                "false"
+                "all",
+                "resolved",
+                "open"
               ]
             }
           }
@@ -1076,14 +1105,16 @@
             }
           },
           {
-            "name": "resolved",
+            "name": "status",
             "required": false,
             "in": "query",
             "schema": {
+              "default": "all",
               "type": "string",
               "enum": [
-                "true",
-                "false"
+                "all",
+                "resolved",
+                "open"
               ]
             }
           }
@@ -1258,14 +1289,17 @@
             }
           },
           {
-            "name": "recruitment",
+            "name": "status",
             "required": false,
             "in": "query",
+            "description": "État du recrutement.",
             "schema": {
+              "default": "all",
               "type": "string",
               "enum": [
-                "OPEN",
-                "CLOSED"
+                "all",
+                "open",
+                "closed"
               ]
             }
           },
@@ -1273,7 +1307,7 @@
             "name": "q",
             "required": false,
             "in": "query",
-            "description": "Mots recherchés dans le titre et l’objectif.",
+            "description": "Mots recherchés dans le titre, l’objectif, le pseudonyme du responsable et les technologies.",
             "schema": {
               "maxLength": 200,
               "type": "string"
@@ -1283,8 +1317,10 @@
             "name": "technology",
             "required": false,
             "in": "query",
+            "description": "Nom affiché ou slug d’une technologie.",
             "schema": {
-              "example": "react",
+              "maxLength": 50,
+              "example": "React",
               "type": "string"
             }
           }
@@ -1821,6 +1857,68 @@
         "responses": {
           "200": {
             "description": "Demandes envoyées par la session.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "applications"
+        ]
+      }
+    },
+    "/api/v1/users/me/received-applications": {
+      "get": {
+        "operationId": "ApplicationsController_receivedAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "ACCEPTED",
+                "REJECTED",
+                "WITHDRAWN"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Demandes reçues sur tous les projets visibles de la session.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2579,6 +2677,109 @@
           "data"
         ]
       },
+      "QuestionCountsDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "resolved": {
+            "type": "number"
+          },
+          "open": {
+            "type": "number"
+          },
+          "hidden": {
+            "type": "number",
+            "description": "Masquées par la modération."
+          }
+        },
+        "required": [
+          "total",
+          "resolved",
+          "open",
+          "hidden"
+        ]
+      },
+      "AnswerCountsDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Réponses visibles."
+          },
+          "accepted": {
+            "type": "number",
+            "description": "Réponses retenues comme solution."
+          }
+        },
+        "required": [
+          "total",
+          "accepted"
+        ]
+      },
+      "ProjectCountsDto": {
+        "type": "object",
+        "properties": {
+          "owned": {
+            "type": "number",
+            "description": "Projets dont la session est responsable."
+          },
+          "joined": {
+            "type": "number",
+            "description": "Projets rejoints comme membre."
+          }
+        },
+        "required": [
+          "owned",
+          "joined"
+        ]
+      },
+      "ApplicationCountsDto": {
+        "type": "object",
+        "properties": {
+          "sent": {
+            "type": "number",
+            "description": "Candidatures envoyées."
+          },
+          "sentPending": {
+            "type": "number",
+            "description": "Candidatures envoyées en attente de décision."
+          },
+          "receivedPending": {
+            "type": "number",
+            "description": "Demandes reçues en attente, tous projets visibles confondus."
+          }
+        },
+        "required": [
+          "sent",
+          "sentPending",
+          "receivedPending"
+        ]
+      },
+      "DashboardDto": {
+        "type": "object",
+        "properties": {
+          "questions": {
+            "$ref": "#/components/schemas/QuestionCountsDto"
+          },
+          "answers": {
+            "$ref": "#/components/schemas/AnswerCountsDto"
+          },
+          "projects": {
+            "$ref": "#/components/schemas/ProjectCountsDto"
+          },
+          "applications": {
+            "$ref": "#/components/schemas/ApplicationCountsDto"
+          }
+        },
+        "required": [
+          "questions",
+          "answers",
+          "projects",
+          "applications"
+        ]
+      },
       "ProfileStatsDto": {
         "type": "object",
         "properties": {
@@ -2895,6 +3096,13 @@
             "nullable": true,
             "maxLength": 20000
           },
+          "codeLanguage": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 30,
+            "example": "TypeScript",
+            "description": "Langage affiché avec l’extrait ; ignoré et effacé sans code."
+          },
           "technologyIds": {
             "minItems": 1,
             "maxItems": 5,
@@ -2935,6 +3143,13 @@
             "type": "string",
             "nullable": true,
             "description": "Extrait de code, jamais exécuté."
+          },
+          "codeLanguage": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 30,
+            "example": "TypeScript",
+            "description": "Langage affiché avec l’extrait ; ignoré et effacé sans code."
           },
           "accepted": {
             "type": "boolean",
@@ -3014,6 +3229,13 @@
             "type": "string",
             "nullable": true
           },
+          "codeLanguage": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 30,
+            "example": "TypeScript",
+            "description": "Langage affiché avec l’extrait ; ignoré et effacé sans code."
+          },
           "acceptedAnswerId": {
             "type": "string",
             "nullable": true,
@@ -3077,6 +3299,13 @@
             "maxLength": 20000,
             "description": "null retire le code."
           },
+          "codeLanguage": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 30,
+            "example": "TypeScript",
+            "description": "Langage affiché avec l’extrait ; ignoré et effacé sans code."
+          },
           "technologyIds": {
             "minItems": 1,
             "maxItems": 5,
@@ -3117,6 +3346,13 @@
             "type": "string",
             "nullable": true,
             "maxLength": 20000
+          },
+          "codeLanguage": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 30,
+            "example": "TypeScript",
+            "description": "Langage affiché avec l’extrait ; ignoré et effacé sans code."
           }
         },
         "required": [
@@ -3147,6 +3383,13 @@
             "type": "string",
             "nullable": true,
             "maxLength": 20000
+          },
+          "codeLanguage": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 30,
+            "example": "TypeScript",
+            "description": "Langage affiché avec l’extrait ; ignoré et effacé sans code."
           }
         }
       },
@@ -3251,6 +3494,13 @@
             "type": "string",
             "nullable": true,
             "description": "Extrait de code, jamais exécuté."
+          },
+          "codeLanguage": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 30,
+            "example": "TypeScript",
+            "description": "Langage affiché avec l’extrait ; ignoré et effacé sans code."
           },
           "accepted": {
             "type": "boolean",
@@ -3786,6 +4036,13 @@
           "applicant": {
             "$ref": "#/components/schemas/PublicAuthorDto"
           },
+          "applicantSkills": {
+            "description": "Compétences publiques du profil du candidat.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
           "project": {
             "$ref": "#/components/schemas/ApplicationProjectDto"
           },
@@ -3812,6 +4069,7 @@
           "status",
           "message",
           "applicant",
+          "applicantSkills",
           "project",
           "createdAt",
           "viewerRole"

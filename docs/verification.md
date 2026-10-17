@@ -154,3 +154,7 @@ Branche `feature/operations`. Contrôles du dépôt réussis (`pnpm lint`, `type
 | `X-Forwarded-For` falsifié à chaque tentative de connexion | Ignoré : 5 refus puis 429 |
 
 Non vérifié : Datacloud, SMTP réel, calibrage Argon2 sur le serveur cible.
+
+## Alignement avec le frontend — 17 octobre 2026
+
+Branche `feature/frontend-alignment`. Contrôles du dépôt réussis ; `pnpm test:integration` : 72 tests sur PostgreSQL réel, suite complète rejouée six fois avec traçage des erreurs internes (seule l'erreur 500 provoquée volontairement par le test d'atomicité des projets apparaît). Migration additive `code_language` appliquée sur la base de développement, sans dérive du schéma.

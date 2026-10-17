@@ -8,6 +8,7 @@ import { cleanText, excerptOf, likeContains, optionalText } from '../../common/h
 import { RateLimiter } from '../../common/rate-limit/rate-limiter.service';
 import { technologySelect } from '../technologies/technologies.dto';
 import { TechnologiesService } from '../technologies/technologies.service';
+import { technologyFilter } from '../technologies/technology-filter';
 import { publicAuthorSelect, toPublicAuthor } from '../users/projections';
 import type { CreateProjectDto, MemberDto, OwnProjectQueryDto, OwnProjectSummaryDto, ProjectDetailDto, ProjectListQueryDto, ProjectSummaryDto, UpdateProjectDto } from './projects.dto';
 
@@ -36,11 +37,11 @@ export class ProjectsService {
     const words = (query.q ?? '').trim().split(/\s+/).filter(Boolean).slice(0, 8);
     return this.page({
       visibility: 'VISIBLE',
-      recruitmentStatus: query.recruitment,
-      technologies: query.technology ? { some: { technology: { slug: query.technology } } } : undefined,
+      recruitmentStatus: query.status === 'open' ? 'OPEN' : query.status === 'closed' ? 'CLOSED' : undefined,
+      technologies: technologyFilter(query.technology),
       AND: words.map(word => {
         const contains = { contains: likeContains(word), mode: 'insensitive' as const };
-        return { OR: [{ title: contains }, { objective: contains }] };
+        return { OR: [{ title: contains }, { objective: contains }, { owner: { username: contains } }, { technologies: { some: { technology: { name: contains } } } }] };
       })
     }, query, row => this.toSummary(row));
   }

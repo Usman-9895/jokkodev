@@ -17,3 +17,5 @@ requestId est généré côté serveur et renvoyé dans X-Request-Id. Aucune sta
 Séparer explicitement DTO publics (profil public, contenus visibles), privés (email, candidatures propres, sessions) et administrateur (signalements et décisions). Contrôle NestJS obligatoire ; pas de sérialisation directe de modèles Prisma.
 
 Client HTTP : JSON et 204/205, erreurs API/réseau/protocole/annulation, credentials include, option csrfToken pour mutations, no-store. Cela prépare les cookies et CSRF sans implémenter la protection. Les requêtes JSON avec corps doivent fournir Content-Type: application/json. Paramètres de recherche futurs à ajouter via une API URLSearchParams contrôlée.
+
+Correspondance détaillée avec les pages et modèles du frontend : [frontend-integration.md](frontend-integration.md).

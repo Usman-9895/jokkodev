@@ -8,18 +8,19 @@ import { cleanText, excerptOf, likeContains } from '../../common/http/text';
 import { RateLimiter } from '../../common/rate-limit/rate-limiter.service';
 import { technologySelect } from '../technologies/technologies.dto';
 import { TechnologiesService } from '../technologies/technologies.service';
+import { technologyFilter } from '../technologies/technology-filter';
 import { publicAuthorSelect, toPublicAuthor } from '../users/projections';
 import { QUESTION_BODY_MAX, type AnswerDto, type AnswerWithQuestionDto, type CreateAnswerDto, type CreateQuestionDto, type OwnQuestionQueryDto, type OwnQuestionSummaryDto, type QuestionDetailDto, type QuestionListQueryDto, type QuestionSummaryDto, type UpdateAnswerDto, type UpdateQuestionDto } from './questions.dto';
 
 const HOUR = 60 * 60 * 1000;
-const answerSelect = { id: true, questionId: true, body: true, code: true, createdAt: true, updatedAt: true, author: { select: publicAuthorSelect } } as const;
+const answerSelect = { id: true, questionId: true, body: true, code: true, codeLanguage: true, createdAt: true, updatedAt: true, author: { select: publicAuthorSelect } } as const;
 const summarySelect = {
   id: true, title: true, context: true, acceptedAnswerId: true, visibility: true, createdAt: true, updatedAt: true,
   author: { select: publicAuthorSelect },
   technologies: { select: { technology: { select: technologySelect } }, orderBy: { technology: { name: 'asc' } } },
   _count: { select: { answers: { where: { visibility: 'VISIBLE' } } } }
 } as const satisfies Prisma.QuestionSelect;
-const detailSelect = { ...summarySelect, authorId: true, expected: true, actual: true, attempts: true, code: true, acceptedAnswer: { select: answerSelect } } as const satisfies Prisma.QuestionSelect;
+const detailSelect = { ...summarySelect, authorId: true, expected: true, actual: true, attempts: true, code: true, codeLanguage: true, acceptedAnswer: { select: answerSelect } } as const satisfies Prisma.QuestionSelect;
 
 type SummaryRow = Prisma.QuestionGetPayload<{ select: typeof summarySelect }>;
 type DetailRow = Prisma.QuestionGetPayload<{ select: typeof detailSelect }>;
@@ -39,10 +40,10 @@ export class QuestionsService {
       visibility: 'VISIBLE',
       AND: words.map(word => {
         const contains = { contains: likeContains(word), mode: 'insensitive' as const };
-        return { OR: [{ title: contains }, { context: contains }, { expected: contains }, { actual: contains }, { attempts: contains }] };
+        return { OR: [{ title: contains }, { context: contains }, { expected: contains }, { actual: contains }, { attempts: contains }, { author: { username: contains } }, { technologies: { some: { technology: { name: contains } } } }] };
       }),
-      technologies: query.technology ? { some: { technology: { slug: query.technology } } } : undefined,
-      acceptedAnswerId: query.resolved === 'true' ? { not: null } : query.resolved === 'false' ? null : undefined
+      technologies: technologyFilter(query.technology),
+      acceptedAnswerId: resolvedFilter(query.status)
     };
     return this.page(where, query, row => this.toSummary(row));
   }
@@ -54,7 +55,7 @@ export class QuestionsService {
 
   /** Questions de l'auteur connecté, y compris celles masquées par la modération (signalées par visibility). */
   listOwn(userId: string, query: OwnQuestionQueryDto): Promise<Page<OwnQuestionSummaryDto>> {
-    const where: Prisma.QuestionWhereInput = { authorId: userId, acceptedAnswerId: query.resolved === 'true' ? { not: null } : query.resolved === 'false' ? null : undefined };
+    const where: Prisma.QuestionWhereInput = { authorId: userId, acceptedAnswerId: resolvedFilter(query.status) };
     return this.page(where, query, row => ({ ...this.toSummary(row), visibility: row.visibility }));
   }
 
@@ -66,7 +67,7 @@ export class QuestionsService {
 
   async create(user: AuthenticatedUser, input: CreateQuestionDto): Promise<QuestionDetailDto> {
     this.limiter.consume(`question:${user.id}`, 10, HOUR);
-    const content = { title: cleanText(input.title), context: cleanText(input.context), expected: cleanText(input.expected), actual: cleanText(input.actual), attempts: cleanText(input.attempts), code: input.code?.trim() ? input.code : null };
+    const content = { title: cleanText(input.title), context: cleanText(input.context), expected: cleanText(input.expected), actual: cleanText(input.actual), attempts: cleanText(input.attempts), ...codeFields(undefined, input) };
     assertBodyLength(content);
     await this.technologies.assertExist(input.technologyIds, 'technologyIds');
     const question = await this.database.prisma.question.create({
@@ -77,7 +78,7 @@ export class QuestionsService {
   }
 
   async update(user: AuthenticatedUser, id: string, input: UpdateQuestionDto): Promise<QuestionDetailDto> {
-    const current = await this.database.prisma.question.findFirst({ where: { id, visibility: 'VISIBLE' }, select: { authorId: true, context: true, expected: true, actual: true, attempts: true } });
+    const current = await this.database.prisma.question.findFirst({ where: { id, visibility: 'VISIBLE' }, select: { authorId: true, context: true, expected: true, actual: true, attempts: true, code: true, codeLanguage: true } });
     if (!current) throw notFound();
     if (current.authorId !== user.id) throw notAuthor();
     const changes = {
@@ -86,7 +87,7 @@ export class QuestionsService {
       expected: input.expected === undefined ? undefined : cleanText(input.expected),
       actual: input.actual === undefined ? undefined : cleanText(input.actual),
       attempts: input.attempts === undefined ? undefined : cleanText(input.attempts),
-      code: input.code === undefined ? undefined : input.code?.trim() ? input.code : null
+      ...codeFields(current, input)
     };
     assertBodyLength({ context: changes.context ?? current.context, expected: changes.expected ?? current.expected, actual: changes.actual ?? current.actual, attempts: changes.attempts ?? current.attempts });
     if (input.technologyIds) await this.technologies.assertExist(input.technologyIds, 'technologyIds');
@@ -128,17 +129,17 @@ export class QuestionsService {
     this.limiter.consume(`answer:${user.id}`, 30, HOUR);
     const question = await this.database.prisma.question.findFirst({ where: { id: questionId, visibility: 'VISIBLE' }, select: { id: true } });
     if (!question) throw notFound();
-    const answer = await this.database.prisma.answer.create({ data: { questionId, authorId: user.id, body: cleanText(input.body), code: input.code?.trim() ? input.code : null }, select: answerSelect });
+    const answer = await this.database.prisma.answer.create({ data: { questionId, authorId: user.id, body: cleanText(input.body), ...codeFields(undefined, input) }, select: answerSelect });
     return toAnswer(answer, null);
   }
 
   async updateAnswer(user: AuthenticatedUser, answerId: string, input: UpdateAnswerDto): Promise<AnswerDto> {
-    const answer = await this.database.prisma.answer.findFirst({ where: { id: answerId, visibility: 'VISIBLE', question: { visibility: 'VISIBLE' } }, select: { authorId: true, question: { select: { acceptedAnswerId: true } } } });
+    const answer = await this.database.prisma.answer.findFirst({ where: { id: answerId, visibility: 'VISIBLE', question: { visibility: 'VISIBLE' } }, select: { authorId: true, code: true, codeLanguage: true, question: { select: { acceptedAnswerId: true } } } });
     if (!answer) throw answerNotFound();
     if (answer.authorId !== user.id) throw notAuthor();
     const updated = await this.database.prisma.answer.update({
       where: { id: answerId },
-      data: { body: input.body === undefined ? undefined : cleanText(input.body), code: input.code === undefined ? undefined : input.code?.trim() ? input.code : null },
+      data: { body: input.body === undefined ? undefined : cleanText(input.body), ...codeFields(answer, input) },
       select: answerSelect
     });
     return toAnswer(updated, answer.question.acceptedAnswerId);
@@ -196,15 +197,30 @@ export class QuestionsService {
 
   private toDetail(row: DetailRow, viewer?: AuthenticatedUser): QuestionDetailDto {
     return {
-      ...this.toSummary(row), context: row.context, expected: row.expected, actual: row.actual, attempts: row.attempts, code: row.code,
+      ...this.toSummary(row), context: row.context, expected: row.expected, actual: row.actual, attempts: row.attempts, code: row.code, codeLanguage: row.codeLanguage,
       acceptedAnswerId: row.acceptedAnswerId, acceptedAnswer: row.acceptedAnswer ? toAnswer(row.acceptedAnswer, row.acceptedAnswerId) : null,
       viewerIsAuthor: viewer?.id === row.authorId
     };
   }
 }
 
+function resolvedFilter(status: 'all' | 'resolved' | 'open' | undefined) {
+  return status === 'resolved' ? { not: null } : status === 'open' ? null : undefined;
+}
+
 function toAnswer(row: AnswerRow, acceptedAnswerId: string | null): AnswerDto {
-  return { id: row.id, questionId: row.questionId, author: toPublicAuthor(row.author), body: row.body, code: row.code, accepted: row.id === acceptedAnswerId, createdAt: row.createdAt.toISOString(), updatedAt: row.updatedAt.toISOString() };
+  return { id: row.id, questionId: row.questionId, author: toPublicAuthor(row.author), body: row.body, code: row.code, codeLanguage: row.codeLanguage, accepted: row.id === acceptedAnswerId, createdAt: row.createdAt.toISOString(), updatedAt: row.updatedAt.toISOString() };
+}
+
+/**
+ * Extrait de code et son langage. Un champ absent reste inchangé ; sans code, le langage est effacé
+ * (contrainte CHECK en base). Le code est conservé tel quel, indentation comprise.
+ */
+function codeFields(current: { code: string | null; codeLanguage: string | null } | undefined, input: { code?: string | null; codeLanguage?: string | null }): { code?: string | null; codeLanguage?: string | null } {
+  const code = input.code === undefined ? current?.code ?? null : input.code?.trim() ? input.code : null;
+  const language = input.codeLanguage === undefined ? current?.codeLanguage ?? null : input.codeLanguage?.trim() || null;
+  if (current && input.code === undefined && input.codeLanguage === undefined) return {};
+  return { code, codeLanguage: code === null ? null : language };
 }
 
 function assertBodyLength(content: { context: string; expected: string; actual: string; attempts: string }): void {

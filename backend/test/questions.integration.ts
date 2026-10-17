@@ -143,17 +143,40 @@ describe('recherche, filtres et visibilité', () => {
     await author.browser.put(`/questions/${a.id}/accepted-answer`, { answerId: answer.id });
     const kotlin = await visitor.get('/questions?technology=kotlin');
     assert.equal(kotlin.body.meta.total, 2);
-    assert.equal((await visitor.get('/questions?technology=kotlin&resolved=true')).body.data[0].id, a.id);
-    assert.equal((await visitor.get('/questions?technology=kotlin&resolved=false')).body.meta.total, 1);
+    assert.equal((await visitor.get('/questions?technology=Kotlin&status=resolved')).body.data[0].id, a.id);
+    assert.equal((await visitor.get('/questions?technology=kotlin&status=open')).body.meta.total, 1);
     assert.equal((await visitor.get('/questions?q=coroutine%20ANDROID')).body.data[0].id, a.id);
     assert.equal((await visitor.get('/questions?q=coroutine%20flutter')).body.meta.total, 0);
     const paged = await visitor.get('/questions?technology=kotlin&pageSize=1&page=2');
     assert.deepEqual(paged.body.meta, { page: 2, pageSize: 1, total: 2 });
     assert.equal(paged.body.data.length, 1);
     assert.equal((await visitor.get('/questions?pageSize=51')).status, 400);
-    assert.equal((await visitor.get('/questions?resolved=peut-etre')).status, 400);
+    assert.equal((await visitor.get('/questions?status=peut-etre')).status, 400);
     assert.equal((await visitor.get("/questions?q=%27%3B%20DROP%20TABLE%20%22Question%22%3B--")).body.meta.total, 0);
     assert.equal((await visitor.get('/questions?q=%25')).body.meta.total, 0);
+  });
+
+  test('recherche par pseudonyme ou technologie et filtre par nom affiché, comme le frontend', async () => {
+    const author = await registerMember(server.api, 'auteur_rust');
+    const { body } = await author.browser.post('/questions', question('Emprunt mutable refusé par le compilateur', ['rust']));
+    assert.equal((await visitor.get('/questions?q=auteur_rust')).body.data[0].id, body.id);
+    assert.equal((await visitor.get('/questions?q=compilateur%20Rust')).body.data[0].id, body.id);
+    assert.equal((await visitor.get('/questions?technology=RUST')).body.data[0].id, body.id);
+    assert.equal((await visitor.get('/questions?technology=inconnue')).body.meta.total, 0);
+  });
+
+  test('langage de l’extrait de code conservé, effacé avec le code', async () => {
+    const coder = await registerMember(server.api, 'auteur_code');
+    const { body } = await coder.browser.post('/questions', question('Question avec un extrait TypeScript', ['typescript'], { code: 'const a: number = 1;', codeLanguage: 'TypeScript' }));
+    assert.equal(body.codeLanguage, 'TypeScript');
+    assert.equal((await coder.browser.patch(`/questions/${body.id}`, { title: 'Titre modifié sans toucher au code' })).body.codeLanguage, 'TypeScript');
+    const cleared = await coder.browser.patch(`/questions/${body.id}`, { code: null });
+    assert.deepEqual([cleared.body.code, cleared.body.codeLanguage], [null, null]);
+    const withoutCode = await coder.browser.post('/questions', question('Langage sans aucun extrait de code', ['go'], { codeLanguage: 'Go' }));
+    assert.equal(withoutCode.body.codeLanguage, null);
+    assert.equal((await coder.browser.post('/questions', question('Langage avec balise interdite', ['go'], { code: 'x', codeLanguage: '<script>' }))).status, 400);
+    const { body: answer } = await moussa.browser.post(`/questions/${body.id}/answers`, { body: 'Réponse avec un extrait Python.', code: 'print(1)', codeLanguage: 'Python' });
+    assert.equal(answer.codeLanguage, 'Python');
   });
 
   test('contenu avec balises conservé tel quel, jamais transformé en HTML', async () => {
@@ -189,7 +212,7 @@ describe('recherche, filtres et visibilité', () => {
     assert.equal((await visitor.get(`/users/${member.id}/questions`)).body.meta.total, 1);
     const answers = (await visitor.get(`/users/${member.id}/answers`)).body;
     assert.equal(answers.data[0].questionTitle, 'Question du contributeur');
-    assert.equal((await member.browser.get('/users/me/questions?resolved=true')).body.meta.total, 0);
+    assert.equal((await member.browser.get('/users/me/questions?status=resolved')).body.meta.total, 0);
     assert.equal((await visitor.get('/users/00000000-0000-4000-8000-000000000000/questions')).status, 404);
     assert.equal((await visitor.get('/users/me/questions')).status, 401);
   });

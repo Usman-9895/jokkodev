@@ -8,13 +8,14 @@ import { type Page, pageWindow } from '../../common/http/pagination';
 import { cleanText } from '../../common/http/text';
 import { RateLimiter } from '../../common/rate-limit/rate-limiter.service';
 import { projectNotFound } from '../projects/projects.service';
+import { technologySelect } from '../technologies/technologies.dto';
 import { publicAuthorSelect, toPublicAuthor } from '../users/projections';
 import type { ApplicationDto, ApplicationQueryDto, CreateApplicationDto, DecideApplicationDto } from './applications.dto';
 
 const HOUR = 60 * 60 * 1000;
 const applicationSelect = {
   id: true, status: true, message: true, createdAt: true, decidedAt: true, applicantId: true,
-  applicant: { select: publicAuthorSelect },
+  applicant: { select: { ...publicAuthorSelect, profile: { select: { countryCode: true, skills: { select: { technology: { select: technologySelect } }, orderBy: { technology: { name: 'asc' } } } } } } },
   project: { select: { id: true, ownerId: true, title: true, recruitmentStatus: true, visibility: true, owner: { select: publicAuthorSelect } } }
 } as const satisfies Prisma.ApplicationSelect;
 type ApplicationRow = Prisma.ApplicationGetPayload<{ select: typeof applicationSelect }>;
@@ -57,6 +58,11 @@ export class ApplicationsService {
     if (!project) throw projectNotFound();
     if (project.ownerId !== user.id) throw new ApiException(403, 'NOT_OWNER', 'Seul le responsable du projet peut consulter les candidatures.');
     return this.page(user, { projectId, status: query.status }, query);
+  }
+
+  /** Demandes reçues sur l'ensemble des projets visibles dont la session est responsable. */
+  listReceived(user: AuthenticatedUser, query: ApplicationQueryDto): Promise<Page<ApplicationDto>> {
+    return this.page(user, { project: { ownerId: user.id, visibility: 'VISIBLE' }, status: query.status }, query);
   }
 
   listOwn(user: AuthenticatedUser, query: ApplicationQueryDto): Promise<Page<ApplicationDto>> {
@@ -120,7 +126,7 @@ function isParty(row: { applicantId: string; project: { ownerId: string } }, use
 function toApplication(row: ApplicationRow, viewer: AuthenticatedUser): ApplicationDto {
   const available = row.project.visibility === 'VISIBLE';
   return {
-    id: row.id, status: row.status, message: row.message, applicant: toPublicAuthor(row.applicant),
+    id: row.id, status: row.status, message: row.message, applicant: toPublicAuthor(row.applicant), applicantSkills: row.applicant.profile?.skills.map(s => s.technology) ?? [],
     project: { id: row.project.id, available, title: available ? row.project.title : null, recruitmentStatus: available ? row.project.recruitmentStatus : null, owner: available ? toPublicAuthor(row.project.owner) : null },
     createdAt: row.createdAt.toISOString(), decidedAt: row.decidedAt?.toISOString() ?? null,
     viewerRole: row.applicantId === viewer.id ? 'APPLICANT' : 'OWNER'
