@@ -6,6 +6,7 @@ import { ApiException } from '../../common/http/api-exception';
 import { type Page, pageWindow, type PageQueryDto } from '../../common/http/pagination';
 import { cleanText, excerptOf, likeContains } from '../../common/http/text';
 import { RateLimiter } from '../../common/rate-limit/rate-limiter.service';
+import { ReputationService } from '../reputation/reputation.service';
 import { technologySelect } from '../technologies/technologies.dto';
 import { TechnologiesService } from '../technologies/technologies.service';
 import { technologyFilter } from '../technologies/technology-filter';
@@ -32,7 +33,7 @@ const notAuthor = () => new ApiException(403, 'NOT_AUTHOR', 'Seul l’auteur peu
 
 @Injectable()
 export class QuestionsService {
-  constructor(private readonly database: DatabaseService, private readonly technologies: TechnologiesService, private readonly limiter: RateLimiter) {}
+  constructor(private readonly database: DatabaseService, private readonly technologies: TechnologiesService, private readonly limiter: RateLimiter, private readonly reputation: ReputationService) {}
 
   async list(query: QuestionListQueryDto): Promise<Page<QuestionSummaryDto>> {
     const words = (query.q ?? '').trim().split(/\s+/).filter(Boolean).slice(0, 8);
@@ -157,6 +158,7 @@ export class QuestionsService {
         throw new ApiException(400, 'ANSWER_NOT_ELIGIBLE', 'Cette réponse ne peut pas être acceptée pour cette question.', { fieldErrors: { answerId: ['Réponse inconnue, masquée ou d’une autre question.'] } });
       }
       await tx.question.update({ where: { id: questionId }, data: { acceptedAnswerId: answerId } });
+      await this.reputation.syncQuestion(tx, questionId);
     });
     return this.detail(questionId, user);
   }
@@ -165,6 +167,7 @@ export class QuestionsService {
     await this.database.prisma.$transaction(async tx => {
       await this.lockOwnQuestion(tx, user, questionId);
       await tx.question.update({ where: { id: questionId }, data: { acceptedAnswerId: null } });
+      await this.reputation.syncQuestion(tx, questionId);
     });
     return this.detail(questionId, user);
   }

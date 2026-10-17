@@ -9,7 +9,8 @@ import { MailModule } from './modules/mail/mail.module';
 import { ModerationModule } from './modules/moderation/moderation.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { QuestionsModule } from './modules/questions/questions.module';
+import { ReputationModule } from './modules/reputation/reputation.module';
 import { TechnologiesModule } from './modules/technologies/technologies.module';
 import { UsersModule } from './modules/users/users.module';
-@Module({ imports: [ConfigModule, DatabaseModule, RateLimitModule, MailModule, AuthModule, HealthModule, TechnologiesModule, UsersModule, QuestionsModule, ProjectsModule, ApplicationsModule, ModerationModule] })
+@Module({ imports: [ConfigModule, DatabaseModule, RateLimitModule, MailModule, ReputationModule, AuthModule, HealthModule, TechnologiesModule, UsersModule, QuestionsModule, ProjectsModule, ApplicationsModule, ModerationModule] })
 export class AppModule {}

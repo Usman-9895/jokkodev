@@ -7,6 +7,7 @@ import { ApiException } from '../../common/http/api-exception';
 import { type Page, pageWindow, type PageQueryDto } from '../../common/http/pagination';
 import { cleanText, excerptOf } from '../../common/http/text';
 import { RateLimiter } from '../../common/rate-limit/rate-limiter.service';
+import { ReputationService } from '../reputation/reputation.service';
 import type { ContentType, CreateReportDto, CreatedReportDto, Decision, DirectActionDto, ModerationActionDto, ReportDetailDto, ReportDto, ReportQueryDto, ReportTargetDto, ResolveReportDto } from './moderation.dto';
 
 type Tx = Prisma.TransactionClient;
@@ -31,7 +32,7 @@ const targetColumn = { QUESTION: 'questionId', ANSWER: 'answerId', PROJECT: 'pro
 
 @Injectable()
 export class ModerationService {
-  constructor(private readonly database: DatabaseService, private readonly limiter: RateLimiter) {}
+  constructor(private readonly database: DatabaseService, private readonly limiter: RateLimiter, private readonly reputation: ReputationService) {}
 
   /** Le déclarant vient de la session ; la cible doit exister et être publique. Le signalement ne change pas la visibilité. */
   async report(user: AuthenticatedUser, input: CreateReportDto): Promise<CreatedReportDto> {
@@ -124,7 +125,7 @@ export class ModerationService {
 
   /**
    * Masquage. La question concernée est verrouillée comme lors du choix d'une solution : masquer la réponse acceptée
-   * retire la solution dans la même transaction, et une acceptation concurrente ne peut pas la rétablir.
+   * retire la solution et ses Teranga Points dans la même transaction, et une acceptation concurrente ne peut pas la rétablir.
    */
   private async hide(tx: Tx, target: ContentTarget, tolerateHidden: boolean): Promise<void> {
     const already = () => { if (!tolerateHidden) throw new ApiException(409, 'ALREADY_HIDDEN', 'Ce contenu est déjà masqué.'); };
@@ -133,6 +134,7 @@ export class ModerationService {
       if (!question) throw targetNotFound();
       if (question.visibility === 'HIDDEN') return already();
       await tx.question.update({ where: { id: target.id }, data: { visibility: 'HIDDEN' } });
+      await this.reputation.syncQuestion(tx, target.id);
     } else if (target.type === 'ANSWER') {
       const answer = await tx.answer.findUnique({ where: { id: target.id }, select: { questionId: true } });
       if (!answer) throw targetNotFound();
@@ -140,6 +142,7 @@ export class ModerationService {
       const { count } = await tx.answer.updateMany({ where: { id: target.id, visibility: 'VISIBLE' }, data: { visibility: 'HIDDEN' } });
       if (count === 0) return already();
       await tx.question.updateMany({ where: { id: answer.questionId, acceptedAnswerId: target.id }, data: { acceptedAnswerId: null } });
+      await this.reputation.syncQuestion(tx, answer.questionId);
     } else {
       const { count } = await tx.project.updateMany({ where: { id: target.id, visibility: 'VISIBLE' }, data: { visibility: 'HIDDEN' } });
       if (count === 0) {

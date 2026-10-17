@@ -23,6 +23,7 @@ export class PublicProfileDto {
   @ApiProperty({ type: [TechnologyDto] }) skills!: TechnologyDto[];
   @ApiProperty({ format: 'date-time' }) memberSince!: string;
   @ApiProperty({ type: ProfileStatsDto }) stats!: ProfileStatsDto;
+  @ApiProperty({ description: 'Teranga Points : somme des points gagnés par des réponses acceptées par d’autres membres.' }) terangaPoints!: number;
 }
 
 export class OwnProfileDto extends PublicProfileDto {

@@ -1,6 +1,6 @@
 # Modèle de données
 
-Source de vérité : `backend/prisma/schema.prisma` et les migrations versionnées de `backend/prisma/migrations/`. Les choix encore ouverts sont listés dans la [décision 002](../decisions/002-modele-donnees.md). Teranga Points n'en fait pas partie.
+Source de vérité : `backend/prisma/schema.prisma` et les migrations versionnées de `backend/prisma/migrations/`. Les choix encore ouverts sont listés dans la [décision 002](../decisions/002-modele-donnees.md). Teranga Points ajoute le registre `ReputationEvent` ([décision 004](../decisions/004-teranga-points.md)).
 
 ```mermaid
 erDiagram
@@ -42,6 +42,7 @@ erDiagram
 | ProjectMember | (projectId, userId), joinedAt | clé primaire composite : une adhésion par couple |
 | Application | projectId, applicantId, message ≤ 1000, status, decidedAt | UNIQUE(projectId, applicantId) ; `PENDING` si et seulement si decidedAt est nul (CHECK) |
 | Report | reporterId, questionId / answerId / projectId, reason, status, decision, closedById, closedAt | exactement une cible (CHECK) ; clôture complète ou absente (CHECK) ; un signalement OPEN par déclarant et cible (3 index uniques partiels) |
+| ReputationEvent | userId, questionId, answerId, delta, reason, sequence | UNIQUE(answerId, sequence) ; delta non nul et de même sens que le motif (CHECK) ; append-only |
 | ModerationAction | adminId, decision, reason, reportId, questionId / answerId / projectId / targetUserId | exactement une cible (CHECK) ; `SUSPEND_ACCOUNT` si et seulement si la cible est un compte (CHECK) |
 
 Identifiants UUIDv7 générés par l'application (ordonnés dans le temps, opaques pour l'API). Dates `timestamptz(3)`, exposées en ISO 8601 UTC.

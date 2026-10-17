@@ -21,7 +21,7 @@
 
 ## Fonctions reportées
 
-- **Teranga Points (B11)** : non implémenté. Le plan prévoit une décision le 21 octobre, uniquement si le P0 est livré, testé et déployé, avec un barème validé. Le modèle de données ne contient pas encore le registre `ReputationEvent` ; son ajout serait une migration additive sans impact sur les parcours P0.
+- **Teranga Points (B11)** : implémenté dans une PR séparée (décision 004), barème proposé de 10 points. Fusion à décider le 21 octobre selon le cahier des charges.
 - Suppression de compte, transfert de responsabilité d'un projet, départ ou exclusion d'un membre, nouvelle candidature après refus.
 - Restauration d'un contenu masqué et réactivation d'un compte suspendu (aucune route ; intervention manuelle en base, tracée par l'équipe, si nécessaire).
 - Votes, commentaires, pièces jointes, notifications, messagerie.

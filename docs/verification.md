@@ -158,3 +158,7 @@ Non vérifié : Datacloud, SMTP réel, calibrage Argon2 sur le serveur cible.
 ## Alignement avec le frontend — 17 octobre 2026
 
 Branche `feature/frontend-alignment`. Contrôles du dépôt réussis ; `pnpm test:integration` : 72 tests sur PostgreSQL réel, suite complète rejouée six fois avec traçage des erreurs internes (seule l'erreur 500 provoquée volontairement par le test d'atomicité des projets apparaît). Migration additive `code_language` appliquée sur la base de développement, sans dérive du schéma.
+
+## Teranga Points — 17 octobre 2026
+
+Branche `feature/teranga-points`. Contrôles du dépôt réussis ; `pnpm test:integration` : 82 tests sur PostgreSQL réel, trois exécutions réussies, dont 10 pour Teranga Points (attribution, autoacceptation à zéro, quatre acceptations simultanées pour une seule attribution, changement de solution compensé, cycle accepter/retirer/réaccepter, neutralisation au masquage de la réponse et de la question, masquage concurrent sur cinq tours, échec simulé du registre sans changement partiel, contraintes de la base, score non modifiable). Migration `teranga_points` appliquée sans dérive ; `pnpm reputation:rebuild` exécuté deux fois sans écriture sur la base de développement.

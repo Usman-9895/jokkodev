@@ -740,6 +740,8 @@ export interface components {
             /** Format: date-time */
             memberSince: string;
             stats: components["schemas"]["ProfileStatsDto"];
+            /** @description Teranga Points : somme des points gagnés par des réponses acceptées par d’autres membres. */
+            terangaPoints: number;
             /**
              * @description Privé : visible uniquement par le titulaire.
              * @example awa@example.com
@@ -778,6 +780,8 @@ export interface components {
             /** Format: date-time */
             memberSince: string;
             stats: components["schemas"]["ProfileStatsDto"];
+            /** @description Teranga Points : somme des points gagnés par des réponses acceptées par d’autres membres. */
+            terangaPoints: number;
         };
         PublicAuthorDto: {
             /** Format: uuid */

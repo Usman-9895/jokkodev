@@ -2846,6 +2846,10 @@
           "stats": {
             "$ref": "#/components/schemas/ProfileStatsDto"
           },
+          "terangaPoints": {
+            "type": "number",
+            "description": "Teranga Points : somme des points gagnés par des réponses acceptées par d’autres membres."
+          },
           "email": {
             "type": "string",
             "example": "awa@example.com",
@@ -2862,6 +2866,7 @@
           "skills",
           "memberSince",
           "stats",
+          "terangaPoints",
           "email",
           "emailVerified"
         ]
@@ -2944,6 +2949,10 @@
           },
           "stats": {
             "$ref": "#/components/schemas/ProfileStatsDto"
+          },
+          "terangaPoints": {
+            "type": "number",
+            "description": "Teranga Points : somme des points gagnés par des réponses acceptées par d’autres membres."
           }
         },
         "required": [
@@ -2952,7 +2961,8 @@
           "links",
           "skills",
           "memberSince",
-          "stats"
+          "stats",
+          "terangaPoints"
         ]
       },
       "PublicAuthorDto": {

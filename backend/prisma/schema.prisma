@@ -48,6 +48,11 @@ enum ReportStatus {
   CLOSED
 }
 
+enum ReputationReason {
+  ANSWER_ACCEPTED
+  ACCEPTANCE_WITHDRAWN
+}
+
 enum ModerationDecision {
   NO_ACTION
   HIDE_CONTENT
@@ -81,6 +86,7 @@ model User {
   closedReports      Report[]           @relation("ReportCloser")
   moderationActions  ModerationAction[] @relation("ModerationActor")
   moderationsAgainst ModerationAction[] @relation("ModerationTargetUser")
+  reputationEvents   ReputationEvent[]
 }
 
 model Profile {
@@ -171,6 +177,7 @@ model Question {
   technologies   QuestionTechnology[]
   reports        Report[]
   moderations    ModerationAction[]
+  reputation     ReputationEvent[]
 
   @@unique([acceptedAnswerId, id])
   @@index([visibility, createdAt(sort: Desc), id(sort: Desc)])
@@ -199,11 +206,12 @@ model Answer {
   createdAt    DateTime   @default(now()) @db.Timestamptz(3)
   updatedAt    DateTime   @updatedAt @db.Timestamptz(3)
 
-  question    Question           @relation("QuestionAnswers", fields: [questionId], references: [id], onDelete: Restrict)
-  author      User               @relation(fields: [authorId], references: [id], onDelete: Restrict)
-  acceptedFor Question?          @relation("AcceptedAnswer")
-  reports     Report[]
-  moderations ModerationAction[]
+  question         Question           @relation("QuestionAnswers", fields: [questionId], references: [id], onDelete: Restrict)
+  author           User               @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  acceptedFor      Question?          @relation("AcceptedAnswer")
+  reports          Report[]
+  moderations      ModerationAction[]
+  reputationEvents ReputationEvent[]
 
   @@unique([id, questionId])
   @@index([questionId, createdAt, id])
@@ -327,4 +335,27 @@ model ModerationAction {
   @@index([answerId])
   @@index([projectId])
   @@index([targetUserId])
+}
+
+/// Teranga Points : registre append-only. Le score d'un membre est la somme de ses mouvements.
+/// Chaque changement de solution ajoute une compensation ; rien n'est jamais modifié ni supprimé.
+model ReputationEvent {
+  id         String           @id @default(uuid(7)) @db.Uuid
+  /// Bénéficiaire : l'auteur de la réponse.
+  userId     String           @db.Uuid
+  questionId String           @db.Uuid
+  answerId   String           @db.Uuid
+  delta      Int
+  reason     ReputationReason
+  /// Rang du mouvement pour cette réponse : l'unicité (answerId, sequence) interdit toute double écriture concurrente.
+  sequence   Int
+  createdAt  DateTime         @default(now()) @db.Timestamptz(3)
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Restrict)
+  answer   Answer   @relation(fields: [answerId], references: [id], onDelete: Restrict)
+
+  @@unique([answerId, sequence])
+  @@index([userId])
+  @@index([questionId])
 }
