@@ -5,8 +5,9 @@ import { RateLimitModule } from './common/rate-limit/rate-limit.module';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { MailModule } from './modules/mail/mail.module';
+import { ProjectsModule } from './modules/projects/projects.module';
 import { QuestionsModule } from './modules/questions/questions.module';
 import { TechnologiesModule } from './modules/technologies/technologies.module';
 import { UsersModule } from './modules/users/users.module';
-@Module({ imports: [ConfigModule, DatabaseModule, RateLimitModule, MailModule, AuthModule, HealthModule, TechnologiesModule, UsersModule, QuestionsModule] })
+@Module({ imports: [ConfigModule, DatabaseModule, RateLimitModule, MailModule, AuthModule, HealthModule, TechnologiesModule, UsersModule, QuestionsModule, ProjectsModule] })
 export class AppModule {}

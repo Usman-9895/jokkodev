@@ -27,3 +27,9 @@ function containsNul(value: unknown, depth = 0): boolean {
 export function rejectNulCharacters(request: Request, _response: Response, next: NextFunction): void {
   next(containsNul(request.body) || containsNul(request.query) || request.url.includes('%00') ? new ApiException(400, 'BAD_REQUEST', 'Requête invalide.') : undefined);
 }
+
+/** Aperçu sur une ligne pour les listes. */
+export function excerptOf(text: string, max = 200): string {
+  const flat = text.replace(/\s+/g, ' ').trim();
+  return flat.length <= max ? flat : `${flat.slice(0, max - 1).trimEnd()}…`;
+}
