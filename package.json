@@ -19,6 +19,7 @@
     "db:migrate:dev": "pnpm --filter @jokkodev/backend db:migrate:dev",
     "db:migrate:deploy": "pnpm --filter @jokkodev/backend db:migrate:deploy",
     "db:seed": "pnpm --filter @jokkodev/backend db:seed",
+    "db:seed:demo": "pnpm --filter @jokkodev/backend db:seed:demo",
     "admin:grant": "pnpm --filter @jokkodev/backend admin:grant",
     "admin:revoke": "pnpm --filter @jokkodev/backend admin:revoke",
     "api:export": "pnpm --filter @jokkodev/backend api:export",

@@ -41,6 +41,7 @@ Frontend : http://localhost:3000 ; backend : http://127.0.0.1:3001 ; Swagger de 
 | `pnpm db:migrate:dev` | Migration de développement, seulement après vérification de destination et autorisation |
 | `pnpm db:migrate:deploy` | Application contrôlée des migrations versionnées ; jamais `db push` |
 | `pnpm db:seed` | Catalogue des technologies, idempotent |
+| `pnpm db:seed:demo` | Comptes et contenus de démonstration préfixés « [Démo] », mots de passe aléatoires affichés une fois |
 | `pnpm admin:grant <email>` / `pnpm admin:revoke <email>` | Attribution contrôlée du rôle ADMIN, sur le serveur uniquement |
 | `pnpm test:integration` | Contraintes PostgreSQL sur la base `TEST_DATABASE_URL`, dans un schéma temporaire |
 | `pnpm api:export` | Export OpenAPI sans base ni secret de production |
@@ -69,7 +70,7 @@ backend/                  NestJS REST /api/v1
   test/                   Tests de comportement
 packages/api-client/      Types OpenAPI générés et transport HTTP
 docs/                     Architecture, contrat, décisions, sécurité, licences
-infra/                    PostgreSQL local et topologie Datacloud envisagée
+infra/                    PostgreSQL local, nginx, systemd, rôles SQL, sauvegarde et restauration
 .github/                  Modèle de PR
 ```
 
@@ -79,7 +80,7 @@ infra/                    PostgreSQL local et topologie Datacloud envisagée
 
 **Serge** : backend, API, données, authentification et sécurité backend. Première tâche : installer une base dédiée, valider readiness et récupération réelles, puis proposer les contraintes du modèle initial et le contrat de sessions/CSRF avant toute migration métier.
 
-Synchroniser toute évolution de contrat via `pnpm api:generate`. Voir [contribution](CONTRIBUTING.md), [architecture](docs/architecture/overview.md), [versions et décisions](docs/decisions/001-foundations.md), [sécurité](docs/security/security.md), [vérifications](docs/verification.md) et [licences](docs/licenses/open-questions.md).
+Synchroniser toute évolution de contrat via `pnpm api:generate`. Exploitation : [runbook](docs/operations/runbook.md), [rapport de tests backend](docs/security/test-report.md), [décisions ouvertes](docs/decisions/open-items.md). Voir [contribution](CONTRIBUTING.md), [architecture](docs/architecture/overview.md), [versions et décisions](docs/decisions/001-foundations.md), [sécurité](docs/security/security.md), [vérifications](docs/verification.md) et [licences](docs/licenses/open-questions.md).
 
 `main` est destinée aux versions stables ; `develop` à l’intégration. Chaque fonctionnalité part de `develop` dans une branche dédiée et passe par une PR vers `develop`. La promotion de `develop` vers `main` passe par une PR après recette. Ousmane et Serge relisent ; aucun commit, push ou fusion sans validation explicite, et aucune fusion automatique.
 
