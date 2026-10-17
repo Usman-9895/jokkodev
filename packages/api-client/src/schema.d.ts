@@ -180,6 +180,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/technologies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TechnologiesController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UsersController_me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["UsersController_update"];
+        trace?: never;
+    };
+    "/api/v1/users/{reference}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UsersController_profile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -250,6 +298,85 @@ export interface components {
         HealthDto: {
             /** @enum {string} */
             status: "ok";
+        };
+        TechnologyDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example TypeScript */
+            name: string;
+            /** @example typescript */
+            slug: string;
+        };
+        TechnologyListDto: {
+            data: components["schemas"]["TechnologyDto"][];
+        };
+        ProfileStatsDto: {
+            /** @description Questions visibles. */
+            questions: number;
+            /** @description Réponses visibles dont la question est visible. */
+            answers: number;
+            /** @description Projets visibles créés ou rejoints. */
+            projects: number;
+        };
+        OwnProfileDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example awa_dev */
+            username: string;
+            bio?: string | null;
+            /**
+             * @description ISO 3166-1 alpha-2.
+             * @example SN
+             */
+            countryCode?: string | null;
+            /**
+             * @example [
+             *       "https://github.com/awa-dev"
+             *     ]
+             */
+            links: string[];
+            skills: components["schemas"]["TechnologyDto"][];
+            /** Format: date-time */
+            memberSince: string;
+            stats: components["schemas"]["ProfileStatsDto"];
+            /**
+             * @description Privé : visible uniquement par le titulaire.
+             * @example awa@example.com
+             */
+            email: string;
+            emailVerified: boolean;
+        };
+        UpdateProfileDto: {
+            username?: string;
+            bio?: string | null;
+            /** @example SN */
+            countryCode?: string | null;
+            /** @description URLs HTTPS absolues de 2048 caractères au plus. */
+            links?: string[];
+            /** @description Identifiants de technologies du catalogue. */
+            skillIds?: string[];
+        };
+        PublicProfileDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example awa_dev */
+            username: string;
+            bio?: string | null;
+            /**
+             * @description ISO 3166-1 alpha-2.
+             * @example SN
+             */
+            countryCode?: string | null;
+            /**
+             * @example [
+             *       "https://github.com/awa-dev"
+             *     ]
+             */
+            links: string[];
+            skills: components["schemas"]["TechnologyDto"][];
+            /** Format: date-time */
+            memberSince: string;
+            stats: components["schemas"]["ProfileStatsDto"];
         };
     };
     responses: never;
@@ -577,6 +704,120 @@ export interface operations {
                 };
             };
             503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    TechnologiesController_list: {
+        parameters: {
+            query?: {
+                /** @description Recherche dans le nom, sans tenir compte de la casse. */
+                q?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Catalogue commun trié par nom. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TechnologyListDto"];
+                };
+            };
+        };
+    };
+    UsersController_me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OwnProfileDto"];
+                };
+            };
+        };
+    };
+    UsersController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProfileDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OwnProfileDto"];
+                };
+            };
+            /** @description Validation, technologie inconnue ou champ non modifiable (email, role, status). */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description USERNAME_TAKEN. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    UsersController_profile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Identifiant ou pseudonyme. */
+                reference: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicProfileDto"];
+                };
+            };
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

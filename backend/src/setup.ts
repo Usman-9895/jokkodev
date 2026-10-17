@@ -8,6 +8,7 @@ import { ApiErrorFilter } from './common/filters/api-error.filter';
 import { strictValidation } from './common/pipes/validation';
 import type { Environment } from './config/environment';
 import { cookieMiddleware } from './common/http/cookies';
+import { rejectNulCharacters } from './common/http/text';
 import { CSRF } from './modules/auth/auth.tokens';
 import type { Csrf } from './modules/auth/csrf';
 import { cookieNames } from './modules/auth/auth.constants';
@@ -25,6 +26,7 @@ export function configureApp(app: INestApplication, env: Environment): void {
   app.use(helmet());
   app.use(express.json({ limit: '64kb' }));
   app.use(express.urlencoded({ extended: false, limit: '64kb', parameterLimit: 100 }));
+  app.use(rejectNulCharacters);
   app.use(cookieMiddleware);
   app.use(...app.get<Csrf>(CSRF).middleware);
   if (env.corsOrigins.length) app.enableCors({ origin: env.corsOrigins, credentials: true, methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], allowedHeaders: ['Content-Type', 'X-CSRF-Token'], exposedHeaders: ['X-Request-Id'] });
