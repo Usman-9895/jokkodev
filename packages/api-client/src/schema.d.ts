@@ -1759,7 +1759,7 @@ export interface operations {
             query?: {
                 page?: number;
                 pageSize?: number;
-                /** @description Mots recherchés dans le titre, les rubriques, le pseudonyme de l’auteur et les technologies ; tous doivent apparaître. */
+                /** @description Tous les mots, sans distinction de casse ni accents NFD ; titre, texte, pseudonyme et technologies. % et _ sont littéraux. */
                 q?: string;
                 /** @description Nom affiché ou slug d’une technologie du catalogue, sans tenir compte de la casse. */
                 technology?: string;
@@ -2165,7 +2165,7 @@ export interface operations {
                 pageSize?: number;
                 /** @description État du recrutement. */
                 status?: "all" | "open" | "closed";
-                /** @description Mots recherchés dans le titre, l’objectif, le pseudonyme du responsable et les technologies. */
+                /** @description Tous les mots, sans distinction de casse ni accents NFD ; titre, texte, pseudonyme et technologies. % et _ sont littéraux. */
                 q?: string;
                 /** @description Nom affiché ou slug d’une technologie. */
                 technology?: string;

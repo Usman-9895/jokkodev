@@ -54,13 +54,26 @@ psql "$MIGRATION_DATABASE_URL" -v ON_ERROR_STOP=1 -f infra/postgres/grants.sql
 
 ```sh
 createdb -O jokkodev_migrator jokkodev_restore
-RESTORE_DATABASE_URL=… PRODUCTION_DATABASE_URL=… BACKUP_KEY_FILE=… infra/scripts/restore.sh /var/backups/jokkodev/<fichier>.dump.enc
+RESTORE_DATABASE_URL=… RESTORE_EXPECTED_DATABASE=jokkodev_restore RESTORE_CONFIRM_TARGET=jokkodev_restore PRODUCTION_DATABASE_URL=… BACKUP_KEY_FILE=… infra/scripts/restore.sh /var/backups/jokkodev/<fichier>.dump.enc
 psql "$RESTORE_DATABASE_URL" -f infra/postgres/grants.sql
 ```
 
-Le script vérifie l'empreinte, refuse une cible identique à la production, restaure en une transaction et affiche le nombre de tables, de migrations et de comptes. Pour une reprise, pointer ensuite `DATABASE_URL` vers la base restaurée et redémarrer.
+Avant toute restauration, vérifier hors script le serveur, le port, le nom de base, son propriétaire et son caractère dédié ; utiliser un compte limité à cette destination et interdire les connexions concurrentes pendant l'opération. Le script exige le nom attendu et sa confirmation, compare le nom réellement renvoyé par PostgreSQL, refuse une base contenant des objets utilisateur (y compris hors du schéma public), puis vérifie l'empreinte et restaure en une transaction. Il affiche le nom de base contrôlé et les compteurs, jamais l'URL de connexion.
+
+`PRODUCTION_DATABASE_URL` ne bloque qu'une égalité littérale d'URL : hôtes alias, encodages, paramètres et comptes différents peuvent désigner la même base. Ce n'est pas une protection contre la production ; le nom attendu et la confirmation ne prouvent pas non plus l'identité du serveur. L'isolement de la cible, les droits du compte et la vérification opérateur restent indispensables. Le contrôle de vacuité n'empêche pas un autre client d'écrire après le contrôle. Ne jamais tester ces refus contre une vraie base de production. Pour une reprise, pointer ensuite `DATABASE_URL` vers la base restaurée et redémarrer après autorisation de l'équipe.
 
 Objectifs proposés : perte maximale 24 heures, reprise en 4 heures. Mesuré en répétition locale le 17 octobre 2026 : restauration d'une base de démonstration en 1 seconde. **À remesurer sur Datacloud avec la base réelle avant d'annoncer ces objectifs.**
+
+### Protections et limites de restore.sh
+
+La base cible doit ne contenir que les objets initiaux PostgreSQL, le schéma `public` vide et l’extension standard `plpgsql`. Tout autre schéma, même vide, ou extension préinstallée est refusé ; créer la cible depuis un template propre. Le script vérifie aussi relations, fonctions, types, collations, opérateurs, conversions, classes/familles d’opérateurs, recherche textuelle, gros objets, publications/abonnements, déclencheurs événementiels, serveurs étrangers, privilèges par défaut, transformations, langages et casts/méthodes d’accès non système. Il ne compare pas les noms avec ceux du dump : une table étrangère à la sauvegarde suffit au refus. Les catalogues sans namespace utilisent la frontière PostgreSQL des OID système (16384) lorsque nécessaire ; une installation modifiant directement les catalogues système sort de ce modèle.
+
+Une erreur de connexion, de droits ou de lecture des catalogues provoque un refus avant restauration. `psql -X` ignore les fichiers psqlrc et `ON_ERROR_STOP` impose l’échec. Les diagnostics de connexion/déchiffrement/restauration sont remplacés par des messages génériques pour ne pas publier d’URL, identifiants, clés ou SQL extrait du dump. L’empreinte vérifie l’intégrité accidentelle, pas l’authenticité face à une personne pouvant remplacer archive et empreinte ; protéger les deux et la clé.
+
+`pg_restore --exit-on-error --single-transaction` rend la restauration atomique : un échec SQL annule ses écritures. Les contrôles avant transaction ne verrouillent pas toute la base contre un autre client : l’isolement et l’interdiction opératoire des écritures concurrentes sont requis. Un échec du bilan final après commit est annoncé comme « restauration terminée ; bilan invérifiable », pas comme un rollback. Les droits SQL et le basculement applicatif restent des étapes distinctes après revue.
+
+Test opérationnel reproductible : `RESTORE_TEST_ADMIN_URL=… RESTORE_TEST_CONFIRM_DISPOSABLE=disposable-cluster sh infra/tests/restore.integration.sh`, uniquement après vérification du serveur/port comme cluster jetable et avec une URL sans query/fragment. Ce test crée des bases aux noms uniques, les supprime à la fin et utilise un nouveau dossier temporaire pour sauvegardes/clé/rétention. Il refuse la réutilisation d’une base existante (createdb doit réussir). Il couvre cible vide, marqueur sans collision conservé, schéma vide, extension, collation, archive altérée, rollback SQL et destination inaccessible. Le garde-fou de production est essayé seulement avec une URL jetable fictivement désignée production. Ne jamais employer une vraie URL de production pour tester un refus.
+
 
 ## 5. Secrets
 

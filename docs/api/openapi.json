@@ -596,7 +596,7 @@
             "name": "q",
             "required": false,
             "in": "query",
-            "description": "Mots recherchés dans le titre, les rubriques, le pseudonyme de l’auteur et les technologies ; tous doivent apparaître.",
+            "description": "Tous les mots, sans distinction de casse ni accents NFD ; titre, texte, pseudonyme et technologies. % et _ sont littéraux.",
             "schema": {
               "maxLength": 200,
               "type": "string"
@@ -1307,7 +1307,7 @@
             "name": "q",
             "required": false,
             "in": "query",
-            "description": "Mots recherchés dans le titre, l’objectif, le pseudonyme du responsable et les technologies.",
+            "description": "Tous les mots, sans distinction de casse ni accents NFD ; titre, texte, pseudonyme et technologies. % et _ sont littéraux.",
             "schema": {
               "maxLength": 200,
               "type": "string"

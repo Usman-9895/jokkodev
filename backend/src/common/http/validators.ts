@@ -1,4 +1,9 @@
-import { registerDecorator, type ValidationOptions } from 'class-validator';
+import { registerDecorator, ValidateIf, type ValidationOptions } from 'class-validator';
+
+/** Champ facultatif mais non nullable : l'absence conserve la valeur, null doit être validé et refusé. */
+export function OptionalButNotNull(): PropertyDecorator {
+  return ValidateIf((_object: unknown, value: unknown) => value !== undefined);
+}
 
 export const MAX_URL_LENGTH = 2048;
 
