@@ -121,3 +121,7 @@ Non vérifié : envoi SMTP réel (fournisseur non choisi), cookies `__Host-` en 
 ## Profils et technologies — 17 octobre 2026
 
 Branche `feature/profiles`. `pnpm lint`, `pnpm typecheck`, `pnpm build` et `pnpm api:generate` réussis ; `pnpm test` : 10 tests backend et 26 frontend/client ; `pnpm test:integration` : 31 tests sur PostgreSQL réel (ajout du catalogue, du profil public/privé, des champs protégés, des URLs refusées, des compteurs visibles et du caractère NUL rejeté).
+
+## JokkoHelp — 17 octobre 2026
+
+Branche `feature/questions`. `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm api:generate` réussis ; `pnpm test` : 10 tests backend et 26 frontend/client ; `pnpm test:integration` : 42 tests sur PostgreSQL réel, dont 11 pour JokkoHelp (création et validation, propriété, acceptation/remplacement/retrait/répétition, solution étrangère ou masquée refusée, quatre acceptations concurrentes laissant une seule solution, recherche et filtres combinés, pagination, balises conservées sans transformation, question masquée inaccessible par toutes les routes publiques).
