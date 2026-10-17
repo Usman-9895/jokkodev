@@ -1,24 +1,73 @@
-# Modèle conceptuel futur — non implémenté
+# Modèle de données
 
-| Entité | Responsabilité et relations prévues |
+Source de vérité : `backend/prisma/schema.prisma` et les migrations versionnées de `backend/prisma/migrations/`. Les choix encore ouverts sont listés dans la [décision 002](../decisions/002-modele-donnees.md). Teranga Points n'en fait pas partie.
+
+```mermaid
+erDiagram
+  User ||--o| Profile : "possède"
+  User ||--o{ Session : "ouvre"
+  User ||--o{ AccountToken : "reçoit"
+  Profile }o--o{ Technology : "ProfileTechnology"
+  User ||--o{ Question : "publie"
+  User ||--o{ Answer : "rédige"
+  Question ||--o{ Answer : "reçoit"
+  Question |o--o| Answer : "acceptedAnswer (clé composite)"
+  Question }o--o{ Technology : "QuestionTechnology"
+  User ||--o{ Project : "responsable"
+  Project }o--o{ Technology : "ProjectTechnology"
+  Project ||--o{ ProjectMember : "membres"
+  User ||--o{ ProjectMember : "adhère"
+  Project ||--o{ Application : "reçoit"
+  User ||--o{ Application : "candidate"
+  User ||--o{ Report : "signale"
+  Report }o--o| Question : "cible"
+  Report }o--o| Answer : "cible"
+  Report }o--o| Project : "cible"
+  User ||--o{ ModerationAction : "administrateur"
+  Report ||--o{ ModerationAction : "origine"
+```
+
+## Entités
+
+| Entité | Champs principaux | Contraintes en base |
+|---|---|---|
+| User | email, username, usernameKey, passwordHash, role, status, emailVerifiedAt | email unique et normalisé (CHECK) ; usernameKey unique, égal à `lower(username)` (CHECK) |
+| Profile | userId (clé), bio ≤ 500, countryCode, links | countryCode ISO alpha-2 majuscule (CHECK) ; 3 liens au plus (CHECK) |
+| Session | tokenHash (SHA-256), userId, expiresAt, lastSeenAt, revokedAt | tokenHash unique ; expiresAt > createdAt (CHECK) |
+| AccountToken | tokenHash, userId, purpose, expiresAt, consumedAt | tokenHash unique ; index (userId, purpose) |
+| Technology | name, slug | name et slug uniques |
+| Question | authorId, title ≤ 150, context, expected, actual, attempts, code, visibility, acceptedAnswerId | FK composite (acceptedAnswerId, id) vers Answer(id, questionId) |
+| Answer | questionId, authorId, body, code, visibility | UNIQUE(id, questionId) servant de cible à la FK composite |
+| Project | ownerId, title, objective ≤ 5000, availability ≤ 300, recruitmentStatus, visibility | index de liste (visibility, recruitmentStatus, createdAt, id) |
+| ProjectMember | (projectId, userId), joinedAt | clé primaire composite : une adhésion par couple |
+| Application | projectId, applicantId, message ≤ 1000, status, decidedAt | UNIQUE(projectId, applicantId) ; `PENDING` si et seulement si decidedAt est nul (CHECK) |
+| Report | reporterId, questionId / answerId / projectId, reason, status, decision, closedById, closedAt | exactement une cible (CHECK) ; clôture complète ou absente (CHECK) ; un signalement OPEN par déclarant et cible (3 index uniques partiels) |
+| ModerationAction | adminId, decision, reason, reportId, questionId / answerId / projectId / targetUserId | exactement une cible (CHECK) ; `SUSPEND_ACCOUNT` si et seulement si la cible est un compte (CHECK) |
+
+Identifiants UUIDv7 générés par l'application (ordonnés dans le temps, opaques pour l'API). Dates `timestamptz(3)`, exposées en ISO 8601 UTC.
+
+## Invariants et responsabilités
+
+| Invariant | Garanti par |
 |---|---|
-| User / Profile | Compte, statut, pseudonyme et informations publiques séparées des données privées |
-| Session / AccountToken | Session opaque révocable ; jetons de compte expirants à usage unique |
-| Technology | Référentiel lié aux profils, questions et projets |
-| Question / Answer | Auteur, contenus, question par réponse, solution acceptée facultative |
-| Project | Propriétaire, présentation et recrutement |
-| Application | Candidat, projet et état de candidature |
-| ProjectMember | Adhésion d’un membre à un projet |
-| Report | Déclarant, exactement une cible, état de traitement |
-| ModerationAction | Acteur autorisé, décision et traçabilité minimale |
+| Solution acceptée appartenant à sa question | Base (FK composite) |
+| Solution acceptée visible ; masquage d'une solution qui retire la référence | Transaction du service JokkoHelp |
+| Statut résolu | Calculé : `acceptedAnswerId IS NOT NULL`, aucun second état stocké |
+| Une candidature par membre et projet, même après refus ou retrait | Base (UNIQUE) |
+| Une adhésion par membre et projet ; responsable membre dès la création | Base (clé composite) et transaction de création du projet |
+| Acceptation de candidature et création d'adhésion atomiques | Transaction avec mise à jour conditionnelle sur `status = 'PENDING'` |
+| Cible de signalement unique et existante | Base (CHECK et FK) |
+| Un signalement ouvert par déclarant et cible | Base (index uniques partiels) |
+| Formes normalisées de l'email et du pseudonyme | API (normalisation) et base (CHECK de cohérence) |
 
-Invariants à traduire en contraintes PostgreSQL et transactions :
+## Politique de suppression
 
-- Email et pseudonyme normalisés uniques ; fixer la politique Unicode/casse avant les migrations.
-- Une candidature par membre et projet ; une adhésion par membre et projet.
-- Une solution acceptée appartient à sa question (contrainte relationnelle composite à concevoir).
-- Un signalement vise exactement une question, une réponse ou un projet (CHECK SQL).
-- Un seul signalement ouvert par déclarant et cible (index partiels uniques, avec définition explicite des états ouverts).
-- Acceptations de candidature, adhésions, choix de solution et actions de modération nécessitent des transactions ; vérifier les courses concurrentes.
+Aucune cascade sur les contenus publiés : supprimer un compte, une question, une réponse ou un projet référencé est refusé (`RESTRICT`). La modération masque (`visibility = HIDDEN`) et conserve l'historique. Les cascades se limitent aux données qui n'ont pas d'existence propre : profil, sessions et jetons d'un compte, liaisons de technologies d'un contenu. La suppression de compte reste une décision produit ouverte.
 
-Prisma ne remplace pas les contraintes de base : les CHECK/index non exprimables dans le schéma seront ajoutés dans des migrations SQL relues. Aucune migration ni table métier n’est présente. Teranga Points est exclu de ce modèle initial.
+## Contraintes hors Prisma
+
+Les CHECK et les index uniques partiels sont écrits en SQL à la fin de la migration `init`. Prisma ne les gère pas mais ne les considère pas comme une dérive : `prisma migrate diff` entre la base migrée et le schéma est vide (vérifié le 17 octobre 2026). Toute nouvelle contrainte de ce type doit être ajoutée de la même manière, dans une migration relue, et couverte par `backend/test/database.integration.ts`.
+
+## Index de listes
+
+Tri stable `createdAt DESC, id DESC` pour les questions et projets publics (index préfixés par `visibility`), files de signalements par `status`, candidatures reçues par `(projectId, status, createdAt)` et suivies par `(applicantId, createdAt)`. Toutes les clés étrangères utilisées en filtre sont indexées. La recherche textuelle MVP reste une requête paramétrée sur titre et contenu ; un index plein texte sera ajouté seulement après mesure.

@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client"
-  output = "../src/generated/prisma"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
   moduleFormat = "cjs"
 }
 
@@ -8,4 +8,320 @@ datasource db {
   provider = "postgresql"
 }
 
-// Aucun modèle métier à cette étape. Voir docs/architecture/data-model.md.
+// Contraintes non exprimables ici (CHECK, index uniques partiels) : voir les
+// migrations SQL et docs/architecture/data-model.md.
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum AccountTokenPurpose {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+enum Visibility {
+  VISIBLE
+  HIDDEN
+}
+
+enum RecruitmentStatus {
+  OPEN
+  CLOSED
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum ReportStatus {
+  OPEN
+  CLOSED
+}
+
+enum ModerationDecision {
+  NO_ACTION
+  HIDE_CONTENT
+  SUSPEND_ACCOUNT
+}
+
+model User {
+  id              String        @id @default(uuid(7)) @db.Uuid
+  /// Forme normalisée (NFC, minuscules, sans espaces de bord).
+  email           String        @unique @db.VarChar(254)
+  /// Pseudonyme tel qu'affiché.
+  username        String        @db.VarChar(30)
+  /// Clé d'unicité du pseudonyme (minuscules).
+  usernameKey     String        @unique @db.VarChar(30)
+  passwordHash    String
+  role            Role          @default(MEMBER)
+  status          AccountStatus @default(ACTIVE)
+  emailVerifiedAt DateTime?     @db.Timestamptz(3)
+  createdAt       DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime      @updatedAt @db.Timestamptz(3)
+
+  profile            Profile?
+  sessions           Session[]
+  accountTokens      AccountToken[]
+  questions          Question[]
+  answers            Answer[]
+  ownedProjects      Project[]
+  memberships        ProjectMember[]
+  applications       Application[]
+  reports            Report[]           @relation("ReportAuthor")
+  closedReports      Report[]           @relation("ReportCloser")
+  moderationActions  ModerationAction[] @relation("ModerationActor")
+  moderationsAgainst ModerationAction[] @relation("ModerationTargetUser")
+}
+
+model Profile {
+  userId      String   @id @db.Uuid
+  bio         String?  @db.VarChar(500)
+  /// Code pays ISO 3166-1 alpha-2.
+  countryCode String?  @db.Char(2)
+  /// Jusqu'à trois URLs HTTPS, contrôlées par l'API.
+  links       String[] @default([])
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+
+  user   User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills ProfileTechnology[]
+}
+
+model Session {
+  id         String    @id @default(uuid(7)) @db.Uuid
+  /// SHA-256 du jeton opaque ; le jeton lui-même n'est jamais stocké.
+  tokenHash  Bytes     @unique
+  userId     String    @db.Uuid
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+  lastSeenAt DateTime  @default(now()) @db.Timestamptz(3)
+  expiresAt  DateTime  @db.Timestamptz(3)
+  revokedAt  DateTime? @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model AccountToken {
+  id         String              @id @default(uuid(7)) @db.Uuid
+  tokenHash  Bytes               @unique
+  userId     String              @db.Uuid
+  purpose    AccountTokenPurpose
+  createdAt  DateTime            @default(now()) @db.Timestamptz(3)
+  expiresAt  DateTime            @db.Timestamptz(3)
+  consumedAt DateTime?           @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose])
+}
+
+model Technology {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  name      String   @unique @db.VarChar(50)
+  slug      String   @unique @db.VarChar(50)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  profiles  ProfileTechnology[]
+  questions QuestionTechnology[]
+  projects  ProjectTechnology[]
+}
+
+model ProfileTechnology {
+  userId       String @db.Uuid
+  technologyId String @db.Uuid
+
+  profile    Profile    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  technology Technology @relation(fields: [technologyId], references: [id], onDelete: Restrict)
+
+  @@id([userId, technologyId])
+  @@index([technologyId])
+}
+
+model Question {
+  id               String     @id @default(uuid(7)) @db.Uuid
+  authorId         String     @db.Uuid
+  title            String     @db.VarChar(150)
+  context          String
+  expected         String
+  actual           String
+  attempts         String
+  code             String?
+  visibility       Visibility @default(VISIBLE)
+  /// La question est résolue si et seulement si cette référence est renseignée.
+  acceptedAnswerId String?    @db.Uuid
+  createdAt        DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime   @updatedAt @db.Timestamptz(3)
+
+  author         User                 @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  answers        Answer[]             @relation("QuestionAnswers")
+  /// Clé composite : la solution appartient forcément à cette question.
+  acceptedAnswer Answer?              @relation("AcceptedAnswer", fields: [acceptedAnswerId, id], references: [id, questionId], onDelete: Restrict, onUpdate: Restrict)
+  technologies   QuestionTechnology[]
+  reports        Report[]
+  moderations    ModerationAction[]
+
+  @@unique([acceptedAnswerId, id])
+  @@index([visibility, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([authorId, createdAt(sort: Desc)])
+}
+
+model QuestionTechnology {
+  questionId   String @db.Uuid
+  technologyId String @db.Uuid
+
+  question   Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  technology Technology @relation(fields: [technologyId], references: [id], onDelete: Restrict)
+
+  @@id([questionId, technologyId])
+  @@index([technologyId])
+}
+
+model Answer {
+  id         String     @id @default(uuid(7)) @db.Uuid
+  questionId String     @db.Uuid
+  authorId   String     @db.Uuid
+  body       String
+  code       String?
+  visibility Visibility @default(VISIBLE)
+  createdAt  DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime   @updatedAt @db.Timestamptz(3)
+
+  question    Question           @relation("QuestionAnswers", fields: [questionId], references: [id], onDelete: Restrict)
+  author      User               @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  acceptedFor Question?          @relation("AcceptedAnswer")
+  reports     Report[]
+  moderations ModerationAction[]
+
+  @@unique([id, questionId])
+  @@index([questionId, createdAt, id])
+  @@index([authorId, createdAt(sort: Desc)])
+}
+
+model Project {
+  id                String            @id @default(uuid(7)) @db.Uuid
+  ownerId           String            @db.Uuid
+  title             String            @db.VarChar(150)
+  objective         String            @db.VarChar(5000)
+  availability      String?           @db.VarChar(300)
+  recruitmentStatus RecruitmentStatus @default(OPEN)
+  visibility        Visibility        @default(VISIBLE)
+  createdAt         DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime          @updatedAt @db.Timestamptz(3)
+
+  owner        User                @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  members      ProjectMember[]
+  applications Application[]
+  technologies ProjectTechnology[]
+  reports      Report[]
+  moderations  ModerationAction[]
+
+  @@index([visibility, recruitmentStatus, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([ownerId, createdAt(sort: Desc)])
+}
+
+model ProjectTechnology {
+  projectId    String @db.Uuid
+  technologyId String @db.Uuid
+
+  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  technology Technology @relation(fields: [technologyId], references: [id], onDelete: Restrict)
+
+  @@id([projectId, technologyId])
+  @@index([technologyId])
+}
+
+model ProjectMember {
+  projectId String   @db.Uuid
+  userId    String   @db.Uuid
+  joinedAt  DateTime @default(now()) @db.Timestamptz(3)
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@id([projectId, userId])
+  @@index([userId, joinedAt(sort: Desc)])
+}
+
+model Application {
+  id          String            @id @default(uuid(7)) @db.Uuid
+  projectId   String            @db.Uuid
+  applicantId String            @db.Uuid
+  message     String            @db.VarChar(1000)
+  status      ApplicationStatus @default(PENDING)
+  createdAt   DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime          @updatedAt @db.Timestamptz(3)
+  decidedAt   DateTime?         @db.Timestamptz(3)
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  applicant User    @relation(fields: [applicantId], references: [id], onDelete: Restrict)
+
+  @@unique([projectId, applicantId])
+  @@index([projectId, status, createdAt(sort: Desc)])
+  @@index([applicantId, createdAt(sort: Desc)])
+}
+
+/// Exactement une cible parmi questionId, answerId et projectId (CHECK SQL).
+model Report {
+  id         String              @id @default(uuid(7)) @db.Uuid
+  reporterId String              @db.Uuid
+  questionId String?             @db.Uuid
+  answerId   String?             @db.Uuid
+  projectId  String?             @db.Uuid
+  reason     String              @db.VarChar(1000)
+  status     ReportStatus        @default(OPEN)
+  decision   ModerationDecision?
+  closedById String?             @db.Uuid
+  closedAt   DateTime?           @db.Timestamptz(3)
+  createdAt  DateTime            @default(now()) @db.Timestamptz(3)
+
+  reporter    User               @relation("ReportAuthor", fields: [reporterId], references: [id], onDelete: Restrict)
+  closedBy    User?              @relation("ReportCloser", fields: [closedById], references: [id], onDelete: Restrict)
+  question    Question?          @relation(fields: [questionId], references: [id], onDelete: Restrict)
+  answer      Answer?            @relation(fields: [answerId], references: [id], onDelete: Restrict)
+  project     Project?           @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  moderations ModerationAction[]
+
+  @@index([status, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([reporterId])
+  @@index([questionId])
+  @@index([answerId])
+  @@index([projectId])
+}
+
+/// Historique append-only. Exactement une cible (CHECK SQL).
+model ModerationAction {
+  id           String             @id @default(uuid(7)) @db.Uuid
+  adminId      String             @db.Uuid
+  decision     ModerationDecision
+  reason       String             @db.VarChar(1000)
+  reportId     String?            @db.Uuid
+  questionId   String?            @db.Uuid
+  answerId     String?            @db.Uuid
+  projectId    String?            @db.Uuid
+  targetUserId String?            @db.Uuid
+  createdAt    DateTime           @default(now()) @db.Timestamptz(3)
+
+  admin      User      @relation("ModerationActor", fields: [adminId], references: [id], onDelete: Restrict)
+  report     Report?   @relation(fields: [reportId], references: [id], onDelete: Restrict)
+  question   Question? @relation(fields: [questionId], references: [id], onDelete: Restrict)
+  answer     Answer?   @relation(fields: [answerId], references: [id], onDelete: Restrict)
+  project    Project?  @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  targetUser User?     @relation("ModerationTargetUser", fields: [targetUserId], references: [id], onDelete: Restrict)
+
+  @@index([createdAt(sort: Desc), id(sort: Desc)])
+  @@index([reportId])
+  @@index([questionId])
+  @@index([answerId])
+  @@index([projectId])
+  @@index([targetUserId])
+}
