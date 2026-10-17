@@ -1,19 +1,12 @@
-import 'dotenv/config';
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
-import { readdir, readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import { after, before, describe, test } from 'node:test';
-import { Client, DatabaseError } from 'pg';
+import { type Client, DatabaseError } from 'pg';
+import { createTestDatabase, sqlClient, type TestDatabase } from './support/database';
 
-// Ces tests visent une base dédiée (TEST_DATABASE_URL), jamais la base de développement ni de production.
-// Chaque exécution applique les migrations versionnées dans un schéma temporaire, puis le supprime.
-const url = process.env.TEST_DATABASE_URL;
-if (!url) throw new Error('TEST_DATABASE_URL requis pour les tests d’intégration PostgreSQL.');
-
-const schema = `it_${randomBytes(6).toString('hex')}`;
-const migrationsDir = join(__dirname, '..', '..', 'prisma', 'migrations');
-const db = new Client({ connectionString: url });
+// Contraintes vérifiées directement en SQL : la base doit refuser les états invalides même sans passer par l'API.
+let database: TestDatabase;
+let db: Client;
 
 async function sqlState(statement: string, params: unknown[] = []): Promise<string | undefined> {
   try { await db.query('SAVEPOINT t'); await db.query(statement, params); await db.query('RELEASE SAVEPOINT t'); return undefined; }
@@ -41,21 +34,17 @@ async function insertProject(ownerId: string): Promise<string> {
 let awa: string, moussa: string, admin: string;
 
 before(async () => {
-  await db.connect();
-  await db.query(`CREATE SCHEMA "${schema}"`);
-  await db.query(`SET search_path TO "${schema}"`);
-  for (const dir of (await readdir(migrationsDir, { withFileTypes: true })).filter(d => d.isDirectory()).map(d => d.name).sort()) {
-    await db.query(await readFile(join(migrationsDir, dir, 'migration.sql'), 'utf8'));
-  }
+  database = await createTestDatabase();
+  db = await sqlClient(database);
   await db.query('BEGIN');
   awa = await insertUser('Awa_Demo');
   moussa = await insertUser('Moussa_Demo');
   admin = await insertUser('Admin_Demo');
 });
 after(async () => {
-  await db.query('ROLLBACK').catch(() => undefined);
-  await db.query(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`);
-  await db.end();
+  await db?.query('ROLLBACK').catch(() => undefined);
+  await db?.end();
+  await database?.drop();
 });
 
 describe('comptes', () => {

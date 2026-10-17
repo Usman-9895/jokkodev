@@ -2,7 +2,7 @@
 
 Source de vérité : contrôleurs et DTO NestJS réellement implémentés. pnpm api:export produit openapi.json sans charger de .env, sans secret de production, sans connexion PostgreSQL et sans ouvrir de port. pnpm api:generate exporte puis exécute openapi-typescript ; src/schema.d.ts est généré, jamais édité à la main. Le frontend utilise ses types dans lib/api/browser.ts et server.ts. Les fichiers générés sont destinés au futur dépôt.
 
-Routes actuelles : GET /api/v1/health/live (200, indépendant de la base), GET /api/v1/health/ready (200 si SELECT 1 réussit, 503 sinon). Swagger UI : /api/docs en développement/test seulement, absent en production. Export statique possible dans tous les environnements.
+Routes actuelles : GET /api/v1/health/live (200, indépendant de la base), GET /api/v1/health/ready (200 si SELECT 1 réussit, 503 sinon) et les routes `/api/v1/auth/*` décrites dans la [décision 003](../decisions/003-sessions-csrf.md). Toute route est privée sauf mention contraire ; toute mutation exige `X-CSRF-Token` et une origine autorisée. Swagger UI : /api/docs en développement/test seulement, absent en production. Export statique possible dans tous les environnements.
 
 Conventions des futures routes : JSON application/json, dates ISO 8601 UTC (suffixe Z), identifiants opaques traités comme chaînes sans inférence métier. Pagination : { data: [...], meta: { ... } } ; choix curseur ou page à décider par collection avant implémentation. GET 200, création 201, absence de contenu 204 ; 400 validation, 401 session absente, 403 permission refusée, 404 ressource absente, 409 conflit, 413 corps trop volumineux, 429 limitation, 500 erreur interne, 503 indisponibilité. Ces routes et codes futurs ne sont pas présentés comme implémentés.
 

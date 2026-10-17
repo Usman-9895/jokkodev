@@ -1,7 +1,7 @@
 import 'dotenv/config';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '../generated/prisma/client';
+import type { PrismaClient } from '../generated/prisma/client';
 import { validateEnvironment } from '../config/environment';
+import { createPrismaClient } from './database.service';
 
 // Référentiel commun aux profils, questions et projets. Idempotent : rejouable sans doublon, y compris en production.
 export const technologies: ReadonlyArray<readonly [name: string, slug: string]> = [
@@ -22,7 +22,7 @@ export async function seedTechnologies(prisma: PrismaClient): Promise<number> {
 }
 
 async function run() {
-  const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: validateEnvironment(process.env).databaseUrl }) });
+  const prisma = createPrismaClient(validateEnvironment(process.env).databaseUrl);
   try {
     const created = await seedTechnologies(prisma);
     console.log(JSON.stringify({ event: 'seed', technologiesCreated: created, technologiesTotal: await prisma.technology.count() }));

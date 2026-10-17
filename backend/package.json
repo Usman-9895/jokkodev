@@ -14,6 +14,8 @@
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:seed": "pnpm build && node dist/src/database/seed.js",
+    "admin:grant": "pnpm build && node dist/src/cli/admin.js grant",
+    "admin:revoke": "pnpm build && node dist/src/cli/admin.js revoke",
     "api:export": "pnpm build && node dist/src/export-openapi.js"
   },
   "dependencies": {
@@ -21,21 +23,25 @@
     "@nestjs/core": "12.1.2",
     "@nestjs/platform-express": "12.1.2",
     "@nestjs/swagger": "12.0.2",
-    "@prisma/client": "7.10.0",
     "@prisma/adapter-pg": "7.10.0",
-    "pg": "8.23.1",
-    "reflect-metadata": "0.2.2",
-    "rxjs": "7.8.2",
+    "@prisma/client": "7.10.0",
+    "argon2": "0.45.1",
     "class-transformer": "0.5.1",
     "class-validator": "0.15.1",
-    "helmet": "8.3.0",
+    "csrf-csrf": "4.0.3",
     "dotenv": "18.0.7",
-    "express": "5.3.0"
+    "express": "5.3.0",
+    "helmet": "8.3.0",
+    "nodemailer": "10.1.2",
+    "pg": "8.23.1",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2"
   },
   "devDependencies": {
-    "prisma": "7.10.0",
     "@types/express": "5.0.6",
+    "@types/nodemailer": "8.0.2",
     "@types/pg": "8.23.1",
-    "concurrently": "10.0.6"
+    "concurrently": "10.0.6",
+    "prisma": "7.10.0"
   }
 }

@@ -1,6 +1,6 @@
 # Décision 003 — sessions, CSRF et contrat des comptes
 
-État : proposition de Serge du 17 octobre 2026, **à valider avec Ousmane avant implémentation** (lot B03). Rien de ce document n'est encore codé. Les versions et licences ont été relevées sur le registre npm le 17 octobre 2026 ; elles seront revérifiées à l'installation.
+État : implémenté sur `feature/auth` (lot B03) le 17 octobre 2026, à relire par Ousmane avant fusion. Versions et licences relevées sur le registre npm le 17 octobre 2026. Les écarts par rapport à la proposition initiale sont regroupés dans la section « Écarts d'implémentation ».
 
 ## Sessions
 
@@ -27,11 +27,11 @@ Le jeton est renouvelé à la connexion et à la déconnexion. Point d'attention
 
 ## Limitation des abus
 
-`@nestjs/throttler` 6.7.1 (MIT, compatible Nest 12), stockage mémoire acceptable avec un seul processus API (remise à zéro au redémarrage, documentée). Départ proposé : connexion 5 essais par compte et IP sur 15 minutes et plafond IP distinct ; 3 emails de compte par heure et par adresse. Réponse 429 `RATE_LIMITED` avec `Retry-After`. `TRUST_PROXY` limité aux relais connus du point d'entrée Datacloud.
+Compteurs à fenêtre fixe en mémoire (`RateLimiter`), acceptables avec un seul processus API ; remise à zéro au redémarrage. Limites : connexion 5 essais par compte et IP sur 15 minutes et 30 par IP ; inscription 20 par heure et par IP ; 3 emails de compte par heure et par adresse ; réinitialisation et vérification 20 par heure et par IP. Réponse 429 `RATE_LIMITED` avec `Retry-After`. `TRUST_PROXY` limité aux relais connus du point d'entrée Datacloud.
 
 ## Emails de compte
 
-`nodemailer` 10.1.2 (MIT-0) via SMTP. En local, Mailpit (MIT) capture les messages sans envoi réel. Jetons de vérification (24 heures) et de réinitialisation (30 minutes) : 32 octets aléatoires, empreinte en base, consommation atomique (`UPDATE ... WHERE consumedAt IS NULL AND expiresAt > now()`), jamais journalisés. Le fournisseur SMTP de production reste à choisir avec l'accès Datacloud.
+`nodemailer` 10.1.2 (MIT-0) via SMTP en production. En local et en test (`MAIL_TRANSPORT=file`), chaque message est écrit en JSON dans `MAIL_FILE_DIR` (dossier ignoré par Git) ; aucun service supplémentaire n'est nécessaire. Jetons de vérification (24 heures) et de réinitialisation (30 minutes) : 32 octets aléatoires, empreinte en base, consommation atomique (`UPDATE ... WHERE consumedAt IS NULL AND expiresAt > now()`), jamais journalisés. Le fournisseur SMTP de production reste à choisir avec l'accès Datacloud.
 
 ## Contrat proposé
 
@@ -40,31 +40,48 @@ Préfixe `/api/v1`. Erreurs au format commun `{ code, message, fieldErrors, requ
 | Route | Corps | Succès | Erreurs principales |
 |---|---|---|---|
 | `GET /auth/csrf` | — | 200 `{ csrfToken }` | — |
-| `POST /auth/register` | `{ email, username, password }` | 201 `CurrentUser` et cookie de session | 400 `VALIDATION_ERROR`, 409 `EMAIL_TAKEN` / `USERNAME_TAKEN`, 429 |
-| `POST /auth/login` | `{ email, password }` | 200 `CurrentUser` et cookie de session | 401 `INVALID_CREDENTIALS`, 403 `ACCOUNT_SUSPENDED`, 429 |
-| `POST /auth/logout` | — | 204, cookie effacé | 401 |
+| `POST /auth/register` | `{ email, username, password }` | 201 `{ user: CurrentUser, csrfToken }` et cookie de session | 400 `VALIDATION_ERROR`, 409 `EMAIL_TAKEN` / `USERNAME_TAKEN`, 429 |
+| `POST /auth/login` | `{ email, password }` | 200 `{ user: CurrentUser, csrfToken }` et cookie de session | 401 `INVALID_CREDENTIALS`, 403 `ACCOUNT_SUSPENDED`, 429 |
+| `POST /auth/logout` | — | 204, session révoquée et cookies effacés, même sans session valide | 403 CSRF |
 | `GET /auth/me` | — | 200 `CurrentUser` | 401 `UNAUTHORIZED` |
 | `POST /auth/forgot-password` | `{ email }` | 202, réponse identique que le compte existe ou non | 429 |
 | `POST /auth/reset-password` | `{ token, password }` | 204, toutes les sessions révoquées | 400 `TOKEN_INVALID` (inconnu, expiré ou déjà utilisé) |
 | `POST /auth/verify-email` | `{ token }` | 204 | 400 `TOKEN_INVALID` |
 | `POST /auth/resend-verification` | — (session) | 202 | 401, 429 |
 
-`CurrentUser` : `{ id, username, email, role, status, emailVerified }`. Cette projection n'est renvoyée qu'au titulaire de la session ; le profil public ne contient jamais l'email.
+`CurrentUser` : `{ id, username, email, role, emailVerified }`. Cette projection n'est renvoyée qu'au titulaire de la session ; le profil public ne contient jamais l'email.
 
 L'inscription crée directement une session pour simplifier le parcours. `EMAIL_TAKEN` révèle l'existence d'un email ; c'est un compromis d'ergonomie courant, à confirmer, l'alternative étant une réponse neutre suivie d'un email.
 
 ## Variables d'environnement ajoutées
 
-`APP_ORIGIN`, `SESSION_COOKIE_SECURE`, `CSRF_SECRET` (32 octets aléatoires minimum, distinct par environnement), `TRUST_PROXY`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM`. Toutes validées au démarrage, sans valeur réelle dans `.env.example`.
+`APP_ORIGIN`, `SESSION_COOKIE_SECURE`, `CSRF_SECRET` (32 caractères minimum, distinct par environnement), `TRUST_PROXY`, `MAIL_TRANSPORT`, `MAIL_FILE_DIR`, `MAIL_FROM`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`. Toutes validées au démarrage, sans valeur réelle dans `.env.example`. En production, `APP_ORIGIN` en HTTPS, `SESSION_COOKIE_SECURE=true`, `CSRF_SECRET`, `MAIL_FROM` et SMTP sont obligatoires ; le démarrage échoue sinon.
 
-## Tests prévus
+## Tests
 
-Connexion valide et invalide ; attributs du cookie ; session expirée, révoquée ou suspendue refusée ; mutation sans jeton ou depuis une autre origine refusée, connexion comprise ; réponse identique de récupération pour un email absent ; jeton de réinitialisation rejoué ou expiré refusé ; deux consommations concurrentes d'un même jeton dont une seule réussit ; aucune donnée sensible dans les réponses ni dans les logs.
+Couverts par `backend/test/foundations.test.ts` (sans base) et `backend/test/auth.integration.ts` (PostgreSQL réel) : connexion valide et invalide ; attributs du cookie ; session expirée, révoquée ou suspendue refusée ; mutation sans jeton ou depuis une autre origine refusée, connexion comprise ; réponse identique de récupération pour un email absent ; jeton de réinitialisation rejoué ou expiré refusé ; deux consommations concurrentes d'un même jeton dont une seule réussit ; aucune donnée sensible dans les réponses ni dans les logs.
+
+## Écarts d'implémentation
+
+- Connexion et inscription renvoient `{ user, csrfToken }` : la session change, l'ancien jeton CSRF n'est plus valable et le frontend reçoit directement le nouveau. Après une déconnexion, appeler `GET /auth/csrf`.
+- `CurrentUser` n'expose pas `status` : une session valide implique un compte actif.
+- Limitation par un service interne plutôt que `@nestjs/throttler` : les clés composées (compte et IP) sont directes, sans dépendance supplémentaire.
+- Pas de Mailpit : transport fichier en local, voir ci-dessus.
+- Une nouvelle connexion depuis un navigateur déjà connecté révoque sa session précédente.
+- La réinitialisation du mot de passe confirme aussi l'email : la possession de la boîte est prouvée.
+- Les liens des emails pointent vers `/verification-email?token=…` et `/nouveau-mot-de-passe?token=…`, pages déjà prévues par le frontend.
+
+## Intégration frontend
+
+1. `GET /api/v1/auth/csrf` au chargement de l'application (ou avant le premier formulaire), conserver `csrfToken` en mémoire uniquement.
+2. Envoyer `X-CSRF-Token` sur toute requête `POST`, `PUT`, `PATCH` et `DELETE`, avec `credentials: 'include'` (déjà prévu par le client HTTP partagé).
+3. Remplacer le jeton par celui renvoyé par la connexion et l'inscription ; en redemander un après déconnexion ou après une erreur `CSRF_TOKEN_INVALID`.
+4. Lectures serveur authentifiées : transmettre uniquement le cookie de session à l'API interne.
 
 ## Décisions attendues
 
-1. Bibliothèque CSRF (`csrf-csrf` ou jeton synchronisé en session).
-2. Durées de session et de jetons.
-3. Vérification d'email obligatoire ou non avant de publier.
+1. Durées de session et de jetons.
+2. Vérification d'email obligatoire ou non avant de publier (aujourd'hui non exigée).
+3. Maintien de `csrf-csrf` malgré l'absence de publication récente.
 4. Comportement de l'inscription face à un email déjà utilisé.
 5. Fournisseur SMTP de production.
