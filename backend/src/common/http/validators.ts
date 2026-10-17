@@ -14,3 +14,8 @@ export function isPublicHttpsUrl(value: unknown): value is string {
 export function IsPublicHttpsUrl(options?: ValidationOptions): PropertyDecorator {
   return (target, propertyName) => registerDecorator({ name: 'isUrl', target: target.constructor, propertyName: propertyName as string, options, validator: { validate: isPublicHttpsUrl } });
 }
+
+/** Texte contenant au moins un caractère visible (les espaces seuls ne suffisent pas). */
+export function HasText(options?: ValidationOptions): PropertyDecorator {
+  return (target, propertyName) => registerDecorator({ name: 'isNotEmpty', target: target.constructor, propertyName: propertyName as string, options, validator: { validate: (value: unknown) => typeof value === 'string' && /\S/.test(value) } });
+}

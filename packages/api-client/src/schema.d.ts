@@ -228,6 +228,134 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["QuestionsController_list"];
+        put?: never;
+        post: operations["QuestionsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/questions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["QuestionsController_detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["QuestionsController_update"];
+        trace?: never;
+    };
+    "/api/v1/questions/{id}/answers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["QuestionsController_answers"];
+        put?: never;
+        post: operations["QuestionsController_answer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/questions/{id}/accepted-answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["QuestionsController_accept"];
+        post?: never;
+        delete: operations["QuestionsController_unaccept"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/answers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["AnswersController_update"];
+        trace?: never;
+    };
+    "/api/v1/users/me/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UserContributionsController_ownQuestions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/{id}/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UserContributionsController_questionsOf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/{id}/answers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UserContributionsController_answersOf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -377,6 +505,174 @@ export interface components {
             /** Format: date-time */
             memberSince: string;
             stats: components["schemas"]["ProfileStatsDto"];
+        };
+        PublicAuthorDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example awa_dev */
+            username: string;
+            /** @example SN */
+            countryCode?: string | null;
+        };
+        QuestionSummaryDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description Début du contexte, 200 caractères au plus. */
+            excerpt: string;
+            author: components["schemas"]["PublicAuthorDto"];
+            technologies: components["schemas"]["TechnologyDto"][];
+            /** @description Calculé : une solution acceptée existe. */
+            resolved: boolean;
+            /** @description Réponses visibles. */
+            answerCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        PageMetaDto: {
+            page: number;
+            pageSize: number;
+            /** @description Total après application des mêmes filtres et restrictions de visibilité que la liste. */
+            total: number;
+        };
+        QuestionSummaryPageDto: {
+            data: components["schemas"]["QuestionSummaryDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        CreateQuestionDto: {
+            title: string;
+            /** @description Contexte du problème. */
+            context: string;
+            /** @description Résultat attendu. */
+            expected: string;
+            /** @description Résultat obtenu. */
+            actual: string;
+            /** @description Tentatives déjà effectuées. Les quatre rubriques totalisent 20 000 caractères au plus. */
+            attempts: string;
+            code?: string | null;
+            technologyIds: string[];
+        };
+        AnswerDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            questionId: string;
+            author: components["schemas"]["PublicAuthorDto"];
+            /** @description Texte brut ou Markdown restreint, à afficher sans interpréter de HTML. */
+            body: string;
+            /** @description Extrait de code, jamais exécuté. */
+            code?: string | null;
+            /** @description Réponse retenue comme solution. */
+            accepted: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        QuestionDetailDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description Début du contexte, 200 caractères au plus. */
+            excerpt: string;
+            author: components["schemas"]["PublicAuthorDto"];
+            technologies: components["schemas"]["TechnologyDto"][];
+            /** @description Calculé : une solution acceptée existe. */
+            resolved: boolean;
+            /** @description Réponses visibles. */
+            answerCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            context: string;
+            expected: string;
+            actual: string;
+            attempts: string;
+            code?: string | null;
+            /** Format: uuid */
+            acceptedAnswerId?: string | null;
+            /** @description Solution acceptée, reprise ici pour l’afficher en tête. */
+            acceptedAnswer?: components["schemas"]["AnswerDto"] | null;
+            /** @description La session courante est l’auteur : modification et choix de la solution possibles. */
+            viewerIsAuthor: boolean;
+        };
+        UpdateQuestionDto: {
+            title?: string;
+            context?: string;
+            expected?: string;
+            actual?: string;
+            attempts?: string;
+            /** @description null retire le code. */
+            code?: string | null;
+            technologyIds?: string[];
+        };
+        AnswerPageDto: {
+            data: components["schemas"]["AnswerDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        CreateAnswerDto: {
+            body: string;
+            code?: string | null;
+        };
+        AcceptAnswerDto: {
+            /** Format: uuid */
+            answerId: string;
+        };
+        UpdateAnswerDto: {
+            body?: string;
+            code?: string | null;
+        };
+        OwnQuestionSummaryDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description Début du contexte, 200 caractères au plus. */
+            excerpt: string;
+            author: components["schemas"]["PublicAuthorDto"];
+            technologies: components["schemas"]["TechnologyDto"][];
+            /** @description Calculé : une solution acceptée existe. */
+            resolved: boolean;
+            /** @description Réponses visibles. */
+            answerCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /**
+             * @description HIDDEN : masquée par la modération, invisible du public.
+             * @enum {string}
+             */
+            visibility: "VISIBLE" | "HIDDEN";
+        };
+        OwnQuestionSummaryPageDto: {
+            data: components["schemas"]["OwnQuestionSummaryDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        AnswerWithQuestionDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            questionId: string;
+            author: components["schemas"]["PublicAuthorDto"];
+            /** @description Texte brut ou Markdown restreint, à afficher sans interpréter de HTML. */
+            body: string;
+            /** @description Extrait de code, jamais exécuté. */
+            code?: string | null;
+            /** @description Réponse retenue comme solution. */
+            accepted: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @description Titre de la question visible à laquelle la réponse appartient. */
+            questionTitle: string;
+        };
+        AnswerWithQuestionPageDto: {
+            data: components["schemas"]["AnswerWithQuestionDto"][];
+            meta: components["schemas"]["PageMetaDto"];
         };
     };
     responses: never;
@@ -815,6 +1111,410 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PublicProfileDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                /** @description Mots recherchés dans le titre et les rubriques ; tous doivent apparaître. */
+                q?: string;
+                /** @description Slug d’une technologie du catalogue. */
+                technology?: string;
+                resolved?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Questions visibles, de la plus récente à la plus ancienne ; filtres combinables. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionSummaryPageDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateQuestionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionDetailDto"];
+                };
+            };
+            /** @description Validation ou technologie inconnue. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionDetailDto"];
+                };
+            };
+            /** @description QUESTION_NOT_FOUND : inexistante ou masquée. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateQuestionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionDetailDto"];
+                };
+            };
+            /** @description NOT_AUTHOR. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_answers: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponses visibles par ordre chronologique ; la solution porte accepted = true. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerPageDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_answer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAnswerDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_accept: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AcceptAnswerDto"];
+            };
+        };
+        responses: {
+            /** @description Idempotent : accepter la solution déjà retenue ne change rien. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionDetailDto"];
+                };
+            };
+            /** @description ANSWER_NOT_ELIGIBLE : réponse inconnue, masquée ou d’une autre question. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description NOT_AUTHOR : seul l’auteur de la question choisit la solution. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_unaccept: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description La question redevient non résolue. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionDetailDto"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AnswersController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAnswerDto"];
+            };
+        };
+        responses: {
+            /** @description La question et l’auteur ne peuvent pas changer. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerDto"];
+                };
+            };
+            /** @description NOT_AUTHOR. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    UserContributionsController_ownQuestions: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                resolved?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Toutes les questions de la session, masquées comprises. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OwnQuestionSummaryPageDto"];
+                };
+            };
+        };
+    };
+    UserContributionsController_questionsOf: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionSummaryPageDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    UserContributionsController_answersOf: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponses visibles sur des questions visibles. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerWithQuestionPageDto"];
                 };
             };
             404: {

@@ -540,6 +540,697 @@
           "users"
         ]
       }
+    },
+    "/api/v1/questions": {
+      "get": {
+        "operationId": "QuestionsController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Mots recherchés dans le titre et les rubriques ; tous doivent apparaître.",
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          },
+          {
+            "name": "technology",
+            "required": false,
+            "in": "query",
+            "description": "Slug d’une technologie du catalogue.",
+            "schema": {
+              "example": "typescript",
+              "type": "string"
+            }
+          },
+          {
+            "name": "resolved",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Questions visibles, de la plus récente à la plus ancienne ; filtres combinables.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionSummaryPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "questions"
+        ]
+      },
+      "post": {
+        "operationId": "QuestionsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuestionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation ou technologie inconnue.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/v1/questions/{id}": {
+      "get": {
+        "operationId": "QuestionsController_detail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionDetailDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "QUESTION_NOT_FOUND : inexistante ou masquée.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "questions"
+        ]
+      },
+      "patch": {
+        "operationId": "QuestionsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuestionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionDetailDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "NOT_AUTHOR.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/v1/questions/{id}/answers": {
+      "get": {
+        "operationId": "QuestionsController_answers",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Réponses visibles par ordre chronologique ; la solution porte accepted = true.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "questions"
+        ]
+      },
+      "post": {
+        "operationId": "QuestionsController_answer",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAnswerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/v1/questions/{id}/accepted-answer": {
+      "put": {
+        "operationId": "QuestionsController_accept",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptAnswerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Idempotent : accepter la solution déjà retenue ne change rien.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ANSWER_NOT_ELIGIBLE : réponse inconnue, masquée ou d’une autre question.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "NOT_AUTHOR : seul l’auteur de la question choisit la solution.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      },
+      "delete": {
+        "operationId": "QuestionsController_unaccept",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "La question redevient non résolue.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionDetailDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/v1/answers/{id}": {
+      "patch": {
+        "operationId": "AnswersController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAnswerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "La question et l’auteur ne peuvent pas changer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "NOT_AUTHOR.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "answers"
+        ]
+      }
+    },
+    "/api/v1/users/me/questions": {
+      "get": {
+        "operationId": "UserContributionsController_ownQuestions",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "resolved",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Toutes les questions de la session, masquées comprises.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnQuestionSummaryPageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/{id}/questions": {
+      "get": {
+        "operationId": "UserContributionsController_questionsOf",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionSummaryPageDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/{id}/answers": {
+      "get": {
+        "operationId": "UserContributionsController_answersOf",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Réponses visibles sur des questions visibles.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerWithQuestionPageDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
     }
   },
   "info": {
@@ -967,6 +1658,550 @@
           "skills",
           "memberSince",
           "stats"
+        ]
+      },
+      "PublicAuthorDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string",
+            "example": "awa_dev"
+          },
+          "countryCode": {
+            "type": "string",
+            "example": "SN",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "username"
+        ]
+      },
+      "QuestionSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "excerpt": {
+            "type": "string",
+            "description": "Début du contexte, 200 caractères au plus."
+          },
+          "author": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "technologies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "resolved": {
+            "type": "boolean",
+            "description": "Calculé : une solution acceptée existe."
+          },
+          "answerCount": {
+            "type": "number",
+            "description": "Réponses visibles."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "excerpt",
+          "author",
+          "technologies",
+          "resolved",
+          "answerCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PageMetaDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number",
+            "description": "Total après application des mêmes filtres et restrictions de visibilité que la liste."
+          }
+        },
+        "required": [
+          "page",
+          "pageSize",
+          "total"
+        ]
+      },
+      "QuestionSummaryPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionSummaryDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "CreateQuestionDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 150
+          },
+          "context": {
+            "type": "string",
+            "description": "Contexte du problème."
+          },
+          "expected": {
+            "type": "string",
+            "description": "Résultat attendu."
+          },
+          "actual": {
+            "type": "string",
+            "description": "Résultat obtenu."
+          },
+          "attempts": {
+            "type": "string",
+            "description": "Tentatives déjà effectuées. Les quatre rubriques totalisent 20 000 caractères au plus."
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 20000
+          },
+          "technologyIds": {
+            "minItems": 1,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "context",
+          "expected",
+          "actual",
+          "attempts",
+          "technologyIds"
+        ]
+      },
+      "AnswerDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "questionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "author": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "body": {
+            "type": "string",
+            "description": "Texte brut ou Markdown restreint, à afficher sans interpréter de HTML."
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "description": "Extrait de code, jamais exécuté."
+          },
+          "accepted": {
+            "type": "boolean",
+            "description": "Réponse retenue comme solution."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "questionId",
+          "author",
+          "body",
+          "accepted",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "QuestionDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "excerpt": {
+            "type": "string",
+            "description": "Début du contexte, 200 caractères au plus."
+          },
+          "author": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "technologies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "resolved": {
+            "type": "boolean",
+            "description": "Calculé : une solution acceptée existe."
+          },
+          "answerCount": {
+            "type": "number",
+            "description": "Réponses visibles."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "context": {
+            "type": "string"
+          },
+          "expected": {
+            "type": "string"
+          },
+          "actual": {
+            "type": "string"
+          },
+          "attempts": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "acceptedAnswerId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "acceptedAnswer": {
+            "nullable": true,
+            "description": "Solution acceptée, reprise ici pour l’afficher en tête.",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AnswerDto"
+              }
+            ]
+          },
+          "viewerIsAuthor": {
+            "type": "boolean",
+            "description": "La session courante est l’auteur : modification et choix de la solution possibles."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "excerpt",
+          "author",
+          "technologies",
+          "resolved",
+          "answerCount",
+          "createdAt",
+          "updatedAt",
+          "context",
+          "expected",
+          "actual",
+          "attempts",
+          "viewerIsAuthor"
+        ]
+      },
+      "UpdateQuestionDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 150
+          },
+          "context": {
+            "type": "string"
+          },
+          "expected": {
+            "type": "string"
+          },
+          "actual": {
+            "type": "string"
+          },
+          "attempts": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 20000,
+            "description": "null retire le code."
+          },
+          "technologyIds": {
+            "minItems": 1,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AnswerPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnswerDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "CreateAnswerDto": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 20000
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 20000
+          }
+        },
+        "required": [
+          "body"
+        ]
+      },
+      "AcceptAnswerDto": {
+        "type": "object",
+        "properties": {
+          "answerId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "answerId"
+        ]
+      },
+      "UpdateAnswerDto": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 20000
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 20000
+          }
+        }
+      },
+      "OwnQuestionSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "excerpt": {
+            "type": "string",
+            "description": "Début du contexte, 200 caractères au plus."
+          },
+          "author": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "technologies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "resolved": {
+            "type": "boolean",
+            "description": "Calculé : une solution acceptée existe."
+          },
+          "answerCount": {
+            "type": "number",
+            "description": "Réponses visibles."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "VISIBLE",
+              "HIDDEN"
+            ],
+            "description": "HIDDEN : masquée par la modération, invisible du public."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "excerpt",
+          "author",
+          "technologies",
+          "resolved",
+          "answerCount",
+          "createdAt",
+          "updatedAt",
+          "visibility"
+        ]
+      },
+      "OwnQuestionSummaryPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OwnQuestionSummaryDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "AnswerWithQuestionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "questionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "author": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "body": {
+            "type": "string",
+            "description": "Texte brut ou Markdown restreint, à afficher sans interpréter de HTML."
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "description": "Extrait de code, jamais exécuté."
+          },
+          "accepted": {
+            "type": "boolean",
+            "description": "Réponse retenue comme solution."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "questionTitle": {
+            "type": "string",
+            "description": "Titre de la question visible à laquelle la réponse appartient."
+          }
+        },
+        "required": [
+          "id",
+          "questionId",
+          "author",
+          "body",
+          "accepted",
+          "createdAt",
+          "updatedAt",
+          "questionTitle"
+        ]
+      },
+      "AnswerWithQuestionPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnswerWithQuestionDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
         ]
       }
     }
