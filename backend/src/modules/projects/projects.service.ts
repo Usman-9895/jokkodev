@@ -60,10 +60,12 @@ export class ProjectsService {
     const project = await this.database.prisma.project.findFirst({ where: { id, visibility: 'VISIBLE' }, select: { ...summarySelect, members: { select: { ...memberSelect, userId: true }, orderBy: memberOrder, take: DETAIL_MEMBERS } } });
     if (!project) throw projectNotFound();
     const isMember = viewer ? project.ownerId === viewer.id || project.members.some(m => m.userId === viewer.id) || await this.isMember(id, viewer.id) : false;
+    const application = viewer ? await this.database.prisma.application.findUnique({ where: { projectId_applicantId: { projectId: id, applicantId: viewer.id } }, select: { id: true, status: true } }) : null;
     return {
       ...this.toSummary(project), objective: project.objective,
       members: project.members.map(m => toMember(m, project.ownerId)),
-      viewerRole: !viewer || !isMember ? null : project.ownerId === viewer.id ? 'OWNER' : 'MEMBER'
+      viewerRole: !viewer || !isMember ? null : project.ownerId === viewer.id ? 'OWNER' : 'MEMBER',
+      viewerApplication: application
     };
   }
 

@@ -1634,6 +1634,319 @@
           "users"
         ]
       }
+    },
+    "/api/v1/projects/{id}/applications": {
+      "post": {
+        "operationId": "ApplicationsController_apply",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApplicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Nouvelle demande PENDING.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "APPLICATION_EXISTS, OWN_PROJECT, ALREADY_MEMBER ou RECRUITMENT_CLOSED.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "applications"
+        ]
+      },
+      "get": {
+        "operationId": "ApplicationsController_received",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "ACCEPTED",
+                "REJECTED",
+                "WITHDRAWN"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Demandes reçues, plus récentes d’abord.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPageDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "NOT_OWNER.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "applications"
+        ]
+      }
+    },
+    "/api/v1/users/me/applications": {
+      "get": {
+        "operationId": "ApplicationsController_sent",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "ACCEPTED",
+                "REJECTED",
+                "WITHDRAWN"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Demandes envoyées par la session.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "applications"
+        ]
+      }
+    },
+    "/api/v1/applications/{id}": {
+      "get": {
+        "operationId": "ApplicationsController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Inexistante ou consultée par un tiers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "applications"
+        ]
+      },
+      "patch": {
+        "operationId": "ApplicationsController_decide",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecideApplicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Répéter la décision déjà appliquée renvoie l’état courant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "TRANSITION_FORBIDDEN : la décision n’appartient pas à cette partie.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "INVALID_TRANSITION : demande déjà traitée.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "applications"
+        ]
+      }
     }
   },
   "info": {
@@ -2760,6 +3073,28 @@
           "joinedAt"
         ]
       },
+      "ViewerApplicationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "REJECTED",
+              "WITHDRAWN"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "status"
+        ]
+      },
       "ProjectDetailDto": {
         "type": "object",
         "properties": {
@@ -2825,6 +3160,16 @@
             ],
             "nullable": true,
             "description": "Rôle de la session courante dans le projet."
+          },
+          "viewerApplication": {
+            "nullable": true,
+            "description": "Candidature de la session à ce projet, s’il y en a une.",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ViewerApplicationDto"
+              }
+            ]
           }
         },
         "required": [
@@ -2987,6 +3332,146 @@
         "required": [
           "data",
           "meta"
+        ]
+      },
+      "CreateApplicationDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "ApplicationProjectDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "available": {
+            "type": "boolean",
+            "description": "false si le projet a été masqué : son contenu n’est plus publié, seul le statut de la demande reste suivi."
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "owner": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PublicAuthorDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "available"
+        ]
+      },
+      "ApplicationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "REJECTED",
+              "WITHDRAWN"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "Privé : visible uniquement par le candidat et le responsable."
+          },
+          "applicant": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "project": {
+            "$ref": "#/components/schemas/ApplicationProjectDto"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decidedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "viewerRole": {
+            "type": "string",
+            "enum": [
+              "APPLICANT",
+              "OWNER"
+            ],
+            "description": "Partie que représente la session."
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "message",
+          "applicant",
+          "project",
+          "createdAt",
+          "viewerRole"
+        ]
+      },
+      "ApplicationPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApplicationDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "DecideApplicationDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACCEPTED",
+              "REJECTED",
+              "WITHDRAWN"
+            ],
+            "description": "ACCEPTED et REJECTED : responsable. WITHDRAWN : candidat. Uniquement depuis PENDING."
+          }
+        },
+        "required": [
+          "status"
         ]
       }
     }

@@ -29,10 +29,16 @@ export class MemberDto extends PublicAuthorDto {
   @ApiProperty({ format: 'date-time' }) joinedAt!: string;
 }
 
+export class ViewerApplicationDto {
+  @ApiProperty({ format: 'uuid' }) id!: string;
+  @ApiProperty({ enum: ['PENDING', 'ACCEPTED', 'REJECTED', 'WITHDRAWN'] }) status!: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'WITHDRAWN';
+}
+
 export class ProjectDetailDto extends ProjectSummaryDto {
   @ApiProperty() objective!: string;
   @ApiProperty({ type: [MemberDto], description: 'Les 50 premiers membres ; liste complète via /projects/:id/members.' }) members!: MemberDto[];
   @ApiPropertyOptional({ enum: ['OWNER', 'MEMBER'], nullable: true, type: String, description: 'Rôle de la session courante dans le projet.' }) viewerRole!: 'OWNER' | 'MEMBER' | null;
+  @ApiPropertyOptional({ nullable: true, type: ViewerApplicationDto, description: 'Candidature de la session à ce projet, s’il y en a une.' }) viewerApplication!: ViewerApplicationDto | null;
 }
 
 export class OwnProjectSummaryDto extends ProjectSummaryDto {

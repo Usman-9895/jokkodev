@@ -129,3 +129,7 @@ Branche `feature/questions`. `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm 
 ## JokkoProjects — 17 octobre 2026
 
 Branche `feature/projects`. `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm api:generate` réussis ; `pnpm test` : 10 backend et 26 frontend/client ; `pnpm test:integration` : 48 tests sur PostgreSQL réel, dont 6 pour les projets (responsable déduit de la session et membre une seule fois, échec simulé de l'adhésion par trigger sans projet partiel, propriété, fermeture et réouverture du recrutement, filtres combinés, membres publics sans données privées, projet masqué inaccessible, profils sans doublon).
+
+## Candidatures — 17 octobre 2026
+
+Branche `feature/applications`. `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm api:generate` réussis ; `pnpm test` : 10 backend et 26 frontend/client ; `pnpm test:integration` : 57 tests sur PostgreSQL réel, réussis trois fois de suite, dont 9 pour les candidatures (parcours complet, message privé absent des vues publiques et refusé aux tiers comme à l'administrateur, trois envois simultanés pour une seule demande, règles de candidature, fermeture avec demandes en attente traitables, cinq candidatures concurrentes d'une fermeture, transitions par partie, décisions simultanées sur cinq tours avec une seule issue et une adhésion cohérente, projet masqué).

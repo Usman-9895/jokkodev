@@ -436,6 +436,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/projects/{id}/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApplicationsController_received"];
+        put?: never;
+        post: operations["ApplicationsController_apply"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApplicationsController_sent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/applications/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApplicationsController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ApplicationsController_decide"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -802,6 +850,12 @@ export interface components {
             /** Format: date-time */
             joinedAt: string;
         };
+        ViewerApplicationDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            status: "PENDING" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+        };
         ProjectDetailDto: {
             /** Format: uuid */
             id: string;
@@ -828,6 +882,8 @@ export interface components {
              * @enum {string|null}
              */
             viewerRole?: "OWNER" | "MEMBER" | null;
+            /** @description Candidature de la session à ce projet, s’il y en a une. */
+            viewerApplication?: components["schemas"]["ViewerApplicationDto"] | null;
         };
         UpdateProjectDto: {
             title?: string;
@@ -870,6 +926,49 @@ export interface components {
         OwnProjectSummaryPageDto: {
             data: components["schemas"]["OwnProjectSummaryDto"][];
             meta: components["schemas"]["PageMetaDto"];
+        };
+        CreateApplicationDto: {
+            message: string;
+        };
+        ApplicationProjectDto: {
+            /** Format: uuid */
+            id: string;
+            /** @description false si le projet a été masqué : son contenu n’est plus publié, seul le statut de la demande reste suivi. */
+            available: boolean;
+            title?: string | null;
+            /** @enum {string|null} */
+            recruitmentStatus?: "OPEN" | "CLOSED" | null;
+            owner?: components["schemas"]["PublicAuthorDto"] | null;
+        };
+        ApplicationDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            status: "PENDING" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+            /** @description Privé : visible uniquement par le candidat et le responsable. */
+            message: string;
+            applicant: components["schemas"]["PublicAuthorDto"];
+            project: components["schemas"]["ApplicationProjectDto"];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            decidedAt?: string | null;
+            /**
+             * @description Partie que représente la session.
+             * @enum {string}
+             */
+            viewerRole: "APPLICANT" | "OWNER";
+        };
+        ApplicationPageDto: {
+            data: components["schemas"]["ApplicationDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        DecideApplicationDto: {
+            /**
+             * @description ACCEPTED et REJECTED : responsable. WITHDRAWN : candidat. Uniquement depuis PENDING.
+             * @enum {string}
+             */
+            status: "ACCEPTED" | "REJECTED" | "WITHDRAWN";
         };
     };
     responses: never;
@@ -1936,6 +2035,182 @@ export interface operations {
                 };
             };
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_received: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: "PENDING" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Demandes reçues, plus récentes d’abord. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationPageDto"];
+                };
+            };
+            /** @description NOT_OWNER. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_apply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateApplicationDto"];
+            };
+        };
+        responses: {
+            /** @description Nouvelle demande PENDING. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description APPLICATION_EXISTS, OWN_PROJECT, ALREADY_MEMBER ou RECRUITMENT_CLOSED. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_sent: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: "PENDING" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Demandes envoyées par la session. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationPageDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationDto"];
+                };
+            };
+            /** @description Inexistante ou consultée par un tiers. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_decide: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecideApplicationDto"];
+            };
+        };
+        responses: {
+            /** @description Répéter la décision déjà appliquée renvoie l’état courant. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationDto"];
+                };
+            };
+            /** @description TRANSITION_FORBIDDEN : la décision n’appartient pas à cette partie. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description INVALID_TRANSITION : demande déjà traitée. */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
