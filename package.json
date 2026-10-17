@@ -19,6 +19,8 @@
     "db:migrate:dev": "pnpm --filter @jokkodev/backend db:migrate:dev",
     "db:migrate:deploy": "pnpm --filter @jokkodev/backend db:migrate:deploy",
     "db:seed": "pnpm --filter @jokkodev/backend db:seed",
+    "admin:grant": "pnpm --filter @jokkodev/backend admin:grant",
+    "admin:revoke": "pnpm --filter @jokkodev/backend admin:revoke",
     "api:export": "pnpm --filter @jokkodev/backend api:export",
     "api:generate": "pnpm api:export && pnpm --filter @jokkodev/api-client generate",
     "licenses:inventory": "node scripts/licenses.mjs",

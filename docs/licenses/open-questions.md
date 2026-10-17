@@ -23,3 +23,21 @@ Prévention retenue : `sharp`, optionnel dans Next.js, est exclu de l’installa
 - Certaines notices mentionnent GPL dans leurs clauses de compatibilité ou leur historique (Python/argparse, MPL, EPL) ; cette mention textuelle seule n’établit pas que le paquet est distribué sous GPL.
 
 L’inventaire porte sur les dépendances du workspace après exclusion de sharp. Les archives de téléchargement et anciennes versions présentes dans le cache local ne font pas partie du livrable à publier.
+
+## Dépendances backend ajoutées (comptes et sécurité)
+
+Relevé du 17 octobre 2026 avec `pnpm licenses:inventory` sur Linux. L'inventaire et les notices versionnés ne sont pas régénérés dans la même PR : le script produit des chemins et des paquets optionnels propres à la plateforme (Windows ou Linux), ce qui masquerait les changements réels. Régénérer l'ensemble sur la plateforme de référence avant la soumission.
+
+| Paquet | Version | Type | Licence déclarée | Point d'attention |
+|---|---|---|---|---|
+| argon2 | 0.45.1 | Directe | MIT | Module natif : binaires précompilés de l'implémentation de référence Argon2 (CC0 ou Apache-2.0 selon le dépôt amont), notice à joindre |
+| @phc/format | 1.0.0 | Transitive | MIT | |
+| node-addon-api | 8.9.2 | Transitive | MIT | |
+| node-gyp-build | 4.8.4 | Transitive | MIT | |
+| cross-env | 10.1.0 | Transitive | MIT | Script d'installation non exécuté (`ignoredBuiltDependencies`) |
+| csrf-csrf | 4.0.3 | Directe | ISC | Dernière publication en mai 2025, à surveiller |
+| http-errors | 2.0.1 | Transitive | MIT | Déjà présent via Express |
+| nodemailer | 10.1.2 | Directe | MIT-0 | |
+| @types/nodemailer | 8.0.2 | Développement | MIT | |
+
+Aucune licence GPL, LGPL ou AGPL déclarée dans ces ajouts.

@@ -1,6 +1,330 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/v1/auth/csrf": {
+      "get": {
+        "operationId": "AuthController_token",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CsrfTokenDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Compte MEMBER créé, session ouverte et email de vérification envoyé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "EMAIL_TAKEN ou USERNAME_TAKEN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResultDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "INVALID_CREDENTIALS.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ACCOUNT_SUSPENDED, CSRF_ORIGIN_REJECTED ou CSRF_TOKEN_INVALID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "RATE_LIMITED, avec Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Session révoquée côté serveur et cookies effacés, même si la session avait déjà expiré."
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUserDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/forgot-password": {
+      "post": {
+        "operationId": "AuthController_forgotPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Réponse identique que le compte existe ou non."
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/reset-password": {
+      "post": {
+        "operationId": "AuthController_resetPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Mot de passe changé et toutes les sessions du compte révoquées."
+          },
+          "400": {
+            "description": "TOKEN_INVALID : lien inconnu, expiré ou déjà utilisé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/verify-email": {
+      "post": {
+        "operationId": "AuthController_verifyEmail",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "TOKEN_INVALID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/resend-verification": {
+      "post": {
+        "operationId": "AuthController_resendVerification",
+        "parameters": [],
+        "responses": {
+          "202": {
+            "description": "Nouvel email envoyé si l’adresse n’est pas encore vérifiée."
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/v1/health/live": {
       "get": {
         "operationId": "HealthController_live",
@@ -52,30 +376,1685 @@
           "health"
         ]
       }
+    },
+    "/api/v1/technologies": {
+      "get": {
+        "operationId": "TechnologiesController_list",
+        "parameters": [
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Recherche dans le nom, sans tenir compte de la casse.",
+            "schema": {
+              "maxLength": 50,
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 200,
+              "default": 200,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Catalogue commun trié par nom.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TechnologyListDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "technologies"
+        ]
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "operationId": "UsersController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "UsersController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnProfileDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation, technologie inconnue ou champ non modifiable (email, role, status).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "USERNAME_TAKEN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/{reference}": {
+      "get": {
+        "operationId": "UsersController_profile",
+        "parameters": [
+          {
+            "name": "reference",
+            "required": true,
+            "in": "path",
+            "description": "Identifiant ou pseudonyme.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicProfileDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/questions": {
+      "get": {
+        "operationId": "QuestionsController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Mots recherchés dans le titre et les rubriques ; tous doivent apparaître.",
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          },
+          {
+            "name": "technology",
+            "required": false,
+            "in": "query",
+            "description": "Slug d’une technologie du catalogue.",
+            "schema": {
+              "example": "typescript",
+              "type": "string"
+            }
+          },
+          {
+            "name": "resolved",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Questions visibles, de la plus récente à la plus ancienne ; filtres combinables.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionSummaryPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "questions"
+        ]
+      },
+      "post": {
+        "operationId": "QuestionsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuestionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation ou technologie inconnue.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/v1/questions/{id}": {
+      "get": {
+        "operationId": "QuestionsController_detail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionDetailDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "QUESTION_NOT_FOUND : inexistante ou masquée.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "questions"
+        ]
+      },
+      "patch": {
+        "operationId": "QuestionsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuestionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionDetailDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "NOT_AUTHOR.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/v1/questions/{id}/answers": {
+      "get": {
+        "operationId": "QuestionsController_answers",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Réponses visibles par ordre chronologique ; la solution porte accepted = true.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "questions"
+        ]
+      },
+      "post": {
+        "operationId": "QuestionsController_answer",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAnswerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/v1/questions/{id}/accepted-answer": {
+      "put": {
+        "operationId": "QuestionsController_accept",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptAnswerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Idempotent : accepter la solution déjà retenue ne change rien.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ANSWER_NOT_ELIGIBLE : réponse inconnue, masquée ou d’une autre question.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "NOT_AUTHOR : seul l’auteur de la question choisit la solution.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      },
+      "delete": {
+        "operationId": "QuestionsController_unaccept",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "La question redevient non résolue.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionDetailDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/v1/answers/{id}": {
+      "patch": {
+        "operationId": "AnswersController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAnswerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "La question et l’auteur ne peuvent pas changer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "NOT_AUTHOR.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "answers"
+        ]
+      }
+    },
+    "/api/v1/users/me/questions": {
+      "get": {
+        "operationId": "UserContributionsController_ownQuestions",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "resolved",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Toutes les questions de la session, masquées comprises.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnQuestionSummaryPageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/{id}/questions": {
+      "get": {
+        "operationId": "UserContributionsController_questionsOf",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionSummaryPageDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/{id}/answers": {
+      "get": {
+        "operationId": "UserContributionsController_answersOf",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Réponses visibles sur des questions visibles.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerWithQuestionPageDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/projects": {
+      "get": {
+        "operationId": "ProjectsController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "recruitment",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "OPEN",
+                "CLOSED"
+              ]
+            }
+          },
+          {
+            "name": "q",
+            "required": false,
+            "in": "query",
+            "description": "Mots recherchés dans le titre et l’objectif.",
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          },
+          {
+            "name": "technology",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "react",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projets visibles, plus récents d’abord ; filtres combinables.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectSummaryPageDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "post": {
+        "operationId": "ProjectsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Le responsable est la session ; il devient membre dans la même transaction.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "projects"
+        ]
+      }
+    },
+    "/api/v1/projects/{id}": {
+      "get": {
+        "operationId": "ProjectsController_detail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDetailDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "PROJECT_NOT_FOUND : inexistant ou masqué.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      },
+      "patch": {
+        "operationId": "ProjectsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDetailDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "NOT_OWNER.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "projects"
+        ]
+      }
+    },
+    "/api/v1/projects/{id}/members": {
+      "get": {
+        "operationId": "ProjectsController_members",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profils publics des membres, responsable en premier.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberPageDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "projects"
+        ]
+      }
+    },
+    "/api/v1/users/me/projects": {
+      "get": {
+        "operationId": "UserProjectsController_own",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "role",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "OWNER",
+                "MEMBER"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projets créés ou rejoints par la session, masqués compris.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnProjectSummaryPageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/{id}/projects": {
+      "get": {
+        "operationId": "UserProjectsController_ofUser",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projets visibles créés ou rejoints, sans doublon.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectSummaryPageDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/projects/{id}/applications": {
+      "post": {
+        "operationId": "ApplicationsController_apply",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApplicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Nouvelle demande PENDING.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "APPLICATION_EXISTS, OWN_PROJECT, ALREADY_MEMBER ou RECRUITMENT_CLOSED.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "applications"
+        ]
+      },
+      "get": {
+        "operationId": "ApplicationsController_received",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "ACCEPTED",
+                "REJECTED",
+                "WITHDRAWN"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Demandes reçues, plus récentes d’abord.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPageDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "NOT_OWNER.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "applications"
+        ]
+      }
+    },
+    "/api/v1/users/me/applications": {
+      "get": {
+        "operationId": "ApplicationsController_sent",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "ACCEPTED",
+                "REJECTED",
+                "WITHDRAWN"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Demandes envoyées par la session.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "applications"
+        ]
+      }
+    },
+    "/api/v1/applications/{id}": {
+      "get": {
+        "operationId": "ApplicationsController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Inexistante ou consultée par un tiers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "applications"
+        ]
+      },
+      "patch": {
+        "operationId": "ApplicationsController_decide",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecideApplicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Répéter la décision déjà appliquée renvoie l’état courant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "TRANSITION_FORBIDDEN : la décision n’appartient pas à cette partie.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "INVALID_TRANSITION : demande déjà traitée.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "applications"
+        ]
+      }
     }
   },
   "info": {
     "title": "JokkoDev API",
-    "description": "Fondations techniques. Aucune fonctionnalité métier.",
+    "description": "API REST de JokkoDev. Session par cookie HttpOnly (`__Host-jokkodev_session` en production) ; toute requête POST, PUT, PATCH ou DELETE exige l’en-tête X-CSRF-Token obtenu via GET /api/v1/auth/csrf et une origine autorisée.",
     "version": "1.0.0",
     "contact": {}
   },
   "tags": [],
   "servers": [],
   "components": {
+    "securitySchemes": {
+      "cookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "__Host-jokkodev_session"
+      }
+    },
     "schemas": {
-      "HealthDto": {
+      "CsrfTokenDto": {
         "type": "object",
         "properties": {
-          "status": {
+          "csrfToken": {
             "type": "string",
-            "enum": [
-              "ok"
-            ]
+            "description": "À renvoyer dans l’en-tête X-CSRF-Token de toute requête POST, PUT, PATCH ou DELETE."
           }
         },
         "required": [
-          "status"
+          "csrfToken"
+        ]
+      },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "awa@example.com",
+            "maxLength": 254
+          },
+          "username": {
+            "type": "string",
+            "example": "awa_dev",
+            "pattern": "^[A-Za-z0-9_]{3,30}$",
+            "description": "3 à 30 caractères : lettres ASCII, chiffres et tiret bas. Unique sans tenir compte de la casse."
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 128,
+            "description": "Espaces autorisés, aucune troncature ni règle de composition."
+          }
+        },
+        "required": [
+          "email",
+          "username",
+          "password"
+        ]
+      },
+      "CurrentUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string",
+            "example": "awa_dev"
+          },
+          "email": {
+            "type": "string",
+            "example": "awa@example.com",
+            "description": "Visible uniquement par le titulaire de la session."
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "MEMBER",
+              "ADMIN"
+            ]
+          },
+          "emailVerified": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "email",
+          "role",
+          "emailVerified"
+        ]
+      },
+      "AuthResultDto": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/CurrentUserDto"
+          },
+          "csrfToken": {
+            "type": "string",
+            "description": "Nouveau jeton CSRF lié à la session créée."
+          }
+        },
+        "required": [
+          "user",
+          "csrfToken"
         ]
       },
       "ApiErrorDto": {
@@ -107,6 +2086,1392 @@
           "message",
           "fieldErrors",
           "requestId"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "awa@example.com",
+            "maxLength": 254
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "ForgotPasswordDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "awa@example.com",
+            "maxLength": 254
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Jeton reçu par email (paramètre token du lien).",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 12,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "token",
+          "password"
+        ]
+      },
+      "VerifyEmailDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Jeton reçu par email (paramètre token du lien).",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "HealthDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "TechnologyDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "TypeScript"
+          },
+          "slug": {
+            "type": "string",
+            "example": "typescript"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ]
+      },
+      "TechnologyListDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "ProfileStatsDto": {
+        "type": "object",
+        "properties": {
+          "questions": {
+            "type": "number",
+            "description": "Questions visibles."
+          },
+          "answers": {
+            "type": "number",
+            "description": "Réponses visibles dont la question est visible."
+          },
+          "projects": {
+            "type": "number",
+            "description": "Projets visibles créés ou rejoints."
+          }
+        },
+        "required": [
+          "questions",
+          "answers",
+          "projects"
+        ]
+      },
+      "OwnProfileDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string",
+            "example": "awa_dev"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true,
+            "example": "SN",
+            "description": "ISO 3166-1 alpha-2."
+          },
+          "links": {
+            "example": [
+              "https://github.com/awa-dev"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "memberSince": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/ProfileStatsDto"
+          },
+          "email": {
+            "type": "string",
+            "example": "awa@example.com",
+            "description": "Privé : visible uniquement par le titulaire."
+          },
+          "emailVerified": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "links",
+          "skills",
+          "memberSince",
+          "stats",
+          "email",
+          "emailVerified"
+        ]
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_]{3,30}$"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true,
+            "example": "SN"
+          },
+          "links": {
+            "maxItems": 3,
+            "description": "URLs HTTPS absolues de 2048 caractères au plus.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skillIds": {
+            "maxItems": 15,
+            "description": "Identifiants de technologies du catalogue.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PublicProfileDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string",
+            "example": "awa_dev"
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true,
+            "example": "SN",
+            "description": "ISO 3166-1 alpha-2."
+          },
+          "links": {
+            "example": [
+              "https://github.com/awa-dev"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "memberSince": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/ProfileStatsDto"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "links",
+          "skills",
+          "memberSince",
+          "stats"
+        ]
+      },
+      "PublicAuthorDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string",
+            "example": "awa_dev"
+          },
+          "countryCode": {
+            "type": "string",
+            "example": "SN",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "username"
+        ]
+      },
+      "QuestionSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "excerpt": {
+            "type": "string",
+            "description": "Début du contexte, 200 caractères au plus."
+          },
+          "author": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "technologies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "resolved": {
+            "type": "boolean",
+            "description": "Calculé : une solution acceptée existe."
+          },
+          "answerCount": {
+            "type": "number",
+            "description": "Réponses visibles."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "excerpt",
+          "author",
+          "technologies",
+          "resolved",
+          "answerCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PageMetaDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number"
+          },
+          "pageSize": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number",
+            "description": "Total après application des mêmes filtres et restrictions de visibilité que la liste."
+          }
+        },
+        "required": [
+          "page",
+          "pageSize",
+          "total"
+        ]
+      },
+      "QuestionSummaryPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionSummaryDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "CreateQuestionDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 150
+          },
+          "context": {
+            "type": "string",
+            "description": "Contexte du problème."
+          },
+          "expected": {
+            "type": "string",
+            "description": "Résultat attendu."
+          },
+          "actual": {
+            "type": "string",
+            "description": "Résultat obtenu."
+          },
+          "attempts": {
+            "type": "string",
+            "description": "Tentatives déjà effectuées. Les quatre rubriques totalisent 20 000 caractères au plus."
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 20000
+          },
+          "technologyIds": {
+            "minItems": 1,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "context",
+          "expected",
+          "actual",
+          "attempts",
+          "technologyIds"
+        ]
+      },
+      "AnswerDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "questionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "author": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "body": {
+            "type": "string",
+            "description": "Texte brut ou Markdown restreint, à afficher sans interpréter de HTML."
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "description": "Extrait de code, jamais exécuté."
+          },
+          "accepted": {
+            "type": "boolean",
+            "description": "Réponse retenue comme solution."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "questionId",
+          "author",
+          "body",
+          "accepted",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "QuestionDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "excerpt": {
+            "type": "string",
+            "description": "Début du contexte, 200 caractères au plus."
+          },
+          "author": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "technologies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "resolved": {
+            "type": "boolean",
+            "description": "Calculé : une solution acceptée existe."
+          },
+          "answerCount": {
+            "type": "number",
+            "description": "Réponses visibles."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "context": {
+            "type": "string"
+          },
+          "expected": {
+            "type": "string"
+          },
+          "actual": {
+            "type": "string"
+          },
+          "attempts": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "acceptedAnswerId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "acceptedAnswer": {
+            "nullable": true,
+            "description": "Solution acceptée, reprise ici pour l’afficher en tête.",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AnswerDto"
+              }
+            ]
+          },
+          "viewerIsAuthor": {
+            "type": "boolean",
+            "description": "La session courante est l’auteur : modification et choix de la solution possibles."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "excerpt",
+          "author",
+          "technologies",
+          "resolved",
+          "answerCount",
+          "createdAt",
+          "updatedAt",
+          "context",
+          "expected",
+          "actual",
+          "attempts",
+          "viewerIsAuthor"
+        ]
+      },
+      "UpdateQuestionDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 150
+          },
+          "context": {
+            "type": "string"
+          },
+          "expected": {
+            "type": "string"
+          },
+          "actual": {
+            "type": "string"
+          },
+          "attempts": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 20000,
+            "description": "null retire le code."
+          },
+          "technologyIds": {
+            "minItems": 1,
+            "maxItems": 5,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AnswerPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnswerDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "CreateAnswerDto": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 20000
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 20000
+          }
+        },
+        "required": [
+          "body"
+        ]
+      },
+      "AcceptAnswerDto": {
+        "type": "object",
+        "properties": {
+          "answerId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "answerId"
+        ]
+      },
+      "UpdateAnswerDto": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 20000
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 20000
+          }
+        }
+      },
+      "OwnQuestionSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "excerpt": {
+            "type": "string",
+            "description": "Début du contexte, 200 caractères au plus."
+          },
+          "author": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "technologies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "resolved": {
+            "type": "boolean",
+            "description": "Calculé : une solution acceptée existe."
+          },
+          "answerCount": {
+            "type": "number",
+            "description": "Réponses visibles."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "VISIBLE",
+              "HIDDEN"
+            ],
+            "description": "HIDDEN : masquée par la modération, invisible du public."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "excerpt",
+          "author",
+          "technologies",
+          "resolved",
+          "answerCount",
+          "createdAt",
+          "updatedAt",
+          "visibility"
+        ]
+      },
+      "OwnQuestionSummaryPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OwnQuestionSummaryDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "AnswerWithQuestionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "questionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "author": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "body": {
+            "type": "string",
+            "description": "Texte brut ou Markdown restreint, à afficher sans interpréter de HTML."
+          },
+          "code": {
+            "type": "string",
+            "nullable": true,
+            "description": "Extrait de code, jamais exécuté."
+          },
+          "accepted": {
+            "type": "boolean",
+            "description": "Réponse retenue comme solution."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "questionTitle": {
+            "type": "string",
+            "description": "Titre de la question visible à laquelle la réponse appartient."
+          }
+        },
+        "required": [
+          "id",
+          "questionId",
+          "author",
+          "body",
+          "accepted",
+          "createdAt",
+          "updatedAt",
+          "questionTitle"
+        ]
+      },
+      "AnswerWithQuestionPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnswerWithQuestionDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "ProjectSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Début de l’objectif, 200 caractères au plus."
+          },
+          "owner": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "technologies": {
+            "description": "Compétences recherchées.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "availability": {
+            "type": "string",
+            "nullable": true
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "Membres, responsable compris."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "owner",
+          "technologies",
+          "recruitmentStatus",
+          "memberCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ProjectSummaryPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectSummaryDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "CreateProjectDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 150
+          },
+          "objective": {
+            "type": "string",
+            "minLength": 30,
+            "maxLength": 5000
+          },
+          "technologyIds": {
+            "minItems": 1,
+            "maxItems": 10,
+            "description": "Compétences recherchées (technologies du catalogue).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "availability": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 300,
+            "example": "5 heures par semaine, en soirée"
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ],
+            "default": "OPEN"
+          }
+        },
+        "required": [
+          "title",
+          "objective",
+          "technologyIds"
+        ]
+      },
+      "MemberDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string",
+            "example": "awa_dev"
+          },
+          "countryCode": {
+            "type": "string",
+            "example": "SN",
+            "nullable": true
+          },
+          "isOwner": {
+            "type": "boolean",
+            "description": "Responsable du projet."
+          },
+          "joinedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "isOwner",
+          "joinedAt"
+        ]
+      },
+      "ViewerApplicationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "REJECTED",
+              "WITHDRAWN"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "status"
+        ]
+      },
+      "ProjectDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Début de l’objectif, 200 caractères au plus."
+          },
+          "owner": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "technologies": {
+            "description": "Compétences recherchées.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "availability": {
+            "type": "string",
+            "nullable": true
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "Membres, responsable compris."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "objective": {
+            "type": "string"
+          },
+          "members": {
+            "description": "Les 50 premiers membres ; liste complète via /projects/:id/members.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberDto"
+            }
+          },
+          "viewerRole": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "MEMBER"
+            ],
+            "nullable": true,
+            "description": "Rôle de la session courante dans le projet."
+          },
+          "viewerApplication": {
+            "nullable": true,
+            "description": "Candidature de la session à ce projet, s’il y en a une.",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ViewerApplicationDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "owner",
+          "technologies",
+          "recruitmentStatus",
+          "memberCount",
+          "createdAt",
+          "updatedAt",
+          "objective",
+          "members"
+        ]
+      },
+      "UpdateProjectDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 150
+          },
+          "objective": {
+            "type": "string",
+            "minLength": 30,
+            "maxLength": 5000
+          },
+          "technologyIds": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "availability": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 300
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ],
+            "description": "CLOSED bloque les nouvelles candidatures ; les demandes en attente restent traitables."
+          }
+        }
+      },
+      "MemberPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "OwnProjectSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Début de l’objectif, 200 caractères au plus."
+          },
+          "owner": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "technologies": {
+            "description": "Compétences recherchées.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TechnologyDto"
+            }
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "availability": {
+            "type": "string",
+            "nullable": true
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "Membres, responsable compris."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "MEMBER"
+            ]
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "VISIBLE",
+              "HIDDEN"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "owner",
+          "technologies",
+          "recruitmentStatus",
+          "memberCount",
+          "createdAt",
+          "updatedAt",
+          "role",
+          "visibility"
+        ]
+      },
+      "OwnProjectSummaryPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OwnProjectSummaryDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "CreateApplicationDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "ApplicationProjectDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "available": {
+            "type": "boolean",
+            "description": "false si le projet a été masqué : son contenu n’est plus publié, seul le statut de la demande reste suivi."
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "recruitmentStatus": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "owner": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PublicAuthorDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "available"
+        ]
+      },
+      "ApplicationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "ACCEPTED",
+              "REJECTED",
+              "WITHDRAWN"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "Privé : visible uniquement par le candidat et le responsable."
+          },
+          "applicant": {
+            "$ref": "#/components/schemas/PublicAuthorDto"
+          },
+          "project": {
+            "$ref": "#/components/schemas/ApplicationProjectDto"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decidedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "viewerRole": {
+            "type": "string",
+            "enum": [
+              "APPLICANT",
+              "OWNER"
+            ],
+            "description": "Partie que représente la session."
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "message",
+          "applicant",
+          "project",
+          "createdAt",
+          "viewerRole"
+        ]
+      },
+      "ApplicationPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApplicationDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "DecideApplicationDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACCEPTED",
+              "REJECTED",
+              "WITHDRAWN"
+            ],
+            "description": "ACCEPTED et REJECTED : responsable. WITHDRAWN : candidat. Uniquement depuis PENDING."
+          }
+        },
+        "required": [
+          "status"
         ]
       }
     }

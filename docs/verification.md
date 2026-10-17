@@ -101,3 +101,35 @@ Exécution par Serge sur Linux (Ubuntu 24.04), Node.js 24.15.0, pnpm 10.34.6, br
 | `pnpm api:generate` | Contrat OpenAPI et types inchangés (aucune route ajoutée) |
 
 Non exécuté sur cette branche : `pnpm test:smoke`, `pnpm licenses:inventory` (aucune dépendance ajoutée). L'exécution Linux du socle est désormais vérifiée pour l'installation, le lint, le typage, les tests et les builds.
+
+## Comptes, sessions et CSRF — 17 octobre 2026
+
+Branche `feature/auth`, mêmes environnement et base dédiée que ci-dessus.
+
+| Contrôle exécuté | Résultat |
+|---|---|
+| `pnpm test` | 10 tests backend sans base (dont CSRF, origine, configuration de production) et 26 tests frontend/client réussis |
+| `pnpm test:integration` | 25 tests sur PostgreSQL réel, réussis trois fois de suite |
+| `pnpm lint`, `pnpm typecheck`, `pnpm build` | Réussis |
+| `pnpm api:generate` | Contrat et types régénérés avec les routes `/auth/*` |
+| Parcours via le proxy Next.js (port 3000) | Mutation sans jeton 403, origine étrangère 403, inscription 201 avec cookies HttpOnly SameSite=Lax Path=/ sans Domain, `/auth/me` 200 |
+| `pnpm admin:grant` / `admin:revoke` | Usage, compte inconnu et email non vérifié refusés ; attribution puis retrait réussis |
+| `pnpm licenses:inventory` | Exécuté ; nouvelles dépendances relevées dans `docs/licenses/open-questions.md`, fichiers générés non versionnés dans cette PR |
+
+Non vérifié : envoi SMTP réel (fournisseur non choisi), cookies `__Host-` en HTTPS (aucun environnement HTTPS disponible), `pnpm test:smoke`.
+
+## Profils et technologies — 17 octobre 2026
+
+Branche `feature/profiles`. `pnpm lint`, `pnpm typecheck`, `pnpm build` et `pnpm api:generate` réussis ; `pnpm test` : 10 tests backend et 26 frontend/client ; `pnpm test:integration` : 31 tests sur PostgreSQL réel (ajout du catalogue, du profil public/privé, des champs protégés, des URLs refusées, des compteurs visibles et du caractère NUL rejeté).
+
+## JokkoHelp — 17 octobre 2026
+
+Branche `feature/questions`. `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm api:generate` réussis ; `pnpm test` : 10 tests backend et 26 frontend/client ; `pnpm test:integration` : 42 tests sur PostgreSQL réel, dont 11 pour JokkoHelp (création et validation, propriété, acceptation/remplacement/retrait/répétition, solution étrangère ou masquée refusée, quatre acceptations concurrentes laissant une seule solution, recherche et filtres combinés, pagination, balises conservées sans transformation, question masquée inaccessible par toutes les routes publiques).
+
+## JokkoProjects — 17 octobre 2026
+
+Branche `feature/projects`. `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm api:generate` réussis ; `pnpm test` : 10 backend et 26 frontend/client ; `pnpm test:integration` : 48 tests sur PostgreSQL réel, dont 6 pour les projets (responsable déduit de la session et membre une seule fois, échec simulé de l'adhésion par trigger sans projet partiel, propriété, fermeture et réouverture du recrutement, filtres combinés, membres publics sans données privées, projet masqué inaccessible, profils sans doublon).
+
+## Candidatures — 17 octobre 2026
+
+Branche `feature/applications`. `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm api:generate` réussis ; `pnpm test` : 10 backend et 26 frontend/client ; `pnpm test:integration` : 57 tests sur PostgreSQL réel, réussis trois fois de suite, dont 9 pour les candidatures (parcours complet, message privé absent des vues publiques et refusé aux tiers comme à l'administrateur, trois envois simultanés pour une seule demande, règles de candidature, fermeture avec demandes en attente traitables, cinq candidatures concurrentes d'une fermeture, transitions par partie, décisions simultanées sur cinq tours avec une seule issue et une adhésion cohérente, projet masqué).

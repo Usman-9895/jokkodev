@@ -6,6 +6,8 @@ ignoredOptionalDependencies:
   - sharp
 ignoredBuiltDependencies:
   - '@scarf/scarf'
+  # Binaires précompilés chargés par node-gyp-build ; aucune compilation à l'installation.
+  - argon2
 strictPeerDependencies: true
 onlyBuiltDependencies:
   - '@nestjs/core'

@@ -4,6 +4,150 @@
  */
 
 export interface paths {
+    "/api/v1/auth/csrf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AuthController_token"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AuthController_register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AuthController_login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AuthController_logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AuthController_me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/forgot-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AuthController_forgotPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AuthController_resetPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/verify-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AuthController_verifyEmail"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/resend-verification": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AuthController_resendVerification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health/live": {
         parameters: {
             query?: never;
@@ -36,13 +180,348 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/technologies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TechnologiesController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UsersController_me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["UsersController_update"];
+        trace?: never;
+    };
+    "/api/v1/users/{reference}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UsersController_profile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["QuestionsController_list"];
+        put?: never;
+        post: operations["QuestionsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/questions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["QuestionsController_detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["QuestionsController_update"];
+        trace?: never;
+    };
+    "/api/v1/questions/{id}/answers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["QuestionsController_answers"];
+        put?: never;
+        post: operations["QuestionsController_answer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/questions/{id}/accepted-answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["QuestionsController_accept"];
+        post?: never;
+        delete: operations["QuestionsController_unaccept"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/answers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["AnswersController_update"];
+        trace?: never;
+    };
+    "/api/v1/users/me/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UserContributionsController_ownQuestions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/{id}/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UserContributionsController_questionsOf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/{id}/answers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UserContributionsController_answersOf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ProjectsController_list"];
+        put?: never;
+        post: operations["ProjectsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ProjectsController_detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ProjectsController_update"];
+        trace?: never;
+    };
+    "/api/v1/projects/{id}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ProjectsController_members"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UserProjectsController_own"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/{id}/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UserProjectsController_ofUser"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{id}/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApplicationsController_received"];
+        put?: never;
+        post: operations["ApplicationsController_apply"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApplicationsController_sent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/applications/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApplicationsController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ApplicationsController_decide"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        HealthDto: {
+        CsrfTokenDto: {
+            /** @description À renvoyer dans l’en-tête X-CSRF-Token de toute requête POST, PUT, PATCH ou DELETE. */
+            csrfToken: string;
+        };
+        RegisterDto: {
+            /** @example awa@example.com */
+            email: string;
+            /**
+             * @description 3 à 30 caractères : lettres ASCII, chiffres et tiret bas. Unique sans tenir compte de la casse.
+             * @example awa_dev
+             */
+            username: string;
+            /** @description Espaces autorisés, aucune troncature ni règle de composition. */
+            password: string;
+        };
+        CurrentUserDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example awa_dev */
+            username: string;
+            /**
+             * @description Visible uniquement par le titulaire de la session.
+             * @example awa@example.com
+             */
+            email: string;
             /** @enum {string} */
-            status: "ok";
+            role: "MEMBER" | "ADMIN";
+            /** @example true */
+            emailVerified: boolean;
+        };
+        AuthResultDto: {
+            user: components["schemas"]["CurrentUserDto"];
+            /** @description Nouveau jeton CSRF lié à la session créée. */
+            csrfToken: string;
         };
         ApiErrorDto: {
             /** @example VALIDATION_ERROR */
@@ -54,6 +533,443 @@ export interface components {
             };
             requestId: string;
         };
+        LoginDto: {
+            /** @example awa@example.com */
+            email: string;
+            password: string;
+        };
+        ForgotPasswordDto: {
+            /** @example awa@example.com */
+            email: string;
+        };
+        ResetPasswordDto: {
+            /** @description Jeton reçu par email (paramètre token du lien). */
+            token: string;
+            password: string;
+        };
+        VerifyEmailDto: {
+            /** @description Jeton reçu par email (paramètre token du lien). */
+            token: string;
+        };
+        HealthDto: {
+            /** @enum {string} */
+            status: "ok";
+        };
+        TechnologyDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example TypeScript */
+            name: string;
+            /** @example typescript */
+            slug: string;
+        };
+        TechnologyListDto: {
+            data: components["schemas"]["TechnologyDto"][];
+        };
+        ProfileStatsDto: {
+            /** @description Questions visibles. */
+            questions: number;
+            /** @description Réponses visibles dont la question est visible. */
+            answers: number;
+            /** @description Projets visibles créés ou rejoints. */
+            projects: number;
+        };
+        OwnProfileDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example awa_dev */
+            username: string;
+            bio?: string | null;
+            /**
+             * @description ISO 3166-1 alpha-2.
+             * @example SN
+             */
+            countryCode?: string | null;
+            /**
+             * @example [
+             *       "https://github.com/awa-dev"
+             *     ]
+             */
+            links: string[];
+            skills: components["schemas"]["TechnologyDto"][];
+            /** Format: date-time */
+            memberSince: string;
+            stats: components["schemas"]["ProfileStatsDto"];
+            /**
+             * @description Privé : visible uniquement par le titulaire.
+             * @example awa@example.com
+             */
+            email: string;
+            emailVerified: boolean;
+        };
+        UpdateProfileDto: {
+            username?: string;
+            bio?: string | null;
+            /** @example SN */
+            countryCode?: string | null;
+            /** @description URLs HTTPS absolues de 2048 caractères au plus. */
+            links?: string[];
+            /** @description Identifiants de technologies du catalogue. */
+            skillIds?: string[];
+        };
+        PublicProfileDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example awa_dev */
+            username: string;
+            bio?: string | null;
+            /**
+             * @description ISO 3166-1 alpha-2.
+             * @example SN
+             */
+            countryCode?: string | null;
+            /**
+             * @example [
+             *       "https://github.com/awa-dev"
+             *     ]
+             */
+            links: string[];
+            skills: components["schemas"]["TechnologyDto"][];
+            /** Format: date-time */
+            memberSince: string;
+            stats: components["schemas"]["ProfileStatsDto"];
+        };
+        PublicAuthorDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example awa_dev */
+            username: string;
+            /** @example SN */
+            countryCode?: string | null;
+        };
+        QuestionSummaryDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description Début du contexte, 200 caractères au plus. */
+            excerpt: string;
+            author: components["schemas"]["PublicAuthorDto"];
+            technologies: components["schemas"]["TechnologyDto"][];
+            /** @description Calculé : une solution acceptée existe. */
+            resolved: boolean;
+            /** @description Réponses visibles. */
+            answerCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        PageMetaDto: {
+            page: number;
+            pageSize: number;
+            /** @description Total après application des mêmes filtres et restrictions de visibilité que la liste. */
+            total: number;
+        };
+        QuestionSummaryPageDto: {
+            data: components["schemas"]["QuestionSummaryDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        CreateQuestionDto: {
+            title: string;
+            /** @description Contexte du problème. */
+            context: string;
+            /** @description Résultat attendu. */
+            expected: string;
+            /** @description Résultat obtenu. */
+            actual: string;
+            /** @description Tentatives déjà effectuées. Les quatre rubriques totalisent 20 000 caractères au plus. */
+            attempts: string;
+            code?: string | null;
+            technologyIds: string[];
+        };
+        AnswerDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            questionId: string;
+            author: components["schemas"]["PublicAuthorDto"];
+            /** @description Texte brut ou Markdown restreint, à afficher sans interpréter de HTML. */
+            body: string;
+            /** @description Extrait de code, jamais exécuté. */
+            code?: string | null;
+            /** @description Réponse retenue comme solution. */
+            accepted: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        QuestionDetailDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description Début du contexte, 200 caractères au plus. */
+            excerpt: string;
+            author: components["schemas"]["PublicAuthorDto"];
+            technologies: components["schemas"]["TechnologyDto"][];
+            /** @description Calculé : une solution acceptée existe. */
+            resolved: boolean;
+            /** @description Réponses visibles. */
+            answerCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            context: string;
+            expected: string;
+            actual: string;
+            attempts: string;
+            code?: string | null;
+            /** Format: uuid */
+            acceptedAnswerId?: string | null;
+            /** @description Solution acceptée, reprise ici pour l’afficher en tête. */
+            acceptedAnswer?: components["schemas"]["AnswerDto"] | null;
+            /** @description La session courante est l’auteur : modification et choix de la solution possibles. */
+            viewerIsAuthor: boolean;
+        };
+        UpdateQuestionDto: {
+            title?: string;
+            context?: string;
+            expected?: string;
+            actual?: string;
+            attempts?: string;
+            /** @description null retire le code. */
+            code?: string | null;
+            technologyIds?: string[];
+        };
+        AnswerPageDto: {
+            data: components["schemas"]["AnswerDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        CreateAnswerDto: {
+            body: string;
+            code?: string | null;
+        };
+        AcceptAnswerDto: {
+            /** Format: uuid */
+            answerId: string;
+        };
+        UpdateAnswerDto: {
+            body?: string;
+            code?: string | null;
+        };
+        OwnQuestionSummaryDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description Début du contexte, 200 caractères au plus. */
+            excerpt: string;
+            author: components["schemas"]["PublicAuthorDto"];
+            technologies: components["schemas"]["TechnologyDto"][];
+            /** @description Calculé : une solution acceptée existe. */
+            resolved: boolean;
+            /** @description Réponses visibles. */
+            answerCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /**
+             * @description HIDDEN : masquée par la modération, invisible du public.
+             * @enum {string}
+             */
+            visibility: "VISIBLE" | "HIDDEN";
+        };
+        OwnQuestionSummaryPageDto: {
+            data: components["schemas"]["OwnQuestionSummaryDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        AnswerWithQuestionDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            questionId: string;
+            author: components["schemas"]["PublicAuthorDto"];
+            /** @description Texte brut ou Markdown restreint, à afficher sans interpréter de HTML. */
+            body: string;
+            /** @description Extrait de code, jamais exécuté. */
+            code?: string | null;
+            /** @description Réponse retenue comme solution. */
+            accepted: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @description Titre de la question visible à laquelle la réponse appartient. */
+            questionTitle: string;
+        };
+        AnswerWithQuestionPageDto: {
+            data: components["schemas"]["AnswerWithQuestionDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        ProjectSummaryDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description Début de l’objectif, 200 caractères au plus. */
+            summary: string;
+            owner: components["schemas"]["PublicAuthorDto"];
+            /** @description Compétences recherchées. */
+            technologies: components["schemas"]["TechnologyDto"][];
+            /** @enum {string} */
+            recruitmentStatus: "OPEN" | "CLOSED";
+            availability?: string | null;
+            /** @description Membres, responsable compris. */
+            memberCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ProjectSummaryPageDto: {
+            data: components["schemas"]["ProjectSummaryDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        CreateProjectDto: {
+            title: string;
+            objective: string;
+            /** @description Compétences recherchées (technologies du catalogue). */
+            technologyIds: string[];
+            /** @example 5 heures par semaine, en soirée */
+            availability?: string | null;
+            /**
+             * @default OPEN
+             * @enum {string}
+             */
+            recruitmentStatus: "OPEN" | "CLOSED";
+        };
+        MemberDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example awa_dev */
+            username: string;
+            /** @example SN */
+            countryCode?: string | null;
+            /** @description Responsable du projet. */
+            isOwner: boolean;
+            /** Format: date-time */
+            joinedAt: string;
+        };
+        ViewerApplicationDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            status: "PENDING" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+        };
+        ProjectDetailDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description Début de l’objectif, 200 caractères au plus. */
+            summary: string;
+            owner: components["schemas"]["PublicAuthorDto"];
+            /** @description Compétences recherchées. */
+            technologies: components["schemas"]["TechnologyDto"][];
+            /** @enum {string} */
+            recruitmentStatus: "OPEN" | "CLOSED";
+            availability?: string | null;
+            /** @description Membres, responsable compris. */
+            memberCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            objective: string;
+            /** @description Les 50 premiers membres ; liste complète via /projects/:id/members. */
+            members: components["schemas"]["MemberDto"][];
+            /**
+             * @description Rôle de la session courante dans le projet.
+             * @enum {string|null}
+             */
+            viewerRole?: "OWNER" | "MEMBER" | null;
+            /** @description Candidature de la session à ce projet, s’il y en a une. */
+            viewerApplication?: components["schemas"]["ViewerApplicationDto"] | null;
+        };
+        UpdateProjectDto: {
+            title?: string;
+            objective?: string;
+            technologyIds?: string[];
+            availability?: string | null;
+            /**
+             * @description CLOSED bloque les nouvelles candidatures ; les demandes en attente restent traitables.
+             * @enum {string}
+             */
+            recruitmentStatus?: "OPEN" | "CLOSED";
+        };
+        MemberPageDto: {
+            data: components["schemas"]["MemberDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        OwnProjectSummaryDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** @description Début de l’objectif, 200 caractères au plus. */
+            summary: string;
+            owner: components["schemas"]["PublicAuthorDto"];
+            /** @description Compétences recherchées. */
+            technologies: components["schemas"]["TechnologyDto"][];
+            /** @enum {string} */
+            recruitmentStatus: "OPEN" | "CLOSED";
+            availability?: string | null;
+            /** @description Membres, responsable compris. */
+            memberCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @enum {string} */
+            role: "OWNER" | "MEMBER";
+            /** @enum {string} */
+            visibility: "VISIBLE" | "HIDDEN";
+        };
+        OwnProjectSummaryPageDto: {
+            data: components["schemas"]["OwnProjectSummaryDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        CreateApplicationDto: {
+            message: string;
+        };
+        ApplicationProjectDto: {
+            /** Format: uuid */
+            id: string;
+            /** @description false si le projet a été masqué : son contenu n’est plus publié, seul le statut de la demande reste suivi. */
+            available: boolean;
+            title?: string | null;
+            /** @enum {string|null} */
+            recruitmentStatus?: "OPEN" | "CLOSED" | null;
+            owner?: components["schemas"]["PublicAuthorDto"] | null;
+        };
+        ApplicationDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            status: "PENDING" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+            /** @description Privé : visible uniquement par le candidat et le responsable. */
+            message: string;
+            applicant: components["schemas"]["PublicAuthorDto"];
+            project: components["schemas"]["ApplicationProjectDto"];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            decidedAt?: string | null;
+            /**
+             * @description Partie que représente la session.
+             * @enum {string}
+             */
+            viewerRole: "APPLICANT" | "OWNER";
+        };
+        ApplicationPageDto: {
+            data: components["schemas"]["ApplicationDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        DecideApplicationDto: {
+            /**
+             * @description ACCEPTED et REJECTED : responsable. WITHDRAWN : candidat. Uniquement depuis PENDING.
+             * @enum {string}
+             */
+            status: "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+        };
     };
     responses: never;
     parameters: never;
@@ -63,6 +979,286 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    AuthController_token: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CsrfTokenDto"];
+                };
+            };
+        };
+    };
+    AuthController_register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterDto"];
+            };
+        };
+        responses: {
+            /** @description Compte MEMBER créé, session ouverte et email de vérification envoyé. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResultDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description EMAIL_TAKEN ou USERNAME_TAKEN. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AuthController_login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResultDto"];
+                };
+            };
+            /** @description INVALID_CREDENTIALS. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description ACCOUNT_SUSPENDED, CSRF_ORIGIN_REJECTED ou CSRF_TOKEN_INVALID. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description RATE_LIMITED, avec Retry-After. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AuthController_logout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Session révoquée côté serveur et cookies effacés, même si la session avait déjà expiré. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AuthController_me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurrentUserDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AuthController_forgotPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ForgotPasswordDto"];
+            };
+        };
+        responses: {
+            /** @description Réponse identique que le compte existe ou non. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AuthController_resetPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResetPasswordDto"];
+            };
+        };
+        responses: {
+            /** @description Mot de passe changé et toutes les sessions du compte révoquées. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description TOKEN_INVALID : lien inconnu, expiré ou déjà utilisé. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AuthController_verifyEmail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyEmailDto"];
+            };
+        };
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description TOKEN_INVALID. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AuthController_resendVerification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Nouvel email envoyé si l’adresse n’est pas encore vérifiée. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
     HealthController_live: {
         parameters: {
             query?: never;
@@ -100,6 +1296,921 @@ export interface operations {
                 };
             };
             503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    TechnologiesController_list: {
+        parameters: {
+            query?: {
+                /** @description Recherche dans le nom, sans tenir compte de la casse. */
+                q?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Catalogue commun trié par nom. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TechnologyListDto"];
+                };
+            };
+        };
+    };
+    UsersController_me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OwnProfileDto"];
+                };
+            };
+        };
+    };
+    UsersController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProfileDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OwnProfileDto"];
+                };
+            };
+            /** @description Validation, technologie inconnue ou champ non modifiable (email, role, status). */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description USERNAME_TAKEN. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    UsersController_profile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Identifiant ou pseudonyme. */
+                reference: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicProfileDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                /** @description Mots recherchés dans le titre et les rubriques ; tous doivent apparaître. */
+                q?: string;
+                /** @description Slug d’une technologie du catalogue. */
+                technology?: string;
+                resolved?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Questions visibles, de la plus récente à la plus ancienne ; filtres combinables. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionSummaryPageDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateQuestionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionDetailDto"];
+                };
+            };
+            /** @description Validation ou technologie inconnue. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionDetailDto"];
+                };
+            };
+            /** @description QUESTION_NOT_FOUND : inexistante ou masquée. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateQuestionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionDetailDto"];
+                };
+            };
+            /** @description NOT_AUTHOR. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_answers: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponses visibles par ordre chronologique ; la solution porte accepted = true. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerPageDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_answer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAnswerDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_accept: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AcceptAnswerDto"];
+            };
+        };
+        responses: {
+            /** @description Idempotent : accepter la solution déjà retenue ne change rien. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionDetailDto"];
+                };
+            };
+            /** @description ANSWER_NOT_ELIGIBLE : réponse inconnue, masquée ou d’une autre question. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description NOT_AUTHOR : seul l’auteur de la question choisit la solution. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_unaccept: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description La question redevient non résolue. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionDetailDto"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AnswersController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAnswerDto"];
+            };
+        };
+        responses: {
+            /** @description La question et l’auteur ne peuvent pas changer. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerDto"];
+                };
+            };
+            /** @description NOT_AUTHOR. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    UserContributionsController_ownQuestions: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                resolved?: "true" | "false";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Toutes les questions de la session, masquées comprises. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OwnQuestionSummaryPageDto"];
+                };
+            };
+        };
+    };
+    UserContributionsController_questionsOf: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionSummaryPageDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    UserContributionsController_answersOf: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Réponses visibles sur des questions visibles. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnswerWithQuestionPageDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ProjectsController_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                recruitment?: "OPEN" | "CLOSED";
+                /** @description Mots recherchés dans le titre et l’objectif. */
+                q?: string;
+                technology?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Projets visibles, plus récents d’abord ; filtres combinables. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectSummaryPageDto"];
+                };
+            };
+        };
+    };
+    ProjectsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateProjectDto"];
+            };
+        };
+        responses: {
+            /** @description Le responsable est la session ; il devient membre dans la même transaction. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectDetailDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ProjectsController_detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectDetailDto"];
+                };
+            };
+            /** @description PROJECT_NOT_FOUND : inexistant ou masqué. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ProjectsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProjectDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectDetailDto"];
+                };
+            };
+            /** @description NOT_OWNER. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ProjectsController_members: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Profils publics des membres, responsable en premier. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberPageDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    UserProjectsController_own: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                role?: "OWNER" | "MEMBER";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Projets créés ou rejoints par la session, masqués compris. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OwnProjectSummaryPageDto"];
+                };
+            };
+        };
+    };
+    UserProjectsController_ofUser: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Projets visibles créés ou rejoints, sans doublon. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectSummaryPageDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_received: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: "PENDING" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Demandes reçues, plus récentes d’abord. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationPageDto"];
+                };
+            };
+            /** @description NOT_OWNER. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_apply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateApplicationDto"];
+            };
+        };
+        responses: {
+            /** @description Nouvelle demande PENDING. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description APPLICATION_EXISTS, OWN_PROJECT, ALREADY_MEMBER ou RECRUITMENT_CLOSED. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_sent: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: "PENDING" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Demandes envoyées par la session. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationPageDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationDto"];
+                };
+            };
+            /** @description Inexistante ou consultée par un tiers. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_decide: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecideApplicationDto"];
+            };
+        };
+        responses: {
+            /** @description Répéter la décision déjà appliquée renvoie l’état courant. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationDto"];
+                };
+            };
+            /** @description TRANSITION_FORBIDDEN : la décision n’appartient pas à cette partie. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description INVALID_TRANSITION : demande déjà traitée. */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

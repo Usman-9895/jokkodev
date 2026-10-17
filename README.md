@@ -41,6 +41,7 @@ Frontend : http://localhost:3000 ; backend : http://127.0.0.1:3001 ; Swagger de 
 | `pnpm db:migrate:dev` | Migration de développement, seulement après vérification de destination et autorisation |
 | `pnpm db:migrate:deploy` | Application contrôlée des migrations versionnées ; jamais `db push` |
 | `pnpm db:seed` | Catalogue des technologies, idempotent |
+| `pnpm admin:grant <email>` / `pnpm admin:revoke <email>` | Attribution contrôlée du rôle ADMIN, sur le serveur uniquement |
 | `pnpm test:integration` | Contraintes PostgreSQL sur la base `TEST_DATABASE_URL`, dans un schéma temporaire |
 | `pnpm api:export` | Export OpenAPI sans base ni secret de production |
 | `pnpm api:generate` | Export puis génération des types partagés |

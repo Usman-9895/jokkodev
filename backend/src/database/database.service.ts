@@ -7,9 +7,17 @@ export class DatabaseService implements OnApplicationShutdown {
   private client?: PrismaClient;
   get prisma(): PrismaClient {
     // Initialisation différée : aucune connexion pendant l'export OpenAPI ou la liveness.
-    this.client ??= new PrismaClient({ adapter: new PrismaPg({ connectionString: validateEnvironment(process.env).databaseUrl, connectionTimeoutMillis: 2000, query_timeout: 2000, statement_timeout: 2000, max: 5 }), log: [] });
+    this.client ??= createPrismaClient(validateEnvironment(process.env).databaseUrl);
     return this.client;
   }
   async ping(): Promise<void> { await this.prisma.$queryRaw`SELECT 1`; }
   async onApplicationShutdown(): Promise<void> { await this.client?.$disconnect(); }
+}
+
+// Le paramètre ?schema= de l'URL sélectionne le schéma PostgreSQL (public par défaut) ; utilisé par les tests d'intégration.
+export function createPrismaClient(databaseUrl: string): PrismaClient {
+  const url = new URL(databaseUrl);
+  const schema = url.searchParams.get('schema') ?? 'public';
+  url.searchParams.delete('schema');
+  return new PrismaClient({ adapter: new PrismaPg({ connectionString: url.toString(), options: `-c search_path="${schema.replaceAll('"', '')}"`, connectionTimeoutMillis: 2000, query_timeout: 5000, statement_timeout: 5000, max: 5 }, { schema }), log: [] });
 }
