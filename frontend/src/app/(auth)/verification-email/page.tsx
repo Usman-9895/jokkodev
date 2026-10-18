@@ -1,4 +1,6 @@
-export const metadata = {"title":"Vérification d’email — indisponible | JokkoDev","description":"Interface préparée ; opération backend encore indisponible."};
+import {Suspense} from 'react';
 import {AccountFrame} from '../../../components/accounts/frame';
 import {AccountForm} from '../../../components/accounts/account-form';
-export default function Verify(){return <AccountFrame screen="verify"><AccountForm screen="verify"/></AccountFrame>;}
+import {LoadingIndicator} from '../../../components/ui';
+export const metadata={title:"Vérification email | JokkoDev",description:'Compte JokkoDev : accès sécurisé et gestion de ton identité.'};
+export default function Page(){return <AccountFrame screen="verify"><Suspense fallback={<LoadingIndicator label="Chargement du formulaire…"/>}><AccountForm screen="verify"/></Suspense></AccountFrame>;}

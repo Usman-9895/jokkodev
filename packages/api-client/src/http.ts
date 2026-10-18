@@ -45,7 +45,12 @@ export function createHttpClient(baseUrl: string, transport: typeof fetch = fetc
       return undefined;
     }
     let data: unknown;
-    try { data = await response.json(); } catch { if (init.signal?.aborted) throw new HttpError('aborted', 'Requête annulée.'); throw new HttpError('protocol', 'Réponse JSON invalide.', response.status, undefined, retryAfter(response)); }
+    try {
+      const text = await response.text();
+      // Account mail endpoints acknowledge with 202 and no response body.
+      if (response.status === 202 && text === '') return undefined;
+      data = JSON.parse(text);
+    } catch { if (init.signal?.aborted) throw new HttpError('aborted', 'Requête annulée.'); throw new HttpError('protocol', 'Réponse JSON invalide.', response.status, undefined, retryAfter(response)); }
     if (!response.ok) throw new HttpError('api', 'La requête a échoué.', response.status, data, retryAfter(response));
     return data as T;
   };

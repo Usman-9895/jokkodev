@@ -103,3 +103,27 @@
 .account-result-icon.is-error { background:var(--jd-surface-error); color:var(--color-danger); }
 
 .profile-loading-card { display:grid; gap:16px; margin-top:16px; }
+.session-identity { display:flex; align-items:center; gap:8px; min-height:44px; color:var(--color-night); }
+.session-username { max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; }
+.session-pending,.session-notice { font-size:12px; color:var(--color-muted); }
+.session-notice { max-width:190px; overflow-wrap:anywhere; }
+.developer-product { padding-block:32px; }
+.profile-sidebar a { display:flex; min-height:44px; align-items:center; padding:8px; border-radius:8px; }
+.profile-sidebar a[aria-current] { background:var(--jd-surface-info); color:var(--color-petrol); font-weight:600; }
+.profile-contribution-list { display:grid; gap:12px; margin-top:20px; }
+.profile-contribution-list article { min-width:0; }
+.profile-contribution-list p { color:var(--color-muted); margin-block:8px; }
+.profile-live-notice { margin-block:16px; }
+.profile-pagination { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:20px; }
+@media(max-width:767px){.developer-product{padding-block:16px;}.session-username{max-width:190px;}.session-notice{max-width:none;}.public-menu .session-identity{justify-content:flex-start;}}
+.developer-product-grid {display:grid;grid-template-columns:200px minmax(0,1fr);gap:0;}
+.developer-product-grid > .developer-navigation {background:white;padding:24px 12px;}
+.profile-editor.profile-editor--live {grid-template-columns:minmax(0,1fr);}
+.profile-preview,.profile-editor--live {overflow-wrap:anywhere;}
+@media(max-width:800px){.developer-product-grid{grid-template-columns:minmax(0,1fr);}.developer-product-grid > .developer-navigation{padding:0;grid-template-columns:repeat(5,minmax(0,1fr));}.developer-navigation--product a{font-size:10px;overflow-wrap:anywhere;}}
+.developer-nav-compact {display:none;}
+.profile-live .profile-tabs a {padding-inline:4px;white-space:nowrap;}
+.developer-product .jd-message + .jd-button {margin-top:16px;}
+.account-error-summary > .jd-message {border:0;padding:0;background:none;}
+@media(max-width:800px){.developer-product-grid .developer-navigation--product a{font-size:10px;}.developer-nav-full{display:none;}.developer-nav-compact{display:inline;}}
+@media(max-width:359px){.profile-live .profile-tabs a{font-size:11px;}}

@@ -2,7 +2,7 @@
 
 Pour remplacer les sources fictives du frontend (lots 3 à 9) par l'API. Toutes les routes sont sous `/api/v1`, types générés dans `packages/api-client/src/schema.d.ts`. Session et CSRF : voir la [décision 003](../decisions/003-sessions-csrf.md), section « Intégration frontend ».
 
-Le transport partagé prépare les paramètres typés depuis OpenAPI dans l’option `query` et expose uniquement le délai serveur sûr `HttpError.retryAfterSeconds`. Les écrans ne sont pas encore connectés. Exemple : `api('/questions', { query: { q: 'sécurité NestJS', technology: 'nestjs', status: 'open', page: 1, pageSize: 3 } })`. Le chemin reste séparé et refuse `?`, fragments, destinations externes et remontées encodées.
+Le transport partagé prépare les paramètres typés depuis OpenAPI dans l’option `query` et expose uniquement le délai serveur sûr `HttpError.retryAfterSeconds`. Le lot 10 raccorde les comptes, la session et les profils ; les autres écrans attendent leur intégration. Exemple : `api('/questions', { query: { q: 'sécurité NestJS', technology: 'nestjs', status: 'open', page: 1, pageSize: 3 } })`. Le chemin reste séparé et refuse `?`, fragments, destinations externes et remontées encodées.
 
 ## Pages et routes
 

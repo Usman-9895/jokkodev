@@ -1,23 +1,23 @@
-# Inventaire des routes frontend — lot 9
+# Inventaire des routes frontend — lot 10
 
-40 routes de page App Router (31 produit et 9 aperçus). Une route produit dépendante de session/permission affiche actuellement une attente publique sans données privées : ce n’est pas un contrôle d’accès. Les aperçus ne sont pas dans la navigation publique.
+40 routes de page App Router (31 produit et 9 aperçus). Les routes /espace utilisent la session réelle ; seul le profil personnel est raccordé. L’administration reste une attente publique sans données privées, ce qui ne constitue pas une autorisation administrateur. Les aperçus ne sont pas dans la navigation publique.
 
 | Route | Situation actuelle |
 | --- | --- |
 | `/admin` | Administrateur requis — attente publique sans données privées |
 | `/admin/signalements` | Administrateur requis — attente publique sans données privées |
 | `/admin/signalements/[id]` | Administrateur requis — attente publique sans données privées |
-| `/connexion` | Interface publique — opération backend indisponible |
-| `/inscription` | Interface publique — opération backend indisponible |
-| `/mot-de-passe-oublie` | Interface publique — opération backend indisponible |
-| `/nouveau-mot-de-passe` | Interface publique — opération backend indisponible |
-| `/verification-email` | Interface publique — opération backend indisponible |
-| `/espace/candidatures` | Session requise — attente publique sans données privées |
-| `/espace` | Session requise — attente publique sans données privées |
-| `/espace/profil` | Session requise — attente publique sans données privées |
-| `/espace/projets` | Session requise — attente publique sans données privées |
-| `/espace/projets/[id]/demandes` | Session requise — attente publique sans données privées |
-| `/espace/questions` | Session requise — attente publique sans données privées |
+| `/connexion` | Compte réel raccordé au backend |
+| `/inscription` | Compte réel raccordé au backend |
+| `/mot-de-passe-oublie` | Compte réel raccordé au backend |
+| `/nouveau-mot-de-passe` | Compte réel raccordé au backend |
+| `/verification-email` | Compte réel raccordé au backend |
+| `/espace/candidatures` | Session réelle requise — interface métier encore non raccordée |
+| `/espace` | Session réelle requise — interface métier encore non raccordée |
+| `/espace/profil` | Lecture et modification réelles du profil propriétaire |
+| `/espace/projets` | Session réelle requise — interface métier encore non raccordée |
+| `/espace/projets/[id]/demandes` | Session réelle requise — interface métier encore non raccordée |
+| `/espace/questions` | Session réelle requise — interface métier encore non raccordée |
 | `/dev/comptes` | Aperçu développement — 404 en production |
 | `/dev/design-system` | Aperçu développement — 404 en production |
 | `/dev/espace` | Aperçu développement — 404 en production |
@@ -31,7 +31,7 @@
 | `/confidentialite` | Information publique en attente |
 | `/contact` | Orientation publique — contact direct indisponible |
 | `/` | Public — consultation de données fictives |
-| `/profils/[pseudonyme]` | Profil public — lecture backend indisponible |
+| `/profils/[pseudonyme]` | Profil public réel et contributions paginées ; aucun email public |
 | `/projets` | Public — consultation de données fictives |
 | `/projets/proposer` | Interface publique — opération backend indisponible |
 | `/projets/[id]/modifier` | Interface publique — opération backend indisponible |
@@ -49,4 +49,4 @@ Les paramètres des listes questions/projets sont `q`, `technology`, `status`, `
 
 `not-found.tsx` traite les routes absentes, sans être une route produit supplémentaire. Le statut HTTP observé pour une ressource inconnue peut différer après démarrage du streaming : voir le [rapport de vérification](lot-9-verification.md). Les icônes, assets statiques et proxy `/api/v1/*` ne sont pas des pages ; le proxy cible le backend existant, sans API Next concurrente.
 
-Les opérations de compte, contribution, candidature et modération restent indisponibles. Les consultations publiques de questions/projets sont fictives et identifiées comme telles. À propos/Ressources restent en attente de contenu ; aucune page de conditions contractuelles n’est inventée. Voir le [bilan central pour Serge](integration-readiness.md).
+Les opérations de compte et de profil sont raccordées. Les opérations de contribution, candidature et modération restent non raccordées et désactivées côté frontend. Les consultations publiques de questions/projets sont fictives et identifiées comme telles. À propos/Ressources restent en attente de contenu ; aucune page de conditions contractuelles n’est inventée. Voir le [bilan central pour Serge](integration-readiness.md).
