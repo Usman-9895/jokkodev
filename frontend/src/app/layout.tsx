@@ -1,3 +1,4 @@
+import {SessionProvider} from '../components/accounts/session-provider';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { inter, sourceSerif, jetbrainsMono } from '../styles/fonts';
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
   ] },
 };
 export default function RootLayout({ children }: { children: ReactNode }) {
-  return <html lang="fr" className={`${inter.variable} ${sourceSerif.variable} ${jetbrainsMono.variable}`}><body><a href="#contenu" className="jd-skip-link">Aller au contenu</a>{children}</body></html>;
+  return <html lang="fr" className={`${inter.variable} ${sourceSerif.variable} ${jetbrainsMono.variable}`}><body><a href="#contenu" className="jd-skip-link">Aller au contenu</a><SessionProvider>{children}</SessionProvider></body></html>;
 }

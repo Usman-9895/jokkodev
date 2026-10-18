@@ -1,5 +1,7 @@
 # Lot 4 — interfaces de comptes et profils
 
+Document historique des interfaces initiales. Pour les contrats désormais livrés et leur raccordement réel, voir le [lot 10](auth-integration.md).
+
 Branche `feature/frontend-accounts-profiles`, créée depuis `develop` à `d956c0f` après récupération des références et vérification de la fusion de la PR #3. Le dossier de travail était propre. Après validation visuelle, l’équipe a explicitement autorisé le commit, le push de cette branche et une PR vers `develop`. Aucune fusion ni fusion automatique autorisée.
 
 ## Contrats réellement disponibles

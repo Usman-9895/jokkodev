@@ -1,4 +1,6 @@
-export const metadata = {"title":"Mot de passe oublié — indisponible | JokkoDev","description":"Interface préparée ; opération backend encore indisponible."};
+import {Suspense} from 'react';
 import {AccountFrame} from '../../../components/accounts/frame';
 import {AccountForm} from '../../../components/accounts/account-form';
-export default function Forgot(){return <AccountFrame screen="forgot"><AccountForm screen="forgot"/></AccountFrame>;}
+import {LoadingIndicator} from '../../../components/ui';
+export const metadata={title:"Mot de passe oublié | JokkoDev",description:'Compte JokkoDev : accès sécurisé et gestion de ton identité.'};
+export default function Page(){return <AccountFrame screen="forgot"><Suspense fallback={<LoadingIndicator label="Chargement du formulaire…"/>}><AccountForm screen="forgot"/></Suspense></AccountFrame>;}

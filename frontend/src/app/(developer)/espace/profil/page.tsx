@@ -1,4 +1,3 @@
-export const metadata = {"title":"Mon profil — indisponible | JokkoDev","description":"Interface préparée ; opération backend encore indisponible."};
-import Link from 'next/link';
-import {Heading,Message} from '../../../../components/ui';
-export default function OwnProfile(){return <><Heading as="h1">Modification du profil indisponible</Heading><Message title="Session propriétaire requise">L’authentification n’est pas encore intégrée. Aucun formulaire privé ni aucune donnée de compte n’est accessible sur cette page.</Message><Link className="account-back" href="/connexion">Voir le parcours de connexion</Link></>;}
+﻿import {ProfileEditor} from '../../../../components/accounts/profile-editor';
+export const metadata={title:'Mon profil | JokkoDev',description:'Modifier les informations publiques de ton profil JokkoDev.'};
+export default function Page(){return <ProfileEditor/>;}

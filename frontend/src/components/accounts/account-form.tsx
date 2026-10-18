@@ -1,11 +1,12 @@
 'use client';
 import Link from 'next/link';
+import {LiveAccountForm} from './live-account-form';
 import {useRef,useState} from 'react';
 import {Button,Card,Heading,Message,TextField} from '../ui';
 import {PasswordField} from './password-field';
 import {accountCopy,validateAccountDraft} from '../../lib/accounts/presentation';
 import type {AccountScreen,AccountDraft} from '../../lib/accounts/presentation';
-export function AccountForm({screen,demo=false,state='initial'}:{screen:AccountScreen;demo?:boolean;state?:string}){
+function DemoAccountForm({screen,demo=false,state='initial'}:{screen:AccountScreen;demo?:boolean;state?:string}){
   const copy=accountCopy[screen];
   const [errors,setErrors]=useState<Record<string,string>>({});
   const [result,setResult]=useState('');
@@ -39,3 +40,5 @@ export function AccountForm({screen,demo=false,state='initial'}:{screen:AccountS
     {screen==='register'&&<p className="account-legal">Les règles et textes de confidentialité restent à finaliser. Aucun consentement n’est demandé dans cet aperçu.</p>}
   </Card>;
 }
+
+export function AccountForm(props:{screen:AccountScreen;demo?:boolean;state?:string}){return props.demo?<DemoAccountForm {...props}/>:<LiveAccountForm screen={props.screen}/>;}

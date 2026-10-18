@@ -1,4 +1,6 @@
-export const metadata = {"title":"Connexion — indisponible | JokkoDev","description":"Interface préparée ; opération backend encore indisponible."};
+import {Suspense} from 'react';
 import {AccountFrame} from '../../../components/accounts/frame';
 import {AccountForm} from '../../../components/accounts/account-form';
-export default function Login(){return <AccountFrame screen="login"><AccountForm screen="login"/></AccountFrame>;}
+import {LoadingIndicator} from '../../../components/ui';
+export const metadata={title:"Connexion | JokkoDev",description:'Compte JokkoDev : accès sécurisé et gestion de ton identité.'};
+export default function Page(){return <AccountFrame screen="login"><Suspense fallback={<LoadingIndicator label="Chargement du formulaire…"/>}><AccountForm screen="login"/></Suspense></AccountFrame>;}

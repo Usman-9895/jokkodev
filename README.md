@@ -1,6 +1,6 @@
 # JokkoDev — socle local
 
-Plateforme panafricaine d’entraide et de collaboration, portée par DevTeranga pour la CADEV 2026. Cette livraison prépare le backend de comptes, contenus, projets, candidatures et modération, avec contrats générés. Le frontend utilise encore ses sources fictives et ses opérations publiques indisponibles : son intégration reste à réaliser. Ce n’est pas encore un MVP intégré ou déclaré prêt à déployer. Dépôt de référence : [Usman-9895/jokkodev](https://github.com/Usman-9895/jokkodev).
+Plateforme panafricaine d’entraide et de collaboration, portée par DevTeranga pour la CADEV 2026. Cette livraison prépare le backend de comptes, contenus, projets, candidatures et modération, avec contrats générés. Le lot 10 raccorde les comptes, sessions et profils aux endpoints réels. Les autres domaines frontend utilisent encore leurs sources fictives et leurs opérations indisponibles : leur intégration reste à réaliser. Ce n’est pas encore un MVP intégré ou déclaré prêt à déployer. Dépôt de référence : [Usman-9895/jokkodev](https://github.com/Usman-9895/jokkodev).
 
 ## Installation
 
@@ -107,3 +107,5 @@ Le lot 9 propose `/regles`, `/contact` et une attente publique sur `/confidentia
 `pnpm test:smoke` attend un build de production. Les ports sont configurables par `SMOKE_FRONTEND_PORT` et `SMOKE_BACKEND_PORT` ; la réécriture Next est fixée au build, donc utiliser le même `API_INTERNAL_ORIGIN` lors du build. Les ports occupés sont refusés. Le mode par défaut cible volontairement une base inaccessible sur 127.0.0.1:1, vérifie liveness 200/readiness 503, session absente, CSRF avant validation, cookies Secure/HttpOnly/SameSite et Swagger absent en production. Il utilise une configuration SMTP locale sans envoyer d’email ; `MAIL_TRANSPORT=file` reste réservé au développement/test et aux tests d’intégration.
 
 Pour vérifier aussi readiness 200 et les erreurs 429 traversant Next/CORS : fournir explicitement `SMOKE_DATABASE_URL` (base migrée dédiée), et `SMOKE_CONFIRM_DATABASE` égal au nom de cette base après vérification du serveur, port et caractère jetable. Aucune reprise implicite de `DATABASE_URL`, aucune migration ni création de compte. Des connexions volontairement invalides avec des adresses aléatoires `example.test` déclenchent la limitation ; aucun email n’est envoyé. Ces contrôles Node sur HTTP ne remplacent pas une session navigateur sous HTTPS ni SMTP réel. Seuls les processus démarrés par le smoke sont arrêtés.
+
+Comptes et profils : [guide du lot 10](docs/frontend/auth-integration.md), [bilan central](docs/frontend/integration-readiness.md). Les comptes de recette et environnements locaux ne doivent pas être publiés.
