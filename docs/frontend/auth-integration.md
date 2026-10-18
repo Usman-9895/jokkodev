@@ -1,5 +1,7 @@
 ﻿# Lot 10 — intégration comptes et profils
 
+État historique du lot10 : le [lot11](jokkohelp-integration.md) raccorde désormais JokkoHelp et les liens de contributions questions/réponses, sans activer les projets ou la modération.
+
 ## Base et périmètre
 
 Branche locale `feature/frontend-auth-integration`, créée depuis `develop` avancé par fast-forward à **1ddc6cb5bd31cd00ca531ae4371dec5d87a970af**. Les commits #10 à #18 et #20 sont ancêtres de cette base ; le commit propre à #19 (75c34d36422b9c2077c72c747c6bda8f63fe6916) ne l’est pas. Comparaison complète des arbres : aucune différence entre cette base fusionnée et le correctif testé a818043925ada0a5a046b334e8a9e4d6a8d73685, notamment restauration, validation null, smoke, recherche et transport. Les badges GitHub ne sont pas la preuve utilisée.

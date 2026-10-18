@@ -1,5 +1,7 @@
 # Lot 3 — consultation locale de JokkoHelp
 
+Document historique des interfaces de démonstration. Le [lot 11](jokkohelp-integration.md) décrit leur raccordement actuel au backend et remplace les constats d’absence d’API de ce document.
+
 Branche `feature/frontend-jokkohelp-read`, créée depuis develop au commit `2eae2e5` après vérification que le lot 2 (`d124536`) est fusionné. Après revue visuelle, l’équipe a autorisé le commit, le push de cette branche et une PR vers `develop`. Aucune fusion ni fusion automatique autorisée. Backend, types générés, package API, dépendances et verrouillage pnpm inchangés.
 
 Le contrat OpenAPI et `packages/api-client/src/schema.d.ts` ne contiennent que `/api/v1/health/live` et `/api/v1/health/ready`. Les clients centralisés serveur/navigateur ont été inspectés ; aucun endpoint de consultation ni session réelle n’est disponible. La consultation utilise donc exclusivement des exemples publics et explicitement fictifs.

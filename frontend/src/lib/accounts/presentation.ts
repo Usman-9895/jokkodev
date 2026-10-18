@@ -23,7 +23,7 @@ export function safeExternalLink(value: string): string | null {
 /** Futur retour après connexion : aucun transfert automatique n’est exécuté dans ce lot. */
 export function allowedReturnPath(value: string | undefined): string {
   if (!value || Array.from(value).some(char => char.charCodeAt(0) <= 32 || char.charCodeAt(0) === 127 || char === '\\') || !value.startsWith('/') || value.startsWith('//')) return '/espace';
-  try { const url = new URL(value,'https://jokkodev.invalid'); const allowed = ['/espace','/espace/profil','/questions','/questions/poser','/projets']; return url.origin === 'https://jokkodev.invalid' && allowed.includes(url.pathname) && !url.search && !url.hash ? url.pathname : '/espace'; } catch { return '/espace'; }
+  try { const url = new URL(value,'https://jokkodev.invalid'); const allowed = ['/espace','/espace/profil','/espace/questions','/questions','/questions/poser','/projets']; return url.origin === 'https://jokkodev.invalid' && (allowed.includes(url.pathname)||/^\/questions\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\/modifier)?$/i.test(url.pathname)) && !url.search && !url.hash ? url.pathname : '/espace'; } catch { return '/espace'; }
 }
 export const accountCopy = {
   login: { title:'Heureux de te retrouver', subtitle:'Connecte-toi pour contribuer et collaborer.', panel:'Retrouve la communauté JokkoDev', description:'Pose tes questions, partage tes connaissances et collabore sur des projets avec des développeurs de toute l’Afrique.', action:'Se connecter' },

@@ -1,5 +1,7 @@
 # Lot 5 — Interfaces de contribution à JokkoHelp
 
+Document historique des interfaces de démonstration. Le [lot 11](jokkohelp-integration.md) décrit leur raccordement actuel au backend et remplace les constats d’absence d’API de ce document.
+
 Le lot 4 est intégré dans `develop` au commit `dceab34` (PR #4). La branche `feature/frontend-jokkohelp-contributions` part de cette intégration, après récupération des références et avance rapide. Aucun changement du backend, du contrat généré, des dépendances ou du verrouillage pnpm.
 
 **Ce lot ne publie ni ne sauvegarde de contenu.** Le contrat OpenAPI présent contient uniquement les deux routes de santé. Aucune session, lecture personnelle, mutation de question/réponse ou opération sur une solution n’est intégrée. La navigation reste celle d’un visiteur.

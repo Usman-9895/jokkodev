@@ -1,4 +1,17 @@
 .contribution-page { padding-block:32px; }
+.help-live-announcement {max-width:1200px;margin:auto;padding-inline:16px;overflow-wrap:anywhere;}
+.help-live-announcement:empty {padding:0;}
+.developer-product-grid .help-live-mine {padding:24px;}
+.help-pagination > .help-page-slot {display:inline-flex;align-items:center;gap:4px;border:0;background:none;min-width:0;border-radius:0;}
+.help-page-slot > a,.help-page-slot > [aria-current] {display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;border:1px solid var(--color-border);border-radius:8px;}
+.help-page-slot > [aria-current] {background:var(--color-petrol);color:white;}
+.help-pagination {flex-wrap:wrap;}
+.contribution-reply .jd-field {min-width:0;}
+.contribution-code textarea {max-width:100%;}
+.help-detail-title h1,.help-question__top h2,.help-similar a,.home-question h3,.contribution-mine-card-heading h2 {min-width:0;overflow-wrap:anywhere;}
+.help-question__excerpt,.help-author,.help-detail-author,.help-answer-head,.help-breadcrumb {overflow-wrap:anywhere;}
+@media(max-width:800px){.developer-product-grid .developer-navigation--product a{padding-inline:2px;}.developer-product-grid .developer-nav-compact{font-size:9px;overflow-wrap:normal;word-break:normal;}}
+@media(max-width:800px){.developer-product-grid .help-live-mine{padding:16px 0;}}
 .contribution-question > h1 { font-size:40px; margin-bottom:8px; }
 .contribution-intro { color:var(--color-muted); margin-bottom:24px; }
 .contribution-question > .jd-message { margin-bottom:24px; font-size:12px; }
