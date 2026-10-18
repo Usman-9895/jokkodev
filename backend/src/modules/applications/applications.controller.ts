@@ -35,6 +35,12 @@ export class ApplicationsController {
     return this.applications.listOwn(user, query);
   }
 
+  @Get('users/me/received-applications')
+  @ApiOkResponse({ type: PageOf(ApplicationDto), description: 'Demandes reçues sur tous les projets visibles de la session.' })
+  receivedAll(@CurrentUser() user: AuthenticatedUser, @Query() query: ApplicationQueryDto): Promise<Page<ApplicationDto>> {
+    return this.applications.listReceived(user, query);
+  }
+
   @Get('applications/:id')
   @ApiOkResponse({ type: ApplicationDto })
   @ApiNotFoundResponse({ type: ApiErrorDto, description: 'Inexistante ou consultée par un tiers.' })

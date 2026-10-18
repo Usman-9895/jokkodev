@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ArrayMaxSize, ArrayUnique, IsArray, IsISO31661Alpha2, IsOptional, IsString, IsUUID, Matches, MaxLength } from 'class-validator';
-import { IsPublicHttpsUrl, MAX_URL_LENGTH } from '../../../common/http/validators';
+import { IsPublicHttpsUrl, MAX_URL_LENGTH, OptionalButNotNull } from '../../../common/http/validators';
 import { TechnologyDto } from '../../technologies/technologies.dto';
 import { USERNAME_PATTERN } from '../identity';
 
@@ -32,9 +32,9 @@ export class OwnProfileDto extends PublicProfileDto {
 
 /** Champs absents : inchangés. null efface la biographie ou le pays ; [] vide les liens ou les compétences. */
 export class UpdateProfileDto {
-  @ApiPropertyOptional({ pattern: USERNAME_PATTERN.source }) @IsOptional() @IsString() @Matches(USERNAME_PATTERN) username?: string;
+  @ApiPropertyOptional({ pattern: USERNAME_PATTERN.source }) @OptionalButNotNull() @IsString() @Matches(USERNAME_PATTERN) username?: string;
   @ApiPropertyOptional({ nullable: true, type: String, maxLength: MAX_BIO_LENGTH }) @IsOptional() @IsString() @MaxLength(MAX_BIO_LENGTH) bio?: string | null;
   @ApiPropertyOptional({ nullable: true, type: String, example: 'SN' }) @IsOptional() @IsString() @Matches(/^[A-Z]{2}$/) @IsISO31661Alpha2() countryCode?: string | null;
-  @ApiPropertyOptional({ type: [String], maxItems: MAX_LINKS, description: `URLs HTTPS absolues de ${MAX_URL_LENGTH} caractères au plus.` }) @IsOptional() @IsArray() @ArrayMaxSize(MAX_LINKS) @ArrayUnique() @IsPublicHttpsUrl({ each: true }) links?: string[];
-  @ApiPropertyOptional({ type: [String], maxItems: MAX_SKILLS, description: 'Identifiants de technologies du catalogue.' }) @IsOptional() @IsArray() @ArrayMaxSize(MAX_SKILLS) @ArrayUnique() @IsUUID('all', { each: true }) skillIds?: string[];
+  @ApiPropertyOptional({ type: [String], maxItems: MAX_LINKS, description: `URLs HTTPS absolues de ${MAX_URL_LENGTH} caractères au plus.` }) @OptionalButNotNull() @IsArray() @ArrayMaxSize(MAX_LINKS) @ArrayUnique() @IsPublicHttpsUrl({ each: true }) links?: string[];
+  @ApiPropertyOptional({ type: [String], maxItems: MAX_SKILLS, description: 'Identifiants de technologies du catalogue.' }) @OptionalButNotNull() @IsArray() @ArrayMaxSize(MAX_SKILLS) @ArrayUnique() @IsUUID('all', { each: true }) skillIds?: string[];
 }

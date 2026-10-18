@@ -95,7 +95,7 @@ describe('gestion et recrutement', () => {
     const open = (await lead.browser.post('/projects', project('Plateforme agricole connectée', ['flutter']))).body;
     const closed = (await lead.browser.post('/projects', project('Plateforme agricole archivée', ['flutter'], { recruitmentStatus: 'CLOSED' }))).body;
     assert.equal((await visitor.get('/projects?technology=flutter')).body.meta.total, 2);
-    const recruiting = await visitor.get('/projects?technology=flutter&recruitment=OPEN');
+    const recruiting = await visitor.get('/projects?technology=flutter&status=open');
     assert.deepEqual(recruiting.body.data.map((p: { id: string }) => p.id), [open.id]);
     assert.equal((await visitor.get('/projects?q=archivée&technology=flutter')).body.data[0].id, closed.id);
     await sql.query(`INSERT INTO "ProjectMember"("projectId", "userId") VALUES ($1, $2)`, [open.id, other.id]);

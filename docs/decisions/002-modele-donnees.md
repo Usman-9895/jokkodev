@@ -20,7 +20,7 @@
 
 ## Points à trancher avec Ousmane
 
-1. **Format du contenu.** Le frontend manipule des blocs `paragraph` / `code` avec intitulés. Le backend propose des champs nommés ; le frontend construit ses blocs à partir d'eux. Confirmer ce découpage et si le code doit porter un langage (`codeLanguage`), absent du cahier des charges.
+1. **Format du contenu.** Le frontend manipule des blocs `paragraph` / `code` avec intitulés. Le backend propose des champs nommés ; le frontend construit ses blocs à partir d'eux. L’alignement #18 a ajouté `codeLanguage` facultatif sur questions et réponses (migration additive partagée), sans exécution du code. Confirmer le découpage éditorial restant ; la présence de ce champ n’est plus une question ouverte.
 2. **Code de la réponse.** Garder un champ `code` séparé ou un seul `body` en Markdown restreint.
 3. **Pseudonyme.** Valider la règle `[A-Za-z0-9_]{3,30}` ; elle exclut les lettres accentuées.
 4. **Pays.** Code ISO alpha-2 ; la liste affichée est à fournir par le frontend.

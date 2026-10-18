@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsIn, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import { PageQueryDto } from '../../common/http/pagination';
 import { HasText } from '../../common/http/validators';
+import { TechnologyDto } from '../technologies/technologies.dto';
 import { PublicAuthorDto } from '../users/projections';
 
 export const MESSAGE_MIN = 20;
@@ -22,6 +23,7 @@ export class ApplicationDto {
   @ApiProperty({ enum: APPLICATION_STATUSES }) status!: ApplicationStatus;
   @ApiProperty({ description: 'Privé : visible uniquement par le candidat et le responsable.' }) message!: string;
   @ApiProperty({ type: PublicAuthorDto }) applicant!: PublicAuthorDto;
+  @ApiProperty({ type: [TechnologyDto], description: 'Compétences publiques du profil du candidat.' }) applicantSkills!: TechnologyDto[];
   @ApiProperty({ type: ApplicationProjectDto }) project!: ApplicationProjectDto;
   @ApiProperty({ format: 'date-time' }) createdAt!: string;
   @ApiPropertyOptional({ nullable: true, type: String, format: 'date-time' }) decidedAt!: string | null;

@@ -19,5 +19,5 @@ export function createPrismaClient(databaseUrl: string): PrismaClient {
   const url = new URL(databaseUrl);
   const schema = url.searchParams.get('schema') ?? 'public';
   url.searchParams.delete('schema');
-  return new PrismaClient({ adapter: new PrismaPg({ connectionString: url.toString(), options: `-c search_path="${schema.replaceAll('"', '')}"`, connectionTimeoutMillis: 2000, query_timeout: 5000, statement_timeout: 5000, max: 5 }, { schema }), log: [] });
+  return new PrismaClient({ adapter: new PrismaPg({ connectionString: url.toString(), options: `-c search_path="${schema.replaceAll('"', '')}"`, connectionTimeoutMillis: 5000, query_timeout: 10000, statement_timeout: 10000, max: 10 }, { schema }), log: [] });
 }

@@ -77,6 +77,30 @@ describe('parcours candidat et responsable', () => {
   });
 });
 
+describe('Mon espace', () => {
+  test('demandes reçues sur tous les projets avec les compétences du candidat, et compteurs du tableau de bord', async () => {
+    const { owner, candidate, project } = await scenario();
+    const { body: second } = await owner.browser.post('/projects', { title: `Second projet ${counter}`, objective: 'Un second projet pour vérifier le regroupement des demandes.', technologyIds: [tech.get('go')] });
+    await candidate.browser.patch('/users/me', { skillIds: [tech.get('react'), tech.get('typescript')] });
+    await candidate.browser.post(`/projects/${project.id}/applications`, { message: SECRET_MESSAGE });
+    const other = await registerMember(server.api, `autre_cand_${counter}`);
+    const { body: refused } = await other.browser.post(`/projects/${second.id}/applications`, { message: SECRET_MESSAGE });
+    await owner.browser.patch(`/applications/${refused.id}`, { status: 'REJECTED' });
+    const received = await owner.browser.get('/users/me/received-applications');
+    assert.equal(received.body.meta.total, 2);
+    const fromCandidate = received.body.data.find((a: { applicant: { id: string } }) => a.applicant.id === candidate.id);
+    assert.deepEqual(fromCandidate.applicantSkills.map((t: { slug: string }) => t.slug), ['react', 'typescript']);
+    assert.equal((await owner.browser.get('/users/me/received-applications?status=PENDING')).body.meta.total, 1);
+    assert.equal((await candidate.browser.get('/users/me/received-applications')).body.meta.total, 0);
+    const dashboard = (await owner.browser.get('/users/me/dashboard')).body;
+    assert.deepEqual(dashboard.projects, { owned: 2, joined: 0 });
+    assert.equal(dashboard.applications.receivedPending, 1);
+    const candidateDashboard = (await candidate.browser.get('/users/me/dashboard')).body;
+    assert.deepEqual(candidateDashboard.applications, { sent: 1, sentPending: 1, receivedPending: 0 });
+    assert.equal((await visitor.get('/users/me/dashboard')).status, 401);
+  });
+});
+
 describe('règles de candidature', () => {
   test('doubles envois simultanés : une seule demande', async () => {
     const { candidate, project } = await scenario();

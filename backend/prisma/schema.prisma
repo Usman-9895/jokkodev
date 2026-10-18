@@ -156,6 +156,8 @@ model Question {
   actual           String
   attempts         String
   code             String?
+  /// Langage affiché avec l'extrait de code (TypeScript, Python...). Texte libre, jamais interprété.
+  codeLanguage     String?    @db.VarChar(30)
   visibility       Visibility @default(VISIBLE)
   /// La question est résolue si et seulement si cette référence est renseignée.
   acceptedAnswerId String?    @db.Uuid
@@ -187,14 +189,15 @@ model QuestionTechnology {
 }
 
 model Answer {
-  id         String     @id @default(uuid(7)) @db.Uuid
-  questionId String     @db.Uuid
-  authorId   String     @db.Uuid
-  body       String
-  code       String?
-  visibility Visibility @default(VISIBLE)
-  createdAt  DateTime   @default(now()) @db.Timestamptz(3)
-  updatedAt  DateTime   @updatedAt @db.Timestamptz(3)
+  id           String     @id @default(uuid(7)) @db.Uuid
+  questionId   String     @db.Uuid
+  authorId     String     @db.Uuid
+  body         String
+  code         String?
+  codeLanguage String?    @db.VarChar(30)
+  visibility   Visibility @default(VISIBLE)
+  createdAt    DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime   @updatedAt @db.Timestamptz(3)
 
   question    Question           @relation("QuestionAnswers", fields: [questionId], references: [id], onDelete: Restrict)
   author      User               @relation(fields: [authorId], references: [id], onDelete: Restrict)

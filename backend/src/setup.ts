@@ -29,7 +29,7 @@ export function configureApp(app: INestApplication, env: Environment): void {
   app.use(rejectNulCharacters);
   app.use(cookieMiddleware);
   app.use(...app.get<Csrf>(CSRF).middleware);
-  if (env.corsOrigins.length) app.enableCors({ origin: env.corsOrigins, credentials: true, methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], allowedHeaders: ['Content-Type', 'X-CSRF-Token'], exposedHeaders: ['X-Request-Id'] });
+  if (env.corsOrigins.length) app.enableCors({ origin: env.corsOrigins, credentials: true, methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], allowedHeaders: ['Content-Type', 'X-CSRF-Token'], exposedHeaders: ['X-Request-Id', 'Retry-After'] });
   app.useGlobalPipes(strictValidation());
   app.useGlobalFilters(new ApiErrorFilter());
   app.enableShutdownHooks();

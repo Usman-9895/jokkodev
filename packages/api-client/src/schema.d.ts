@@ -196,6 +196,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/me/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DashboardController_summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users/me": {
         parameters: {
             query?: never;
@@ -468,6 +484,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/me/received-applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ApplicationsController_receivedAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/applications/{id}": {
         parameters: {
             query?: never;
@@ -646,6 +678,39 @@ export interface components {
         TechnologyListDto: {
             data: components["schemas"]["TechnologyDto"][];
         };
+        QuestionCountsDto: {
+            total: number;
+            resolved: number;
+            open: number;
+            /** @description Masquées par la modération. */
+            hidden: number;
+        };
+        AnswerCountsDto: {
+            /** @description Réponses visibles. */
+            total: number;
+            /** @description Réponses retenues comme solution. */
+            accepted: number;
+        };
+        ProjectCountsDto: {
+            /** @description Projets dont la session est responsable. */
+            owned: number;
+            /** @description Projets rejoints comme membre. */
+            joined: number;
+        };
+        ApplicationCountsDto: {
+            /** @description Candidatures envoyées. */
+            sent: number;
+            /** @description Candidatures envoyées en attente de décision. */
+            sentPending: number;
+            /** @description Demandes reçues en attente, tous projets visibles confondus. */
+            receivedPending: number;
+        };
+        DashboardDto: {
+            questions: components["schemas"]["QuestionCountsDto"];
+            answers: components["schemas"]["AnswerCountsDto"];
+            projects: components["schemas"]["ProjectCountsDto"];
+            applications: components["schemas"]["ApplicationCountsDto"];
+        };
         ProfileStatsDto: {
             /** @description Questions visibles. */
             questions: number;
@@ -760,6 +825,11 @@ export interface components {
             /** @description Tentatives déjà effectuées. Les quatre rubriques totalisent 20 000 caractères au plus. */
             attempts: string;
             code?: string | null;
+            /**
+             * @description Langage affiché avec l’extrait ; ignoré et effacé sans code.
+             * @example TypeScript
+             */
+            codeLanguage?: string | null;
             technologyIds: string[];
         };
         AnswerDto: {
@@ -772,6 +842,11 @@ export interface components {
             body: string;
             /** @description Extrait de code, jamais exécuté. */
             code?: string | null;
+            /**
+             * @description Langage affiché avec l’extrait ; ignoré et effacé sans code.
+             * @example TypeScript
+             */
+            codeLanguage?: string | null;
             /** @description Réponse retenue comme solution. */
             accepted: boolean;
             /** Format: date-time */
@@ -800,6 +875,11 @@ export interface components {
             actual: string;
             attempts: string;
             code?: string | null;
+            /**
+             * @description Langage affiché avec l’extrait ; ignoré et effacé sans code.
+             * @example TypeScript
+             */
+            codeLanguage?: string | null;
             /** Format: uuid */
             acceptedAnswerId?: string | null;
             /** @description Solution acceptée, reprise ici pour l’afficher en tête. */
@@ -815,6 +895,11 @@ export interface components {
             attempts?: string;
             /** @description null retire le code. */
             code?: string | null;
+            /**
+             * @description Langage affiché avec l’extrait ; ignoré et effacé sans code.
+             * @example TypeScript
+             */
+            codeLanguage?: string | null;
             technologyIds?: string[];
         };
         AnswerPageDto: {
@@ -824,6 +909,11 @@ export interface components {
         CreateAnswerDto: {
             body: string;
             code?: string | null;
+            /**
+             * @description Langage affiché avec l’extrait ; ignoré et effacé sans code.
+             * @example TypeScript
+             */
+            codeLanguage?: string | null;
         };
         AcceptAnswerDto: {
             /** Format: uuid */
@@ -832,6 +922,11 @@ export interface components {
         UpdateAnswerDto: {
             body?: string;
             code?: string | null;
+            /**
+             * @description Langage affiché avec l’extrait ; ignoré et effacé sans code.
+             * @example TypeScript
+             */
+            codeLanguage?: string | null;
         };
         OwnQuestionSummaryDto: {
             /** Format: uuid */
@@ -869,6 +964,11 @@ export interface components {
             body: string;
             /** @description Extrait de code, jamais exécuté. */
             code?: string | null;
+            /**
+             * @description Langage affiché avec l’extrait ; ignoré et effacé sans code.
+             * @example TypeScript
+             */
+            codeLanguage?: string | null;
             /** @description Réponse retenue comme solution. */
             accepted: boolean;
             /** Format: date-time */
@@ -1028,6 +1128,8 @@ export interface components {
             /** @description Privé : visible uniquement par le candidat et le responsable. */
             message: string;
             applicant: components["schemas"]["PublicAuthorDto"];
+            /** @description Compétences publiques du profil du candidat. */
+            applicantSkills: components["schemas"]["TechnologyDto"][];
             project: components["schemas"]["ApplicationProjectDto"];
             /** Format: date-time */
             createdAt: string;
@@ -1542,6 +1644,26 @@ export interface operations {
             };
         };
     };
+    DashboardController_summary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Compteurs du tableau de bord de Mon espace. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardDto"];
+                };
+            };
+        };
+    };
     UsersController_me: {
         parameters: {
             query?: never;
@@ -1637,11 +1759,11 @@ export interface operations {
             query?: {
                 page?: number;
                 pageSize?: number;
-                /** @description Mots recherchés dans le titre et les rubriques ; tous doivent apparaître. */
+                /** @description Tous les mots, sans distinction de casse ni accents NFD ; titre, texte, pseudonyme et technologies. % et _ sont littéraux. */
                 q?: string;
-                /** @description Slug d’une technologie du catalogue. */
+                /** @description Nom affiché ou slug d’une technologie du catalogue, sans tenir compte de la casse. */
                 technology?: string;
-                resolved?: "true" | "false";
+                status?: "all" | "resolved" | "open";
             };
             header?: never;
             path?: never;
@@ -1952,7 +2074,7 @@ export interface operations {
             query?: {
                 page?: number;
                 pageSize?: number;
-                resolved?: "true" | "false";
+                status?: "all" | "resolved" | "open";
             };
             header?: never;
             path?: never;
@@ -2041,9 +2163,11 @@ export interface operations {
             query?: {
                 page?: number;
                 pageSize?: number;
-                recruitment?: "OPEN" | "CLOSED";
-                /** @description Mots recherchés dans le titre et l’objectif. */
+                /** @description État du recrutement. */
+                status?: "all" | "open" | "closed";
+                /** @description Tous les mots, sans distinction de casse ni accents NFD ; titre, texte, pseudonyme et technologies. % et _ sont littéraux. */
                 q?: string;
+                /** @description Nom affiché ou slug d’une technologie. */
                 technology?: string;
             };
             header?: never;
@@ -2349,6 +2473,30 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Demandes envoyées par la session. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationPageDto"];
+                };
+            };
+        };
+    };
+    ApplicationsController_receivedAll: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: "PENDING" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Demandes reçues sur tous les projets visibles de la session. */
             200: {
                 headers: {
                     [name: string]: unknown;

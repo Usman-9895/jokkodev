@@ -119,7 +119,7 @@ describe('traitement des signalements', () => {
     assert.deepEqual([question.resolved, question.acceptedAnswerId, question.answerCount], [false, null, 0]);
     assert.equal((await visitor.get(`/questions/${questionId}/answers`)).body.meta.total, 0);
     assert.equal((await visitor.get(`/users/${helper.id}`)).body.stats.answers, 0);
-    assert.equal((await visitor.get(`/questions?resolved=true&q=${encodeURIComponent(`modérer ${counter}`)}`)).body.meta.total, 0);
+    assert.equal((await visitor.get(`/questions?status=resolved&q=${encodeURIComponent(`modérer ${counter}`)}`)).body.meta.total, 0);
   });
 
   test('masquage concurrent d’une acceptation : une réponse masquée ne reste jamais solution', async () => {
