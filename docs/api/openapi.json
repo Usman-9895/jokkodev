@@ -1947,6 +1947,384 @@
           "applications"
         ]
       }
+    },
+    "/api/v1/reports": {
+      "post": {
+        "operationId": "ReportsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReportDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Signalement ouvert ; le contenu reste visible tant qu’aucune action ne le masque.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatedReportDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "TARGET_NOT_FOUND : cible inexistante ou déjà non publique.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "REPORT_ALREADY_OPEN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/v1/admin/reports": {
+      "get": {
+        "operationId": "AdminController_reports",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "OPEN",
+                "CLOSED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plus récents d’abord, filtrables par état.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportPageDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Réservé au rôle ADMIN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/reports/{id}": {
+      "get": {
+        "operationId": "AdminController_report",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportDetailDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Réservé au rôle ADMIN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/reports/{id}/resolve": {
+      "post": {
+        "operationId": "AdminController_resolve",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveReportDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Action appliquée, historique écrit et signalement clôturé atomiquement.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportDetailDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Réservé au rôle ADMIN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "REPORT_ALREADY_CLOSED ou CANNOT_SUSPEND_ADMIN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/moderation-actions": {
+      "post": {
+        "operationId": "AdminController_act",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DirectActionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationActionDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Réservé au rôle ADMIN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "ALREADY_HIDDEN, ALREADY_SUSPENDED ou CANNOT_SUSPEND_ADMIN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "admin"
+        ]
+      },
+      "get": {
+        "operationId": "AdminController_actions",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historique complet, plus récent d’abord.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationActionPageDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Réservé au rôle ADMIN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "admin"
+        ]
+      }
     }
   },
   "info": {
@@ -3472,6 +3850,454 @@
         },
         "required": [
           "status"
+        ]
+      },
+      "CreateReportDto": {
+        "type": "object",
+        "properties": {
+          "targetType": {
+            "type": "string",
+            "enum": [
+              "QUESTION",
+              "ANSWER",
+              "PROJECT"
+            ]
+          },
+          "targetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "targetType",
+          "targetId",
+          "reason"
+        ]
+      },
+      "CreatedReportDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN"
+            ]
+          },
+          "targetType": {
+            "type": "string",
+            "enum": [
+              "QUESTION",
+              "ANSWER",
+              "PROJECT"
+            ]
+          },
+          "targetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "targetType",
+          "targetId",
+          "createdAt"
+        ]
+      },
+      "AdminUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "SUSPENDED"
+            ]
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "MEMBER",
+              "ADMIN"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "status",
+          "role"
+        ]
+      },
+      "ReportTargetDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "QUESTION",
+              "ANSWER",
+              "PROJECT"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "description": "Titre de la question, de la question parente d’une réponse, ou du projet."
+          },
+          "excerpt": {
+            "type": "string",
+            "description": "Extrait du contenu signalé."
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "VISIBLE",
+              "HIDDEN"
+            ]
+          },
+          "author": {
+            "description": "Auteur ou responsable : compte visé par une suspension.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AdminUserDto"
+              }
+            ]
+          },
+          "questionId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid",
+            "description": "Question parente, pour une réponse."
+          }
+        },
+        "required": [
+          "type",
+          "id",
+          "title",
+          "excerpt",
+          "visibility",
+          "author"
+        ]
+      },
+      "ReportDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "description": "Motif du déclarant, réservé aux administrateurs."
+          },
+          "reporter": {
+            "$ref": "#/components/schemas/AdminUserDto"
+          },
+          "target": {
+            "$ref": "#/components/schemas/ReportTargetDto"
+          },
+          "decision": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "NO_ACTION",
+              "HIDE_CONTENT",
+              "SUSPEND_ACCOUNT"
+            ]
+          },
+          "closedBy": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AdminUserDto"
+              }
+            ]
+          },
+          "closedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "reason",
+          "reporter",
+          "target",
+          "createdAt"
+        ]
+      },
+      "ReportPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "ModerationTargetRefDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "QUESTION",
+              "ANSWER",
+              "PROJECT",
+              "USER"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ]
+      },
+      "ModerationActionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "NO_ACTION",
+              "HIDE_CONTENT",
+              "SUSPEND_ACCOUNT"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "admin": {
+            "$ref": "#/components/schemas/AdminUserDto"
+          },
+          "reportId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "target": {
+            "$ref": "#/components/schemas/ModerationTargetRefDto"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "decision",
+          "reason",
+          "admin",
+          "target",
+          "createdAt"
+        ]
+      },
+      "ReportDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSED"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "description": "Motif du déclarant, réservé aux administrateurs."
+          },
+          "reporter": {
+            "$ref": "#/components/schemas/AdminUserDto"
+          },
+          "target": {
+            "$ref": "#/components/schemas/ReportTargetDto"
+          },
+          "decision": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "NO_ACTION",
+              "HIDE_CONTENT",
+              "SUSPEND_ACCOUNT"
+            ]
+          },
+          "closedBy": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AdminUserDto"
+              }
+            ]
+          },
+          "closedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "openReportsOnTarget": {
+            "type": "number",
+            "description": "Signalements encore ouverts sur la même cible, celui-ci compris."
+          },
+          "history": {
+            "description": "Actions déjà prises sur ce contenu ou sur le compte de son auteur, plus récentes d’abord.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModerationActionDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "reason",
+          "reporter",
+          "target",
+          "createdAt",
+          "openReportsOnTarget",
+          "history"
+        ]
+      },
+      "ResolveReportDto": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "NO_ACTION",
+              "HIDE_CONTENT",
+              "SUSPEND_ACCOUNT"
+            ],
+            "description": "SUSPEND_ACCOUNT vise l’auteur du contenu signalé, déterminé par le serveur."
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 1000,
+            "description": "Motif de la décision, conservé dans l’historique."
+          }
+        },
+        "required": [
+          "decision",
+          "reason"
+        ]
+      },
+      "DirectActionDto": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "HIDE_CONTENT",
+              "SUSPEND_ACCOUNT"
+            ]
+          },
+          "targetType": {
+            "type": "string",
+            "enum": [
+              "QUESTION",
+              "ANSWER",
+              "PROJECT",
+              "USER"
+            ],
+            "description": "HIDE_CONTENT : QUESTION, ANSWER ou PROJECT. SUSPEND_ACCOUNT : USER."
+          },
+          "targetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "decision",
+          "targetType",
+          "targetId",
+          "reason"
+        ]
+      },
+      "ModerationActionPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModerationActionDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
         ]
       }
     }
