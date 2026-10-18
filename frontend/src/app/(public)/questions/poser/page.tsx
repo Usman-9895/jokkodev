@@ -1,4 +1,4 @@
-export const metadata = {"title":"Poser une question — indisponible | JokkoDev","description":"Interface préparée ; opération backend encore indisponible."};
 import {Container} from '../../../../components/layout/container';
-import {QuestionForm} from '../../../../components/jokkohelp/contributions/question-form';
-export default function AskPage(){return <Container className="contribution-page"><QuestionForm/></Container>;}
+import {LiveQuestionForm} from '../../../../components/jokkohelp/live-question-form';
+export const metadata={title:'Poser une question | JokkoDev',description:'Décris ton problème et publie une question à la communauté.'};
+export default function Page(){return <Container className="contribution-page"><LiveQuestionForm/></Container>;}

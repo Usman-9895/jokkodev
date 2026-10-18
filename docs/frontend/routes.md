@@ -1,6 +1,6 @@
-# Inventaire des routes frontend — lot 10
+# Inventaire des routes frontend — lot 11
 
-40 routes de page App Router (31 produit et 9 aperçus). Les routes /espace utilisent la session réelle ; seul le profil personnel est raccordé. L’administration reste une attente publique sans données privées, ce qui ne constitue pas une autorisation administrateur. Les aperçus ne sont pas dans la navigation publique.
+40 routes de page App Router (31 produit et 9 aperçus). Les routes /espace utilisent la session réelle ; profil personnel et Mes questions sont raccordés. L’administration reste une attente publique sans données privées, ce qui ne constitue pas une autorisation administrateur. Les aperçus ne sont pas dans la navigation publique.
 
 | Route | Situation actuelle |
 | --- | --- |
@@ -17,7 +17,7 @@
 | `/espace/profil` | Lecture et modification réelles du profil propriétaire |
 | `/espace/projets` | Session réelle requise — interface métier encore non raccordée |
 | `/espace/projets/[id]/demandes` | Session réelle requise — interface métier encore non raccordée |
-| `/espace/questions` | Session réelle requise — interface métier encore non raccordée |
+| `/espace/questions` | Liste personnelle réelle, statuts/pagination serveur et masquage explicite |
 | `/dev/comptes` | Aperçu développement — 404 en production |
 | `/dev/design-system` | Aperçu développement — 404 en production |
 | `/dev/espace` | Aperçu développement — 404 en production |
@@ -30,17 +30,17 @@
 | `/a-propos` | Information publique en attente |
 | `/confidentialite` | Information publique en attente |
 | `/contact` | Orientation publique — contact direct indisponible |
-| `/` | Public — consultation de données fictives |
+| `/` | Dernières questions réelles ; autres domaines selon leur état d’intégration |
 | `/profils/[pseudonyme]` | Profil public réel et contributions paginées ; aucun email public |
 | `/projets` | Public — consultation de données fictives |
 | `/projets/proposer` | Interface publique — opération backend indisponible |
 | `/projets/[id]/modifier` | Interface publique — opération backend indisponible |
 | `/projets/[id]` | Public — consultation de données fictives |
-| `/questions/actions` | Interface publique — opération backend indisponible |
-| `/questions` | Public — consultation de données fictives |
-| `/questions/poser` | Interface publique — opération backend indisponible |
-| `/questions/[id]/modifier` | Interface publique — opération backend indisponible |
-| `/questions/[id]` | Public — consultation de données fictives |
+| `/questions/actions` | Information sur les contributions réelles ; signalements encore indisponibles |
+| `/questions` | Liste réelle et catalogue API, critères URL et pagination serveur |
+| `/questions/poser` | Session requise ; création réelle |
+| `/questions/[id]/modifier` | Session auteur requise ; modification réelle |
+| `/questions/[id]` | Détail et réponses réels ; réponse/modification/solution selon session et auteur |
 | `/regles` | Public — rédaction proposée à relire |
 | `/ressources` | Information publique en attente |
 | `/signalements` | Interface publique — opération backend indisponible |
@@ -49,4 +49,4 @@ Les paramètres des listes questions/projets sont `q`, `technology`, `status`, `
 
 `not-found.tsx` traite les routes absentes, sans être une route produit supplémentaire. Le statut HTTP observé pour une ressource inconnue peut différer après démarrage du streaming : voir le [rapport de vérification](lot-9-verification.md). Les icônes, assets statiques et proxy `/api/v1/*` ne sont pas des pages ; le proxy cible le backend existant, sans API Next concurrente.
 
-Les opérations de compte et de profil sont raccordées. Les opérations de contribution, candidature et modération restent non raccordées et désactivées côté frontend. Les consultations publiques de questions/projets sont fictives et identifiées comme telles. À propos/Ressources restent en attente de contenu ; aucune page de conditions contractuelles n’est inventée. Voir le [bilan central pour Serge](integration-readiness.md).
+Les opérations de compte et de profil sont raccordées. Les contributions JokkoHelp sont raccordées. Les projets, candidatures et modération restent non raccordés ; les consultations publiques de projets restent fictives et identifiées comme telles. À propos/Ressources restent en attente de contenu ; aucune page de conditions contractuelles n’est inventée. Voir le [bilan central pour Serge](integration-readiness.md).

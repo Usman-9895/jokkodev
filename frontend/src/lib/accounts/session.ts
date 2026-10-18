@@ -61,7 +61,9 @@ export class AccountClient {
     }).catch(error => {
       if (revision !== this.state.revision) return;
       this.forgetCsrf();
-      this.publish(error instanceof HttpError && [401,403].includes(error.status ?? 0) ? 'guest' : 'unavailable', null, true);
+      const phase = error instanceof HttpError && [401,403].includes(error.status ?? 0) ? 'guest' : 'unavailable';
+      // A repeated anonymous check must not invalidate otherwise unchanged public content during a click/focus.
+      this.publish(phase, null, this.state.phase !== phase || this.state.user !== null);
     }).finally(() => { this.refreshing = undefined; });
     return this.refreshing;
   }
@@ -75,7 +77,7 @@ export class AccountClient {
     } catch (error) { if (privateData) this.expire(error); throw error; }
   }
   private expire(error: unknown) {
-    if (error instanceof HttpError && [401,403].includes(error.status ?? 0) && !apiFailure(error).code?.startsWith('CSRF_')) {
+    if (error instanceof HttpError && (error.status === 401 || error.status === 403 && apiFailure(error).code === 'ACCOUNT_SUSPENDED')) {
       this.forgetCsrf(); this.publish('guest', null, true);
     }
   }
