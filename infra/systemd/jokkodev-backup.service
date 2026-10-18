@@ -1,0 +1,11 @@
+[Unit]
+Description=Sauvegarde chiffrée de la base JokkoDev
+After=postgresql.service
+
+[Service]
+Type=oneshot
+User=jokkodev-backup
+EnvironmentFile=/etc/jokkodev/backup.env
+ExecStart=/opt/jokkodev/current/infra/scripts/backup.sh
+# Copie hors serveur : commande propre au stockage retenu, définie dans backup.env (BACKUP_COPY_COMMAND).
+ExecStartPost=/bin/sh -c 'test -z "$BACKUP_COPY_COMMAND" || eval "$BACKUP_COPY_COMMAND"'

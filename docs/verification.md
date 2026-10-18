@@ -137,3 +137,20 @@ Branche `feature/applications`. `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pn
 ## Signalements et modération — 17 octobre 2026
 
 Branche `feature/moderation`. `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm api:generate` réussis ; `pnpm test` : 10 backend et 26 frontend/client ; `pnpm test:integration` : 69 tests sur PostgreSQL réel, réussis trois fois de suite, dont 12 pour ce lot (doublons simultanés, cibles invalides, refus membre et visiteur sur toutes les routes admin, clôture sans action, masquage de la solution acceptée, masquage concurrent d'une acceptation sur cinq tours, suspension effective sur session ouverte, décisions simultanées de deux administrateurs, actions directes).
+
+## Exploitation et répétition de production — 17 octobre 2026
+
+Branche `feature/operations`. Contrôles du dépôt réussis (`pnpm lint`, `typecheck`, `build`, `api:generate`, 10 + 26 tests, 69 tests d'intégration). Répétition sur une instance PostgreSQL 17.11 isolée puis supprimée :
+
+| Contrôle | Résultat |
+|---|---|
+| `infra/postgres/roles.sql` puis migrations par `jokkodev_migrator` et `grants.sql` | Réussis ; le rôle applicatif ne peut ni créer ni supprimer de table ni lire `_prisma_migrations` |
+| `pnpm db:seed` et `pnpm db:seed:demo` avec le rôle applicatif | Réussis, mots de passe aléatoires affichés une fois |
+| API en `NODE_ENV=production` avec le rôle applicatif | Santé 200, Swagger 404, cookies `__Host-` Secure, version dans le journal de démarrage |
+| Configuration de production incomplète | Démarrage refusé, variables fautives nommées sans leur valeur |
+| `backup.sh` puis `restore.sh` dans une base vide | Sauvegarde chiffrée de 54 Ko ; restauration en 1 seconde (16 tables, 1 migration, 3 comptes) ; `migrate status` à jour |
+| Restauration vers la production ou d'une sauvegarde altérée | Refusées |
+| nginx 1.28 en HTTPS (certificat autosigné) devant NestJS et Next.js | `nginx -t` et `post-deploy-check.sh` réussis ; inscription et session en HTTPS |
+| `X-Forwarded-For` falsifié à chaque tentative de connexion | Ignoré : 5 refus puis 429 |
+
+Non vérifié : Datacloud, SMTP réel, calibrage Argon2 sur le serveur cible.

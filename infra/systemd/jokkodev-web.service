@@ -1,0 +1,22 @@
+[Unit]
+Description=JokkoDev frontend (Next.js)
+After=network-online.target jokkodev-api.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=jokkodev
+Group=jokkodev
+WorkingDirectory=/opt/jokkodev/current/frontend
+EnvironmentFile=/etc/jokkodev/web.env
+ExecStart=/usr/bin/node node_modules/next/dist/bin/next start --port 3000 --hostname 127.0.0.1
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/jokkodev/current/frontend/.next/cache
+
+[Install]
+WantedBy=multi-user.target

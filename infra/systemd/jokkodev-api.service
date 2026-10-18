@@ -1,0 +1,26 @@
+[Unit]
+Description=JokkoDev API (NestJS)
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=jokkodev
+Group=jokkodev
+WorkingDirectory=/opt/jokkodev/current/backend
+# Variables de production (mode 600, propriétaire root). Aucun fichier .env dans le dossier de l'application.
+EnvironmentFile=/etc/jokkodev/api.env
+ExecStart=/usr/bin/node dist/src/main.js
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

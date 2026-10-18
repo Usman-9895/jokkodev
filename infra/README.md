@@ -45,10 +45,17 @@ Ne pas lancer `migrate dev` ou `migrate deploy` sans vérifier hôte, port, base
 
 Contrôles de santé : `GET http://localhost:3001/api/v1/health/ready` (200), puis le même chemin via le port 3000. Sur une base qui vous appartient, l'arrêter doit donner 503 et la relancer doit rétablir 200 sans redémarrer NestJS. Ne pas arrêter une base partagée.
 
-## Datacloud — accès non opérationnel
+## Datacloud et exploitation
 
-Topologie envisagée : un point d’entrée HTTPS ; /api/v1 vers NestJS, les autres chemins vers Next.js ; PostgreSQL sur réseau privé. Ports internes 3000/3001 et PostgreSQL non exposés publiquement. Swagger UI désactivée en production. Le proxy Next.js est une commodité locale ; en production privilégier le routage au point d’entrée et injecter l’origine API interne adaptée au build/configuration Next.js.
+Accès Datacloud non encore opérationnel. La procédure complète (installation, mise à jour, migrations avec rôles séparés, sauvegarde chiffrée, restauration, secrets, journaux, emails) est dans le [runbook](../docs/operations/runbook.md).
 
-Secrets distincts par environnement, gestionnaire de secrets à choisir selon l’offre disponible. Définir sauvegardes chiffrées, rétention, RPO/RTO et exercices de restauration. Déploiement contrôlé : sauvegarde et restauration testées, revue SQL, pnpm db:migrate:deploy avec rôle dédié, contrôle readiness, stratégie de compatibilité et retour applicatif. Une migration destructive exige une procédure explicite ; pas de db push.
+| Fichier | Rôle |
+|---|---|
+| `nginx/jokkodev.conf` | Point d'entrée HTTPS, redirection, HSTS, limites de corps et de débit, routage `/api/v1` et frontend |
+| `systemd/jokkodev-api.service`, `jokkodev-web.service` | Services durcis, redémarrage automatique, configuration hors dépôt |
+| `systemd/jokkodev-backup.service`, `.timer` | Sauvegarde quotidienne et copie hors serveur |
+| `postgres/roles.sql`, `grants.sql` | Rôle propriétaire pour les migrations, rôle applicatif limité aux données |
+| `scripts/backup.sh`, `restore.sh` | Sauvegarde chiffrée avec empreinte ; restauration vérifiée dans une base vide |
+| `scripts/post-deploy-check.sh` | Contrôles HTTPS, santé, cookies, CSRF et Swagger après chaque déploiement |
 
-Aucune ressource créée, aucun service Datacloud présumé disponible, aucun déploiement effectué.
+Répétition locale du 17 octobre 2026 : rôles et droits, migrations par le rôle propriétaire, API en mode production avec le rôle applicatif, nginx en HTTPS devant NestJS et Next.js avec `post-deploy-check.sh` réussi, sauvegarde et restauration chronométrée, refus d'une sauvegarde altérée et d'une restauration vers la production. Les licences des images et paquets système (nginx BSD-2-Clause, systemd LGPL, image PostgreSQL) restent à examiner selon la portée du règlement.

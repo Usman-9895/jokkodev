@@ -14,6 +14,7 @@
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:seed": "pnpm build && node dist/src/database/seed.js",
+    "db:seed:demo": "pnpm build && node dist/src/database/demo.js",
     "admin:grant": "pnpm build && node dist/src/cli/admin.js grant",
     "admin:revoke": "pnpm build && node dist/src/cli/admin.js revoke",
     "api:export": "pnpm build && node dist/src/export-openapi.js"
