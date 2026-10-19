@@ -1,5 +1,7 @@
 # JokkoProjects — intégration réelle, lot 12
 
+Évolution : le [lot 13](dashboard-applications-integration.md) raccorde désormais tableau de bord et candidatures. Les constats antérieurs d’indisponibilité ci-dessous sont historiques.
+
 Base develop **98fc593c6c1d897e388846d2560a6bf374492253**, fusion de #22 vérifiée par Git et GitHub. Le commit propre à #19 n’est pas inclus. Branche `feature/frontend-jokkoprojects-integration`, recette fonctionnelle validée par Ousmane et publication pour revue autorisée, sans fusion. [Rapport de recette](lot-12-verification.md).
 
 ## Parcours et sources

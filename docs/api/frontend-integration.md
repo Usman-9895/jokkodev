@@ -2,7 +2,7 @@
 
 Pour remplacer les sources fictives du frontend (lots 3 à 9) par l'API. Toutes les routes sont sous `/api/v1`, types générés dans `packages/api-client/src/schema.d.ts`. Session et CSRF : voir la [décision 003](../decisions/003-sessions-csrf.md), section « Intégration frontend ».
 
-Le transport partagé prépare les paramètres typés depuis OpenAPI dans l’option `query` et expose uniquement le délai serveur sûr `HttpError.retryAfterSeconds`. Les lots 10 à 12 raccordent comptes, session, profils, JokkoHelp et JokkoProjects ; candidatures, tableau de bord et modération attendent leur intégration. Exemple : `api('/questions', { query: { q: 'sécurité NestJS', technology: 'nestjs', status: 'open', page: 1, pageSize: 3 } })`. Le chemin reste séparé et refuse `?`, fragments, destinations externes et remontées encodées.
+Le transport partagé prépare les paramètres typés depuis OpenAPI dans l’option `query` et expose uniquement le délai serveur sûr `HttpError.retryAfterSeconds`. Les lots 10 à 13 raccordent comptes, session, profils, JokkoHelp, JokkoProjects, tableau de bord et candidatures ; la modération attend son intégration. Voir le [guide du lot 13](../frontend/dashboard-applications-integration.md). Exemple : `api('/questions', { query: { q: 'sécurité NestJS', technology: 'nestjs', status: 'open', page: 1, pageSize: 3 } })`. Le chemin reste séparé et refuse `?`, fragments, destinations externes et remontées encodées.
 
 ## Pages et routes
 
@@ -31,6 +31,7 @@ Le transport partagé prépare les paramètres typés depuis OpenAPI dans l’op
 | `/espace/questions` | `GET /users/me/questions?status` |
 | `/espace/projets` | `GET /users/me/projects?role` |
 | `/espace/projets/[id]/demandes` | `GET /projects/:id/applications?status`, `PATCH /applications/:id` |
+| `/espace/candidatures/[id]` | `GET /applications/:id` : détail privé candidat/responsable autorisé |
 | `/espace/candidatures` | Envoyées : `GET /users/me/applications?status` ; reçues (tous projets) : `GET /users/me/received-applications?status` ; retrait : `PATCH /applications/:id` `{ status: 'WITHDRAWN' }` |
 | `/signalements` | `POST /reports` `{ targetType, targetId, reason }` |
 | `/admin/signalements` | `GET /admin/reports?status` |

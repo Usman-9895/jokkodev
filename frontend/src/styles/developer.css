@@ -69,3 +69,16 @@
 @media(max-width:400px){.developer-heading .contribution-actions {display:grid;}.dashboard-summary {gap:8px;}.dashboard-stat {padding:12px;flex-wrap:wrap;}.dashboard-stat>div {flex-basis:100%;}.application-filter {display:grid;width:100%;}.application-filter select {width:100%;}.dashboard-project {grid-template-columns:32px minmax(0,1fr);gap:12px;}}
 
 /* Navigation et démonstrations du lot 7, sans contrôle de session. */
+
+/* Real dashboard and private application data. */
+.application-live-space {padding:24px;min-width:0;}
+.application-live-space .jd-message {margin-block:16px;}
+.application-live-space .dashboard-project .jd-button {margin-top:12px;}
+.application-feedback {margin-block:16px;}
+.application-live-space :where(.sent-application,.received-application) {min-width:0;}
+.application-live-space :where(p,h1,h2,a,strong,time,.jd-badge) {overflow-wrap:anywhere;}
+.application-live-space .received-message>p,.application-live-space .sent-application>div>p {white-space:pre-wrap;}
+.application-live-space .decision-actions {flex-wrap:wrap;}
+.project-contribution-panel.application-form :where(h2,p,a,.jd-message) {overflow-wrap:anywhere;}
+.application-live-space .dashboard-row>a {min-width:0;}
+@media(max-width:800px){.application-live-space {padding:16px 0;}.application-live-space .dashboard-panel {padding:16px;}.application-live-space .dashboard-row>a {grid-row:span 2;}.application-live-space .received-heading>div:last-child {margin-left:0;}}

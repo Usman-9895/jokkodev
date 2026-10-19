@@ -1,5 +1,7 @@
 # Lot 7 — tableau de bord et candidatures
 
+Évolution : le [lot 13](dashboard-applications-integration.md) raccorde désormais tableau de bord et candidatures. Les constats antérieurs d’indisponibilité ci-dessous sont historiques.
+
 ## État réel
 
 Le lot 6 a été fusionné par la PR #6, base `develop` à `8615a98`. Branche de travail : `feature/frontend-dashboard-applications`. Aucun backend ou type généré modifié. Aucune dépendance ajoutée.
