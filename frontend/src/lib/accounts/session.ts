@@ -57,7 +57,7 @@ export class AccountClient {
     if (this.refreshing) return this.refreshing;
     const revision = this.state.revision;
     this.refreshing = this.request<CurrentUser>('/auth/me').then(user => {
-      if (revision === this.state.revision) this.publish(user ? 'authenticated' : 'guest', user ?? null);
+      if (revision === this.state.revision) this.publish(user ? 'authenticated' : 'guest', user ?? null, this.state.user?.id !== user?.id || this.state.user?.role !== user?.role);
     }).catch(error => {
       if (revision !== this.state.revision) return;
       this.forgetCsrf();
@@ -82,7 +82,10 @@ export class AccountClient {
     }
   }
   async mutate<T>(path: string, body?: unknown, method = 'POST', privateData = false): Promise<T | undefined> {
-    try { return await this.request<T>(path, { method, csrfToken: await this.csrf(), headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) }); }
+    const revision = this.state.revision;
+    try { const value = await this.request<T>(path, { method, csrfToken: await this.csrf(), headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) });
+      if (privateData && (revision !== this.state.revision || this.state.phase !== 'authenticated')) throw new HttpError('aborted', 'Résultat privé périmé.');
+      return value; }
     catch (error) {
       if (apiFailure(error).code === 'CSRF_TOKEN_INVALID') { this.forgetCsrf(); await this.csrf().catch(() => undefined); }
       if (privateData) this.expire(error);

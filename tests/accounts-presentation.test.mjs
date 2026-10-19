@@ -16,7 +16,7 @@ test('les liens publics refusent les protocoles actifs, identifiants et caractè
  assert.equal(safeExternalLink('http://example.com'),'http://example.com/');
 });
 test('la primitive de retour ne permet pas une destination externe, une URL privée inconnue ou des paramètres de jeton',()=>{
- for(const value of [undefined,'https://example.com','//example.com','/admin','/espace?token=secret','/%2fexample.com','/espace\\x','/espace\n'])assert.equal(allowedReturnPath(value),'/espace');
+ for(const value of [undefined,'https://example.com','//example.com','/admin/inconnu','/espace?token=secret','/%2fexample.com','/espace\\x','/espace\n'])assert.equal(allowedReturnPath(value),'/espace');
  assert.equal(allowedReturnPath('/questions/poser'),'/questions/poser');
  assert.equal(allowedReturnPath('/projets'),'/projets');
 });

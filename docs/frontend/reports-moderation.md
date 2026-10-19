@@ -1,5 +1,7 @@
 # Lot 8 — signalements et administration minimale
 
+État historique du lot 8 : le [lot 14](moderation-integration.md) raccorde maintenant les routes produit au backend réel. Les absences de contrat et effets indépendants de cet aperçu ci-dessous ne décrivent pas le parcours intégré.
+
 ## État réel et séparation des espaces
 
 Base `develop` à `e008dea`, après fusion confirmée du lot 7 (PR #7). Branche `feature/frontend-reports-moderation`. Aucun backend, modèle Prisma, type généré, dépendance ou licence modifié.

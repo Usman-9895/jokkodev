@@ -1,12 +1,12 @@
-# Inventaire des routes frontend — lot 13
+# Inventaire des routes frontend — lot 14
 
-41 routes de page App Router (32 produit et 9 aperçus). Les routes /espace utilisent la session réelle ; profil personnel, Mes questions, Mes projets, tableau de bord et candidatures sont raccordés. L’administration reste une attente publique sans données privées, ce qui ne constitue pas une autorisation administrateur. Les aperçus ne sont pas dans la navigation publique.
+41 routes de page App Router (32 produit et 9 aperçus). Les routes /espace utilisent la session réelle ; profil personnel, Mes questions, Mes projets, tableau de bord et candidatures sont raccordés. L’administration minimale est raccordée sous SessionGate et rôle ADMIN réel ; le serveur vérifie chaque lecture et mutation. Les aperçus ne sont pas dans la navigation publique.
 
 | Route | Situation actuelle |
 | --- | --- |
-| `/admin` | Administrateur requis — attente publique sans données privées |
-| `/admin/signalements` | Administrateur requis — attente publique sans données privées |
-| `/admin/signalements/[id]` | Administrateur requis — attente publique sans données privées |
+| `/admin` | Administration réelle réservée à ADMIN, sans données avant vérification de session |
+| `/admin/signalements` | Administration réelle réservée à ADMIN, sans données avant vérification de session |
+| `/admin/signalements/[id]` | Administration réelle réservée à ADMIN, sans données avant vérification de session |
 | `/connexion` | Compte réel raccordé au backend |
 | `/inscription` | Compte réel raccordé au backend |
 | `/mot-de-passe-oublie` | Compte réel raccordé au backend |
@@ -36,15 +36,15 @@
 | `/projets` | Liste réelle, catalogue API, critères URL et pagination serveur |
 | `/projets/proposer` | Session requise ; création réelle |
 | `/projets/[id]/modifier` | Session responsable requise ; modification/recrutement réels |
-| `/projets/[id]` | Détail et membres publics réels ; candidatures indisponibles |
-| `/questions/actions` | Information sur les contributions réelles ; signalements encore indisponibles |
+| `/projets/[id]` | Détail et membres publics réels ; candidatures réelles selon session et permissions |
+| `/questions/actions` | Information sur les contributions et les entrées de signalement réelles |
 | `/questions` | Liste réelle et catalogue API, critères URL et pagination serveur |
 | `/questions/poser` | Session requise ; création réelle |
 | `/questions/[id]/modifier` | Session auteur requise ; modification réelle |
 | `/questions/[id]` | Détail et réponses réels ; réponse/modification/solution selon session et auteur |
 | `/regles` | Public — rédaction proposée à relire |
 | `/ressources` | Information publique en attente |
-| `/signalements` | Interface publique — opération backend indisponible |
+| `/signalements?type=…&target=UUID` | Repli réel par type/identifiant ; entrées contextuelles en dialogue, POST /reports sous session |
 
 Les paramètres des listes questions/projets sont `q`, `technology`, `status`, `page` ; le retour depuis un détail conserve ces critères. Les paramètres des aperçus sont décrits dans les guides de chaque lot, jamais des autorisations serveur. Les cinq ancres de `/regles` sont documentées dans le [guide du lot 9](information-quality.md).
 
