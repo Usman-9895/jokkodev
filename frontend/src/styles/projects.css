@@ -28,7 +28,7 @@
 .project-detail-section p { color:var(--color-muted); white-space:pre-wrap; overflow-wrap:anywhere; }
 .project-members { display:flex; flex-wrap:wrap; gap:24px; }
 .project-members > div { display:flex; align-items:center; gap:12px; font-size:12px; }
-.project-members strong,.project-members span { display:block; }
+.project-members strong,.project-members span:not(.jd-avatar) { display:block; }
 .project-members span { color:var(--color-petrol); }
 .project-owner { font-size:12px; color:var(--color-muted); }
 .project-contribution-panel { align-self:start; display:grid; gap:20px; box-shadow:none; }
@@ -73,3 +73,16 @@
 @media(max-width:767px){.projects-hero h1 { max-width:280px; }.project-card-heading { display:block; }.project-card-heading h2 { min-width:0; margin-bottom:8px; }}
 @media(max-width:767px){.projects-hero h1 { max-width:280px; }.project-card-heading { display:block; }.project-card-heading h2 { min-width:0; margin-bottom:8px; }}
 @media(max-width:359px){.project-card-heading h2,.personal-project-main h2 { font-size:20px; }.project-presentation h1,.project-form-page > h1 { font-size:27px; }}
+
+/* Real project data may contain unbroken titles, names and availability text. */
+.project-card-heading h2,.project-presentation h1,.personal-project-main h2,.project-members strong,.project-owner,.project-card-meta {overflow-wrap:anywhere;min-width:0;}
+.project-card-meta > span {max-width:100%;}
+.project-detail-grid > *,.project-form-grid > * {min-width:0;}
+.project-detail-section > div {flex:1;}
+.developer-product-grid .project-live-mine {padding:24px;}
+.project-live-editor > section {padding:24px;}
+@media(max-width:800px){.developer-product-grid .project-live-mine {padding:16px 0;}}
+
+@media(max-width:800px){.project-live-editor > section {padding:16px 0;}}
+
+.project-card-heading h2 {flex-basis:220px;}

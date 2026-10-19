@@ -1,5 +1,7 @@
 # Lot 6 — Consultation et interfaces de gestion de JokkoProjects
 
+> État historique du lot 6. Le parcours produit utilise désormais le backend : voir [intégration lot 12](jokkoprojects-integration.md). Les sources fictives restent réservées aux aperçus.
+
 La branche `feature/frontend-jokkoprojects` part de `develop` au commit `9e63322`, après récupération des références, vérification de la fusion du lot 5 (PR #5) et avance rapide uniquement. Le dossier était propre. Aucun changement backend, contrat API, dépendance ou verrouillage pnpm.
 
 **Aucune opération de projets n’est intégrée à une API réelle.** Le contrat OpenAPI et les types générés inspectés contiennent seulement les deux routes de santé. Le module backend `projects` reste un emplacement réservé, sans route métier. Les projets consultables sont fictifs et explicitement signalés. Création, sauvegarde, candidatures et lecture personnelle restent indisponibles dans le parcours public.
