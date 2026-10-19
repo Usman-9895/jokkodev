@@ -88,6 +88,10 @@ Synchroniser toute évolution de contrat via `pnpm api:generate`. Exploitation :
 
 La publication initiale est préparée selon le [plan de publication](docs/publication/initial-publication.md), qui précise son état et les protections réellement disponibles. Les règles documentées ne sont pas automatiquement imposées par GitHub. Le code original n’a pas de licence attribuée ; la décision appartient à l’équipe.
 
+## Historique des interfaces avant intégration (lots 2 à 9)
+
+Les descriptions suivantes retracent la préparation initiale ; l’état opérationnel actuel est décrit par les guides des lots 10 à 14 et le bilan central.
+
 L’accueil pilote est accessible sur `/` avec `pnpm dev:frontend`. Navigation publique, illustration animée et aperçu de questions fictives. Le lot 3 propose leur consultation locale sur `/questions` et `/questions/[id]` avec recherche, filtres et pagination. Les opérations de contribution restent indisponibles dans le parcours public. Voir le [guide JokkoHelp](docs/frontend/jokkohelp-read.md), le [guide de l’accueil et des animations](docs/frontend/homepage.md) et le [catalogue du lot 1](docs/frontend/design-system.md), réservé au développement.
 
 Le lot 4 prépare les interfaces de comptes sur `/connexion`, `/inscription`, `/mot-de-passe-oublie`, `/nouveau-mot-de-passe` et `/verification-email`, avec opérations explicitement indisponibles. Les profils et états fictifs se consultent dans `/dev/comptes`, réservé au développement. Aucune authentification ni sauvegarde réelle ajoutée. Voir le [guide comptes et profils](docs/frontend/accounts-profiles.md).
@@ -109,3 +113,7 @@ Le lot 9 propose `/regles`, `/contact` et une attente publique sur `/confidentia
 Pour vérifier aussi readiness 200 et les erreurs 429 traversant Next/CORS : fournir explicitement `SMOKE_DATABASE_URL` (base migrée dédiée), et `SMOKE_CONFIRM_DATABASE` égal au nom de cette base après vérification du serveur, port et caractère jetable. Aucune reprise implicite de `DATABASE_URL`, aucune migration ni création de compte. Des connexions volontairement invalides avec des adresses aléatoires `example.test` déclenchent la limitation ; aucun email n’est envoyé. Ces contrôles Node sur HTTP ne remplacent pas une session navigateur sous HTTPS ni SMTP réel. Seuls les processus démarrés par le smoke sont arrêtés.
 
 Signalements et modération : [guide du lot 14](docs/frontend/moderation-integration.md), [recette](docs/frontend/lot-14-verification.md). Tableau de bord et candidatures : [guide du lot 13](docs/frontend/dashboard-applications-integration.md), [recette](docs/frontend/lot-13-verification.md). JokkoProjects : [guide du lot 12](docs/frontend/jokkoprojects-integration.md). JokkoHelp : [guide du lot 11](docs/frontend/jokkohelp-integration.md). Comptes et profils : [guide du lot 10](docs/frontend/auth-integration.md), [bilan central](docs/frontend/integration-readiness.md). Les comptes de recette et environnements locaux ne doivent pas être publiés.
+
+## Préparation de livraison (lot 15)
+
+Recette globale locale, corrections ciblées, workflow qualité préparé et préalables dans le [rapport de livraison](docs/release/readiness.md). Ce rapport distingue contrôles locaux, automatisation à valider sur Linux, déploiement cible et production. Aucun déploiement ni aptitude à la production validés.

@@ -1,6 +1,6 @@
 # Inventaire des dépendances installées
 
-Généré par pnpm licenses list --json, puis enrichi avec les manifests et notices des paquets installés. Plateforme : win32/x64. 456 entrées directes/transitives, production et développement. Relancer pnpm licenses:inventory après installation ou changement du lockfile.
+Généré par pnpm licenses list --json, puis enrichi avec les manifests et notices des paquets installés. Plateforme : win32/x64. 465 entrées directes/transitives, production et développement. Relancer pnpm licenses:inventory après installation ou changement du lockfile.
 
 Ce contrôle ne certifie pas la conformité complète. Les dépendances natives d’une autre plateforme et bibliothèques embarquées nécessitent une revue complémentaire. Voir open-questions.md et third-party-notices.txt.
 
@@ -15,6 +15,7 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | @electric-sql/pglite | 0.4.3 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@electric-sql/pglite/0.4.3) | Examiner aussi composants embarqués/natifs |
 | @electric-sql/pglite-socket | 0.1.3 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@electric-sql/pglite-socket/0.1.3) | Examiner aussi composants embarqués/natifs |
 | @electric-sql/pglite-tools | 0.3.3 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@electric-sql/pglite-tools/0.3.3) | Examiner aussi composants embarqués/natifs |
+| @epic-web/invariant | 1.0.0 | Transitive | MIT | [npm](https://registry.npmjs.org/@epic-web/invariant/1.0.0) | Notice absente du paquet : retrouver la notice à la source |
 | @eslint-community/eslint-utils | 4.10.1 | Transitive | MIT | [npm](https://registry.npmjs.org/@eslint-community/eslint-utils/4.10.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | @eslint-community/eslint-utils | 4.9.1 | Transitive | MIT | [npm](https://registry.npmjs.org/@eslint-community/eslint-utils/4.9.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | @eslint-community/regexpp | 4.12.2 | Transitive | MIT | [npm](https://registry.npmjs.org/@eslint-community/regexpp/4.12.2) | Notice à conserver ; déclaration non auditée juridiquement |
@@ -49,6 +50,7 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | @nodelib/fs.scandir | 2.1.5 | Transitive | MIT | [npm](https://registry.npmjs.org/@nodelib/fs.scandir/2.1.5) | Notice à conserver ; déclaration non auditée juridiquement |
 | @nodelib/fs.stat | 2.0.5 | Transitive | MIT | [npm](https://registry.npmjs.org/@nodelib/fs.stat/2.0.5) | Notice à conserver ; déclaration non auditée juridiquement |
 | @nodelib/fs.walk | 1.2.8 | Transitive | MIT | [npm](https://registry.npmjs.org/@nodelib/fs.walk/1.2.8) | Notice à conserver ; déclaration non auditée juridiquement |
+| @phc/format | 1.0.0 | Transitive | MIT | [npm](https://registry.npmjs.org/@phc/format/1.0.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | @prisma/adapter-pg | 7.10.0 | Directe | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/adapter-pg/7.10.0) | Examiner aussi composants embarqués/natifs |
 | @prisma/client | 7.10.0 | Directe | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/client/7.10.0) | Examiner aussi composants embarqués/natifs |
 | @prisma/client-runtime-utils | 7.10.0 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/client-runtime-utils/7.10.0) | Examiner aussi composants embarqués/natifs |
@@ -107,6 +109,7 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | @types/json-schema | 7.0.15 | Transitive | MIT | [npm](https://registry.npmjs.org/@types/json-schema/7.0.15) | Notice à conserver ; déclaration non auditée juridiquement |
 | @types/lodash | 4.17.26 | Transitive | MIT | [npm](https://registry.npmjs.org/@types/lodash/4.17.26) | Notice à conserver ; déclaration non auditée juridiquement |
 | @types/node | 24.19.2 | Directe | MIT | [npm](https://registry.npmjs.org/@types/node/24.19.2) | Notice à conserver ; déclaration non auditée juridiquement |
+| @types/nodemailer | 8.0.2 | Directe | MIT | [npm](https://registry.npmjs.org/@types/nodemailer/8.0.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | @types/pg | 8.23.1 | Directe | MIT | [npm](https://registry.npmjs.org/@types/pg/8.23.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | @types/qs | 6.15.1 | Transitive | MIT | [npm](https://registry.npmjs.org/@types/qs/6.15.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | @types/range-parser | 1.2.7 | Transitive | MIT | [npm](https://registry.npmjs.org/@types/range-parser/1.2.7) | Notice à conserver ; déclaration non auditée juridiquement |
@@ -144,6 +147,7 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | ansi-regex | 6.4.0 | Transitive | MIT | [npm](https://registry.npmjs.org/ansi-regex/6.4.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | ansi-styles | 6.2.3 | Transitive | MIT | [npm](https://registry.npmjs.org/ansi-styles/6.2.3) | Notice à conserver ; déclaration non auditée juridiquement |
 | append-field | 1.0.0 | Transitive | MIT | [npm](https://registry.npmjs.org/append-field/1.0.0) | Notice à conserver ; déclaration non auditée juridiquement |
+| argon2 | 0.45.1 | Directe | MIT | [npm](https://registry.npmjs.org/argon2/0.45.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | argparse | 2.0.1 | Transitive | Python-2.0 | [npm](https://registry.npmjs.org/argparse/2.0.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | aws-ssl-profiles | 1.1.2 | Transitive | MIT | [npm](https://registry.npmjs.org/aws-ssl-profiles/1.1.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | balanced-match | 1.0.2 | Transitive | MIT | [npm](https://registry.npmjs.org/balanced-match/1.0.2) | Notice à conserver ; déclaration non auditée juridiquement |
@@ -180,7 +184,9 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | cookie | 0.7.2 | Transitive | MIT | [npm](https://registry.npmjs.org/cookie/0.7.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | cookie-signature | 1.2.2 | Transitive | MIT | [npm](https://registry.npmjs.org/cookie-signature/1.2.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | cors | 2.8.6 | Transitive | MIT | [npm](https://registry.npmjs.org/cors/2.8.6) | Notice à conserver ; déclaration non auditée juridiquement |
+| cross-env | 10.1.0 | Transitive | MIT | [npm](https://registry.npmjs.org/cross-env/10.1.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | cross-spawn | 7.0.6 | Transitive | MIT | [npm](https://registry.npmjs.org/cross-spawn/7.0.6) | Notice à conserver ; déclaration non auditée juridiquement |
+| csrf-csrf | 4.0.3 | Directe | ISC | [npm](https://registry.npmjs.org/csrf-csrf/4.0.3) | Notice à conserver ; déclaration non auditée juridiquement |
 | csstype | 3.2.3 | Transitive | MIT | [npm](https://registry.npmjs.org/csstype/3.2.3) | Notice à conserver ; déclaration non auditée juridiquement |
 | d3-array | 3.2.1 | Transitive | ISC | [npm](https://registry.npmjs.org/d3-array/3.2.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | d3-array | 3.2.4 | Transitive | ISC | [npm](https://registry.npmjs.org/d3-array/3.2.4) | Notice à conserver ; déclaration non auditée juridiquement |
@@ -333,6 +339,9 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | natural-compare | 1.4.0 | Transitive | MIT | [npm](https://registry.npmjs.org/natural-compare/1.4.0) | Notice absente du paquet : retrouver la notice à la source |
 | negotiator | 1.1.0 | Transitive | MIT | [npm](https://registry.npmjs.org/negotiator/1.1.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | next | 16.4.0 | Directe | MIT | [npm](https://registry.npmjs.org/next/16.4.0) | Examiner aussi composants embarqués/natifs |
+| node-addon-api | 8.9.2 | Transitive | MIT | [npm](https://registry.npmjs.org/node-addon-api/8.9.2) | Notice à conserver ; déclaration non auditée juridiquement |
+| node-gyp-build | 4.8.4 | Transitive | MIT | [npm](https://registry.npmjs.org/node-gyp-build/4.8.4) | Notice à conserver ; déclaration non auditée juridiquement |
+| nodemailer | 10.1.2 | Directe | MIT-0 | [npm](https://registry.npmjs.org/nodemailer/10.1.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | object-assign | 4.1.1 | Transitive | MIT | [npm](https://registry.npmjs.org/object-assign/4.1.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | object-inspect | 1.13.4 | Transitive | MIT | [npm](https://registry.npmjs.org/object-inspect/1.13.4) | Notice à conserver ; déclaration non auditée juridiquement |
 | ohash | 2.0.12 | Transitive | MIT | [npm](https://registry.npmjs.org/ohash/2.0.12) | Notice à conserver ; déclaration non auditée juridiquement |

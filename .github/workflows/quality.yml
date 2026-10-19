@@ -1,0 +1,67 @@
+name: Quality
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop]
+permissions:
+  contents: read
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17.11-alpine
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: disposable_ci_only
+          POSTGRES_DB: jokkodev_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U ci -d jokkodev_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://ci:disposable_ci_only@127.0.0.1:5432/jokkodev_ci
+      TEST_DATABASE_URL: postgresql://ci:disposable_ci_only@127.0.0.1:5432/jokkodev_ci_it
+      APP_ORIGIN: http://localhost:3000
+      API_INTERNAL_ORIGIN: http://127.0.0.1:3001
+      MAIL_TRANSPORT: file
+      MAIL_FILE_DIR: /tmp/jokkodev-ci-mail
+      SESSION_COOKIE_SECURE: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.6
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Prepare disposable integration database
+        env:
+          PGPASSWORD: disposable_ci_only
+        run: psql -h 127.0.0.1 -U ci -d jokkodev_ci -v ON_ERROR_STOP=1 -c 'CREATE DATABASE jokkodev_ci_it'
+      - run: pnpm db:validate && pnpm db:generate
+      - run: pnpm db:migrate:deploy && pnpm db:migrate:deploy
+      - run: pnpm db:seed && pnpm db:seed
+      - run: pnpm api:generate
+      - name: Generated contract must be committed
+        run: git diff --exit-code -- docs/api/openapi.json packages/api-client/src/schema.d.ts
+      - run: pnpm lint && pnpm typecheck && pnpm test
+      - run: pnpm test:integration
+      - run: pnpm build
+      - name: Production smoke with unavailable database
+        run: pnpm test:smoke
+      - name: Production smoke with dedicated migrated database
+        env:
+          SMOKE_DATABASE_URL: postgresql://ci:disposable_ci_only@127.0.0.1:5432/jokkodev_ci
+          SMOKE_CONFIRM_DATABASE: jokkodev_ci
+        run: pnpm test:smoke

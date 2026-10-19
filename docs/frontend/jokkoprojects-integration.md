@@ -53,3 +53,7 @@ Le rendu de données est côté navigateur et nécessite JavaScript. Pour un UUI
 Le service membres annonce dans OpenAPI un responsable en premier, mais son implémentation trie par `joinedAt`, puis `userId` ; à égalité exacte, cette priorité n’est pas explicitement garantie. La présentation utilise donc `isOwner` et n’invente pas de tri global sur une seule page. Point contractuel à soumettre à Serge, sans correction backend dans ce lot.
 
 Voir le [bilan central](integration-readiness.md) pour les domaines suivants. Candidatures, tableau de bord général et modération non intégrés ; #19 exclue. SMTP réel, HTTPS complet, systemd, Datacloud, licences et validations éditoriales restent distincts. Aucune déclaration d’aptitude à la production.
+
+## Complément de recette globale (lot 15)
+
+Voir le [rapport de livraison](../release/readiness.md). Les membres de chaque page reçue sont présentés de manière déterministe (responsable présent en premier, puis identifiants). Aucun tri global avant pagination n’est promis ; l’écart API historique reste à coordonner.
