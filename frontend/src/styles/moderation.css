@@ -87,3 +87,18 @@
 .moderation-decision .contribution-dialog {max-height:calc(100dvh - 32px);overflow-y:auto;}
 
 .moderation-detail-grid>div>.jd-card>.jd-message {margin:16px 0;}
+
+/* Real moderation: safe text and responsive authenticated navigation. */
+.admin-session {display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0;}
+.admin-session .session-username {max-width:120px;}
+.moderation-safe-excerpt,.moderation-reason,.moderation-history p {white-space:pre-wrap;overflow-wrap:anywhere;}
+.moderation-safe-excerpt {padding:12px;background:var(--jd-surface-info);border-radius:8px;}
+.moderation-feedback {margin-block:24px;}
+.report-dialog :where(p,a,strong) {overflow-wrap:anywhere;}
+.report-dialog .jd-message {margin-block:16px;}
+@media(max-width:800px){.admin-session {order:3;width:100%;}.admin-session .session-identity {flex:1;}.admin-header>.jd-button {margin-left:0;}.admin-header>nav {margin-left:auto;}}
+
+.admin-mobile-menu {display:none;}
+@media(max-width:800px){.admin-header {position:relative;justify-content:space-between;}.admin-header>nav,.admin-header>.jd-button,.admin-header .admin-session {display:none;}.admin-mobile-menu {display:block;}.admin-mobile-menu summary {display:grid;place-items:center;min-width:44px;min-height:44px;cursor:pointer;list-style:none;}.admin-mobile-menu nav {position:absolute;z-index:10;top:100%;left:16px;right:16px;display:flex;flex-direction:column;gap:8px;padding:16px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:12px;}.admin-mobile-menu nav>a {min-height:44px;display:flex;align-items:center;}}
+
+.moderation-feedback>.jd-message {margin-block:12px;}
