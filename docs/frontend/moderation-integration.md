@@ -40,3 +40,7 @@ ReportTrigger utilise un dialogue natif nommé, fermeture et retour au déclench
 Écarts documentés : absence des compteurs dessinés sur les onglets, menu mobile adapté à la session réelle, textes d’effets plus explicites, pseudonymes/dates de recette réels, icônes et footer minimal historiques. Le dialogue est désormais sur le vrai détail public. La route de repli identifie le type et l’UUID sans inventer de titre lorsqu’aucune lecture contractuelle ne le fournit. Pour une réponse, le contrat admin donne sa visibilité propre mais pas celle de sa question parente : le lien associé peut répondre404 si la question a été masquée ; aucune distinction publique inventée.
 
 Les /dev/moderation et /dev/signalements restent des démonstrations isolées en404 en production. Les entrées des contenus fictifs renvoient uniquement aux aperçus, pas aux mutations réelles. Aucun rôle persistant fictif ni sélecteur de rôle produit. Teranga Points exclue. Voir le rapport pour les contrôles réels et les limites avant production.
+
+## Complément de recette globale (lot 15)
+
+Voir le [rapport de livraison](../release/readiness.md). Après perte de la réponse à un signalement, le motif est désormais affiché en lecture seule, copiable dans cet écran. Cela ne confirme pas la réception, ne persiste pas la saisie et ne réactive aucun formulaire d’envoi.

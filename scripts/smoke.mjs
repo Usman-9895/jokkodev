@@ -61,6 +61,10 @@ try {
     console.log(`OK page ${route}`);
   }
   assert.equal((await fetch(`http://127.0.0.1:${frontendPort}/inconnue`)).status, 404);
+  for (const preview of ['comptes', 'design-system', 'espace', 'informations', 'jokkohelp', 'jokkohelp-contributions', 'jokkoprojects', 'moderation', 'signalements']) {
+    assert.equal((await fetch(`http://127.0.0.1:${frontendPort}/dev/${preview}?state=success`)).status, 404, `Aperçu privé indisponible en production : ${preview}`);
+  }
+  console.log('OK neuf aperçus indisponibles en production');
   for (const port of [backendPort, frontendPort]) {
     const response = await fetch(`http://127.0.0.1:${port}/api/v1/health/live`);
     assert.equal(response.status, 200);

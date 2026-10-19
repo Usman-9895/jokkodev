@@ -69,6 +69,15 @@
     ]
   },
   {
+    "name": "@epic-web/invariant",
+    "version": "1.0.0",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@epic-web/invariant/1.0.0",
+    "flags": [
+      "Notice absente du paquet : retrouver la notice à la source"
+    ]
+  },
+  {
     "name": "@eslint-community/eslint-utils",
     "version": "4.10.1",
     "license": "MIT",
@@ -315,6 +324,13 @@
     "version": "1.2.8",
     "license": "MIT",
     "source": "https://registry.npmjs.org/@nodelib/fs.walk/1.2.8",
+    "flags": []
+  },
+  {
+    "name": "@phc/format",
+    "version": "1.0.0",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@phc/format/1.0.0",
     "flags": []
   },
   {
@@ -765,6 +781,13 @@
     "flags": []
   },
   {
+    "name": "@types/nodemailer",
+    "version": "8.0.2",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@types/nodemailer/8.0.2",
+    "flags": []
+  },
+  {
     "name": "@types/pg",
     "version": "8.23.1",
     "license": "MIT",
@@ -1024,6 +1047,13 @@
     "flags": []
   },
   {
+    "name": "argon2",
+    "version": "0.45.1",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/argon2/0.45.1",
+    "flags": []
+  },
+  {
     "name": "argparse",
     "version": "2.0.1",
     "license": "Python-2.0",
@@ -1280,10 +1310,24 @@
     "flags": []
   },
   {
+    "name": "cross-env",
+    "version": "10.1.0",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/cross-env/10.1.0",
+    "flags": []
+  },
+  {
     "name": "cross-spawn",
     "version": "7.0.6",
     "license": "MIT",
     "source": "https://registry.npmjs.org/cross-spawn/7.0.6",
+    "flags": []
+  },
+  {
+    "name": "csrf-csrf",
+    "version": "4.0.3",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/csrf-csrf/4.0.3",
     "flags": []
   },
   {
@@ -2365,6 +2409,27 @@
     "flags": [
       "Examiner aussi composants embarqués/natifs"
     ]
+  },
+  {
+    "name": "node-addon-api",
+    "version": "8.9.2",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/node-addon-api/8.9.2",
+    "flags": []
+  },
+  {
+    "name": "node-gyp-build",
+    "version": "4.8.4",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/node-gyp-build/4.8.4",
+    "flags": []
+  },
+  {
+    "name": "nodemailer",
+    "version": "10.1.2",
+    "license": "MIT-0",
+    "source": "https://registry.npmjs.org/nodemailer/10.1.2",
+    "flags": []
   },
   {
     "name": "object-assign",
