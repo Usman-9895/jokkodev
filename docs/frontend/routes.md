@@ -1,6 +1,6 @@
-# Inventaire des routes frontend — lot 12
+# Inventaire des routes frontend — lot 13
 
-40 routes de page App Router (31 produit et 9 aperçus). Les routes /espace utilisent la session réelle ; profil personnel, Mes questions et Mes projets sont raccordés. L’administration reste une attente publique sans données privées, ce qui ne constitue pas une autorisation administrateur. Les aperçus ne sont pas dans la navigation publique.
+41 routes de page App Router (32 produit et 9 aperçus). Les routes /espace utilisent la session réelle ; profil personnel, Mes questions, Mes projets, tableau de bord et candidatures sont raccordés. L’administration reste une attente publique sans données privées, ce qui ne constitue pas une autorisation administrateur. Les aperçus ne sont pas dans la navigation publique.
 
 | Route | Situation actuelle |
 | --- | --- |
@@ -12,11 +12,12 @@
 | `/mot-de-passe-oublie` | Compte réel raccordé au backend |
 | `/nouveau-mot-de-passe` | Compte réel raccordé au backend |
 | `/verification-email` | Compte réel raccordé au backend |
-| `/espace/candidatures` | Session réelle requise — interface métier encore non raccordée |
-| `/espace` | Session réelle requise — interface métier encore non raccordée |
+| `/espace/candidatures` | Listes privées réelles envoyées/reçues (vue=recues), filtres/pagination serveur et retrait |
+| `/espace/candidatures/[id]` | Détail privé réel candidat/responsable et décisions autorisées |
+| `/espace` | Identité, compteurs et sections personnelles réels |
 | `/espace/profil` | Lecture et modification réelles du profil propriétaire |
 | `/espace/projets` | Liste réelle privée, catégories OWNER/MEMBER et pagination serveur ; masqués explicités |
-| `/espace/projets/[id]/demandes` | Session réelle requise — interface métier encore non raccordée |
+| `/espace/projets/[id]/demandes` | Demandes privées réelles du projet, réservées au responsable ; décisions et statuts serveur |
 | `/espace/questions` | Liste personnelle réelle, statuts/pagination serveur et masquage explicite |
 | `/dev/comptes` | Aperçu développement — 404 en production |
 | `/dev/design-system` | Aperçu développement — 404 en production |

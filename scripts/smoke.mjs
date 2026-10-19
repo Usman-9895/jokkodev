@@ -49,10 +49,15 @@ try {
   const frontend = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '--port', String(frontendPort), '--hostname', '127.0.0.1'], { cwd: path.join(root, 'frontend'), env: { ...process.env, ...env }, stdio: 'ignore', windowsHide: true });
   children.push(frontend);
   await waitFor(`http://127.0.0.1:${frontendPort}`, frontend);
-  for (const [route, expected] of [['/', 'Accueil'], ['/connexion', 'Connexion'], ['/espace', 'Espace développeur'], ['/admin', 'Administration']]) {
+  for (const [route, expected] of [['/', 'Accueil'], ['/connexion', 'Connexion'], ['/espace', 'Tableau de bord'], ['/admin', 'Administration']]) {
     const response = await fetch(`http://127.0.0.1:${frontendPort}${route}`);
     assert.equal(response.status, 200);
-    assert.ok((await response.text()).includes(expected));
+    const html = await response.text();
+    assert.ok(html.includes(expected));
+    if (route === '/espace') {
+      assert.ok(html.includes('Vérification de la session'), 'Le rendu initial privé doit attendre la session');
+      assert.ok(!html.includes('class="jd-card dashboard-stat"'), 'Aucun compteur privé dans le HTML anonyme');
+    }
     console.log(`OK page ${route}`);
   }
   assert.equal((await fetch(`http://127.0.0.1:${frontendPort}/inconnue`)).status, 404);

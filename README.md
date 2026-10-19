@@ -1,6 +1,6 @@
 # JokkoDev — socle local
 
-Plateforme panafricaine d’entraide et de collaboration, portée par DevTeranga pour la CADEV 2026. Cette livraison prépare le backend de comptes, contenus, projets, candidatures et modération, avec contrats générés. Les lots 10 à 12 raccordent comptes, sessions, profils, JokkoHelp et JokkoProjects aux endpoints réels. Candidatures, tableau de bord et modération restent à intégrer côté frontend. Ce n’est pas encore un MVP intégré ou déclaré prêt à déployer. Dépôt de référence : [Usman-9895/jokkodev](https://github.com/Usman-9895/jokkodev).
+Plateforme panafricaine d’entraide et de collaboration, portée par DevTeranga pour la CADEV 2026. Cette livraison prépare le backend de comptes, contenus, projets, candidatures et modération, avec contrats générés. Les lots 10 à 13 raccordent comptes, sessions, profils, JokkoHelp, JokkoProjects, tableau de bord et candidatures aux endpoints réels. La modération reste à intégrer côté frontend. Ce n’est pas encore un MVP intégré ou déclaré prêt à déployer. Dépôt de référence : [Usman-9895/jokkodev](https://github.com/Usman-9895/jokkodev).
 
 ## Installation
 
@@ -108,4 +108,4 @@ Le lot 9 propose `/regles`, `/contact` et une attente publique sur `/confidentia
 
 Pour vérifier aussi readiness 200 et les erreurs 429 traversant Next/CORS : fournir explicitement `SMOKE_DATABASE_URL` (base migrée dédiée), et `SMOKE_CONFIRM_DATABASE` égal au nom de cette base après vérification du serveur, port et caractère jetable. Aucune reprise implicite de `DATABASE_URL`, aucune migration ni création de compte. Des connexions volontairement invalides avec des adresses aléatoires `example.test` déclenchent la limitation ; aucun email n’est envoyé. Ces contrôles Node sur HTTP ne remplacent pas une session navigateur sous HTTPS ni SMTP réel. Seuls les processus démarrés par le smoke sont arrêtés.
 
-JokkoProjects : [guide du lot 12](docs/frontend/jokkoprojects-integration.md). JokkoHelp : [guide du lot 11](docs/frontend/jokkohelp-integration.md). Comptes et profils : [guide du lot 10](docs/frontend/auth-integration.md), [bilan central](docs/frontend/integration-readiness.md). Les comptes de recette et environnements locaux ne doivent pas être publiés.
+Tableau de bord et candidatures : [guide du lot 13](docs/frontend/dashboard-applications-integration.md), [recette](docs/frontend/lot-13-verification.md). JokkoProjects : [guide du lot 12](docs/frontend/jokkoprojects-integration.md). JokkoHelp : [guide du lot 11](docs/frontend/jokkohelp-integration.md). Comptes et profils : [guide du lot 10](docs/frontend/auth-integration.md), [bilan central](docs/frontend/integration-readiness.md). Les comptes de recette et environnements locaux ne doivent pas être publiés.
