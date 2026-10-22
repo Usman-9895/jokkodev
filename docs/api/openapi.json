@@ -2071,6 +2071,16 @@
               }
             }
           },
+          "403": {
+            "description": "SELF_REPORT_FORBIDDEN : impossible de signaler son propre contenu, administrateur compris.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
           "404": {
             "description": "TARGET_NOT_FOUND : cible inexistante ou déjà non publique.",
             "content": {

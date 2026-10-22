@@ -44,3 +44,7 @@ Les /dev/moderation et /dev/signalements restent des démonstrations isolées en
 ## Complément de recette globale (lot 15)
 
 Voir le [rapport de livraison](../release/readiness.md). Après perte de la réponse à un signalement, le motif est désormais affiché en lecture seule, copiable dans cet écran. Cela ne confirme pas la réception, ne persiste pas la saisie et ne réactive aucun formulaire d’envoi.
+
+## Complément lot16
+
+La [règle d’auto-signalement](navigation-self-report-animation.md) et son refus403 SELF_REPORT_FORBIDDEN sont désormais appliqués côté serveur et frontend. Les contrôles se fondent sur l’auteur propre à chaque cible, ADMIN compris ; décisions administratives inchangées. La navigation principale partagée porte maintenant Administration, retirée de la zone du compte.

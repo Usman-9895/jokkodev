@@ -17,6 +17,7 @@ export class ReportsController {
   @Post()
   @ApiCreatedResponse({ type: CreatedReportDto, description: 'Signalement ouvert ; le contenu reste visible tant qu’aucune action ne le masque.' })
   @ApiNotFoundResponse({ type: ApiErrorDto, description: 'TARGET_NOT_FOUND : cible inexistante ou déjà non publique.' })
+  @ApiForbiddenResponse({ type: ApiErrorDto, description: 'SELF_REPORT_FORBIDDEN : impossible de signaler son propre contenu, administrateur compris.' })
   @ApiConflictResponse({ type: ApiErrorDto, description: 'REPORT_ALREADY_OPEN.' })
   @ApiTooManyRequestsResponse({ type: ApiErrorDto })
   create(@CurrentUser() user: AuthenticatedUser, @Body() input: CreateReportDto): Promise<CreatedReportDto> {

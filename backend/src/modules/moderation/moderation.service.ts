@@ -37,7 +37,9 @@ export class ModerationService {
   async report(user: AuthenticatedUser, input: CreateReportDto): Promise<CreatedReportDto> {
     this.limiter.consume(`report:${user.id}`, 20, HOUR);
     const target = { type: input.targetType, id: input.targetId.toLowerCase() };
-    if (!await this.isPublic(target)) throw targetNotFound();
+    const authorId = await this.publicAuthor(target);
+    if (!authorId) throw targetNotFound();
+    if (authorId === user.id) throw new ApiException(403, 'SELF_REPORT_FORBIDDEN', 'Tu ne peux pas signaler ton propre contenu.');
     const column = targetColumn[target.type];
     const exists = await this.database.prisma.report.count({ where: { reporterId: user.id, status: 'OPEN', [column]: target.id } });
     if (exists) throw alreadyOpen();
@@ -168,11 +170,11 @@ export class ModerationService {
     return (await tx.project.findUniqueOrThrow({ where: { id: target.id }, select: { ownerId: true } })).ownerId;
   }
 
-  private async isPublic(target: ContentTarget): Promise<boolean> {
+  private async publicAuthor(target: ContentTarget): Promise<string | null> {
     const prisma = this.database.prisma;
-    if (target.type === 'QUESTION') return (await prisma.question.count({ where: { id: target.id, visibility: 'VISIBLE' } })) > 0;
-    if (target.type === 'ANSWER') return (await prisma.answer.count({ where: { id: target.id, visibility: 'VISIBLE', question: { visibility: 'VISIBLE' } } })) > 0;
-    return (await prisma.project.count({ where: { id: target.id, visibility: 'VISIBLE' } })) > 0;
+    if (target.type === 'QUESTION') return (await prisma.question.findFirst({ where: { id: target.id, visibility: 'VISIBLE' }, select: { authorId: true } }))?.authorId ?? null;
+    if (target.type === 'ANSWER') return (await prisma.answer.findFirst({ where: { id: target.id, visibility: 'VISIBLE', question: { visibility: 'VISIBLE' } }, select: { authorId: true } }))?.authorId ?? null;
+    return (await prisma.project.findFirst({ where: { id: target.id, visibility: 'VISIBLE' }, select: { ownerId: true } }))?.ownerId ?? null;
   }
 }
 

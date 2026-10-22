@@ -1,6 +1,6 @@
 # Bilan central d’intégration frontend — pour Serge
 
-État du lot 15 : socle backend #10–#18 et correctif #20 fusionnés, #19 exclue. Comptes, session, profils, JokkoHelp, JokkoProjects, candidatures, tableau de bord et modération minimale raccordés aux endpoints réels. Le frontend n’est pas déclaré prêt à la production. Sources contractuelles : [guide API](../api/frontend-integration.md), [sessions/CSRF](../decisions/003-sessions-csrf.md). Détails : [comptes/profils lot 10](auth-integration.md) et [JokkoHelp lot 11](jokkohelp-integration.md) et [JokkoProjects lot 12](jokkoprojects-integration.md) et [tableau de bord/candidatures lot 13](dashboard-applications-integration.md) et [modération lot 14](moderation-integration.md).
+État du lot 16 : socle backend #10–#18 et correctif #20 fusionnés, #19 exclue. Comptes, session, profils, JokkoHelp, JokkoProjects, candidatures, tableau de bord et modération minimale raccordés aux endpoints réels. Le frontend n’est pas déclaré prêt à la production. Sources contractuelles : [guide API](../api/frontend-integration.md), [sessions/CSRF](../decisions/003-sessions-csrf.md). Détails : [comptes/profils lot 10](auth-integration.md) et [JokkoHelp lot 11](jokkohelp-integration.md) et [JokkoProjects lot 12](jokkoprojects-integration.md) et [tableau de bord/candidatures lot 13](dashboard-applications-integration.md) et [modération lot 14](moderation-integration.md).
 
 ## Points d’intégration et références
 
@@ -38,3 +38,7 @@ Rejouer lint, TypeScript, tests, build, garde production des aperçus, parcours 
 ## Recette globale et livraison — lot 15
 
 Voir le [rapport central de livraison](../release/readiness.md) pour la matrice réel/API/navigateur, les corrections ciblées, la CI préparée mais non exécutée à distance, les limites404/streaming et les préalables priorisés. Le tri des membres est limité à la page reçue ; le motif d’un signalement à réponse perdue reste désormais lisible, sans faux succès ni renvoi. Les neuf aperçus404 sont inclus dans le smoke. Les [notices et contenus provisoires](../licenses/lot15-audit.md) restent des validations distinctes. Fonctionnement local, automatisation, aptitude au déploiement cible et validation de production ne sont pas équivalents.
+
+## Lot 16 — recette fonctionnelle validée
+
+[Navigation, animation et auto-signalement](navigation-self-report-animation.md) : entrée Administration principale partagée, commande pause/lecture accessible, interdiction serveur403 SELF_REPORT_FORBIDDEN pour toute cible propre, ADMIN compris. Contrat régénéré depuis NestJS ; pas de migration ou dépendance. Recette dédiée sur33080/33081. Les lots précédents et leurs données sont préservés. Recette fonctionnelle validée par Ousmane ; publication autorisée pour revue vers develop, sans fusion. Production toujours non validée.
