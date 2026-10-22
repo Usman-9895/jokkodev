@@ -15,6 +15,7 @@ export class ProfileStatsDto {
 }
 
 export class PublicProfileDto {
+  @ApiProperty({ type: Number, description: "Somme du journal Teranga Points : +10 pour une solution éligible acceptée par un autre membre." }) terangaPoints!: number;
   @ApiProperty({ nullable: true, type: String }) photoUrl!: string | null;
   @ApiProperty({ format: 'uuid' }) id!: string;
   @ApiProperty({ example: 'awa_dev' }) username!: string;

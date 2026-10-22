@@ -21,7 +21,7 @@
 
 ## Fonctions reportées
 
-- **Teranga Points (B11)** : non implémenté. Le plan prévoit une décision le 21 octobre, uniquement si le P0 est livré, testé et déployé, avec un barème validé. Le modèle de données ne contient pas encore le registre `ReputationEvent` ; son ajout serait une migration additive sans impact sur les parcours P0.
+- Teranga Points : recette du lot 19 et barème de 10 validés par Ousmane, affichage sur profils uniquement. Voir [décision 004](004-teranga-points.md) ; aucune autorisation de déploiement.
 - Suppression de compte, transfert de responsabilité d'un projet, départ ou exclusion d'un membre, nouvelle candidature après refus.
 - Restauration d'un contenu masqué et réactivation d'un compte suspendu (aucune route ; intervention manuelle en base, tracée par l'équipe, si nécessaire).
 - Votes, commentaires, pièces jointes, notifications, messagerie.

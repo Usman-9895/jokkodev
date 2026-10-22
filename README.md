@@ -43,6 +43,7 @@ Frontend : http://localhost:3000 ; backend : http://127.0.0.1:3001 ; Swagger de 
 | `pnpm db:seed` | Catalogue des technologies, idempotent |
 | `pnpm db:seed:demo` | Comptes et contenus de démonstration préfixés « [Démo] », mots de passe aléatoires affichés une fois |
 | `pnpm admin:grant <email>` / `pnpm admin:revoke <email>` | Attribution contrôlée du rôle ADMIN, sur le serveur uniquement |
+| `REPUTATION_REBUILD_DATABASE=<base vérifiée> pnpm reputation:rebuild` | Réconciliation atomique du journal Teranga Points, après contrôle de destination et autorisation ; voir décision 004 |
 | `pnpm test:integration` | Contraintes PostgreSQL sur la base `TEST_DATABASE_URL`, dans un schéma temporaire |
 | `pnpm api:export` | Export OpenAPI sans base ni secret de production |
 | `pnpm api:generate` | Export puis génération des types partagés |

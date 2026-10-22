@@ -776,6 +776,8 @@ export interface components {
             projects: number;
         };
         OwnProfileDto: {
+            /** @description Somme du journal Teranga Points : +10 pour une solution éligible acceptée par un autre membre. */
+            terangaPoints: number;
             photoUrl: string | null;
             /** Format: uuid */
             id: string;
@@ -820,6 +822,8 @@ export interface components {
             skillIds?: string[];
         };
         PublicProfileDto: {
+            /** @description Somme du journal Teranga Points : +10 pour une solution éligible acceptée par un autre membre. */
+            terangaPoints: number;
             photoUrl: string | null;
             /** Format: uuid */
             id: string;

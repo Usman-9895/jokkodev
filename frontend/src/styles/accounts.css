@@ -136,3 +136,7 @@
 .profile-contact-optin input{width:20px;height:20px;flex-shrink:0}
 .collaboration-link{overflow-wrap:anywhere;word-break:break-word;max-width:100%;height:auto;min-height:44px}
 .project-members>div{flex-wrap:wrap}
+
+.profile-teranga{margin-block:16px 24px;padding:16px;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface)}.profile-teranga p{margin:0}.profile-teranga p+p{margin-top:8px;color:var(--color-muted);font-size:.875rem;line-height:1.5}.profile-teranga strong{font-size:1.75rem;color:var(--color-petrol)}.profile-teranga span{font-weight:600}
+
+.profile-teranga>p:first-child{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}.profile-teranga>p:first-child span{font-size:1rem}

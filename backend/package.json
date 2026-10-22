@@ -18,7 +18,8 @@
     "admin:grant": "pnpm build && node dist/src/cli/admin.js grant",
     "admin:revoke": "pnpm build && node dist/src/cli/admin.js revoke",
     "api:export": "pnpm build && node dist/src/export-openapi.js",
-    "photos:cleanup": "pnpm build && node dist/src/cli/photos-cleanup.js"
+    "photos:cleanup": "pnpm build && node dist/src/cli/photos-cleanup.js",
+    "reputation:rebuild": "pnpm build && node dist/src/cli/reputation.js"
   },
   "dependencies": {
     "@nestjs/common": "12.1.2",

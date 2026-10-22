@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ReputationService } from '../reputation/reputation.service';
 import { DatabaseService } from '../../database/database.service';
 import type { Prisma } from '../../generated/prisma/client';
 import type { AuthenticatedUser } from '../../common/auth/auth-context';
@@ -32,7 +33,7 @@ const notAuthor = () => new ApiException(403, 'NOT_AUTHOR', 'Seul l’auteur peu
 
 @Injectable()
 export class QuestionsService {
-  constructor(private readonly database: DatabaseService, private readonly technologies: TechnologiesService, private readonly limiter: RateLimiter) {}
+  constructor(private readonly database: DatabaseService, private readonly technologies: TechnologiesService, private readonly limiter: RateLimiter, private readonly reputation: ReputationService) {}
 
   async list(query: QuestionListQueryDto): Promise<Page<QuestionSummaryDto>> {
     return searchPage(this.database.prisma, 'question', query, async (tx, ids) => {
@@ -147,20 +148,24 @@ export class QuestionsService {
    */
   async accept(user: AuthenticatedUser, questionId: string, answerId: string): Promise<QuestionDetailDto> {
     await this.database.prisma.$transaction(async tx => {
+      await this.reputation.lockMutation(tx);
       await this.lockOwnQuestion(tx, user, questionId);
       const answer = await tx.answer.findUnique({ where: { id: answerId }, select: { questionId: true, visibility: true } });
       if (!answer || answer.questionId !== questionId || answer.visibility !== 'VISIBLE') {
         throw new ApiException(400, 'ANSWER_NOT_ELIGIBLE', 'Cette réponse ne peut pas être acceptée pour cette question.', { fieldErrors: { answerId: ['Réponse inconnue, masquée ou d’une autre question.'] } });
       }
       await tx.question.update({ where: { id: questionId }, data: { acceptedAnswerId: answerId } });
+      await this.reputation.syncQuestion(tx, questionId);
     });
     return this.detail(questionId, user);
   }
 
   async unaccept(user: AuthenticatedUser, questionId: string): Promise<QuestionDetailDto> {
     await this.database.prisma.$transaction(async tx => {
+      await this.reputation.lockMutation(tx);
       await this.lockOwnQuestion(tx, user, questionId);
       await tx.question.update({ where: { id: questionId }, data: { acceptedAnswerId: null } });
+      await this.reputation.syncQuestion(tx, questionId);
     });
     return this.detail(questionId, user);
   }
@@ -178,11 +183,13 @@ export class QuestionsService {
 
   async remove(user: AuthenticatedUser, id: string): Promise<void> {
     await this.database.prisma.$transaction(async tx => {
+      await this.reputation.lockMutation(tx);
       const [question] = await tx.$queryRaw<{ authorId: string; visibility: string; deletedAt: Date | null }[]>`SELECT "authorId", visibility::text AS visibility, "deletedAt" FROM "Question" WHERE id = ${id}::uuid FOR UPDATE`;
       if (!question || question.authorId !== user.id && (question.deletedAt || question.visibility !== 'VISIBLE')) throw notFound();
       if (question.authorId !== user.id) throw notAuthor();
       if (question.deletedAt) return;
       await tx.question.update({ where: { id }, data: { deletedAt: new Date(), acceptedAnswerId: null } });
+      await this.reputation.syncQuestion(tx, id, 'QUESTION_DELETED');
     });
   }
 
