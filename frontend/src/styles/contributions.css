@@ -83,3 +83,11 @@
 @media(max-width:1050px){.contribution-question-grid { grid-template-columns:minmax(0,1fr); }.contribution-tips { display:none; }.contribution-mine { grid-template-columns:160px minmax(0,1fr); }.contribution-mine > section { padding:24px; }}
 @media(max-width:767px){.contribution-page { padding-block:24px; }.contribution-question > h1,.contribution-mine-heading h1 { font-size:30px; }.contribution-question .jd-card { padding:16px; }.contribution-actions { display:grid; }.contribution-question .contribution-dialog-trigger { width:100%; }.contribution-dialog > div .jd-button { width:100%; }.contribution-mine { display:block; }.contribution-sidebar { display:none; }.contribution-mine > section { padding:16px; }.contribution-mine-heading { flex-direction:column; }.contribution-mine-heading > .jd-button { width:100%; }.contribution-tabs a { padding:12px 6px; font-size:12px; }.contribution-mine-card-heading { flex-wrap:wrap; gap:8px; }.contribution-mine-card-heading h2 { font-size:22px; }.contribution-mine-list .jd-card { padding:16px; }.contribution-solution { align-items:stretch; }.contribution-solution .jd-button { width:100%; }}
 @media(max-width:359px){.contribution-question > h1,.contribution-mine-heading h1 { font-size:27px; }.contribution-mine-card-heading h2 { font-size:20px; }.contribution-tabs a { font-size:11px; }}
+
+/* Lot 17: owner deletion, separate from moderation. */
+.owner-delete-button {color:var(--color-danger);border-color:var(--color-danger);}
+.owner-delete-confirm {background:var(--color-danger);border-color:var(--color-danger);color:var(--color-surface);}
+.owner-delete-dialog {max-height:calc(100dvh - 32px);overflow:auto;overflow-wrap:anywhere;}
+
+.jd-button.owner-delete-button:hover:not(:disabled) {background:var(--jd-surface-error);}
+.jd-button.owner-delete-confirm:hover:not(:disabled) {background:var(--color-danger);filter:brightness(.9);}

@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiCookieAuth, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiTooManyRequestsResponse } from '@nestjs/swagger';
+import { Body, Controller, HttpCode, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiNoContentResponse, ApiCookieAuth, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiTooManyRequestsResponse } from '@nestjs/swagger';
 import type { AuthenticatedUser } from '../../common/auth/auth-context';
 import { CurrentUser, Public } from '../../common/auth/decorators';
 import { ApiErrorDto } from '../../common/filters/api-error.filter';
@@ -32,9 +32,19 @@ export class QuestionsController {
   @Public()
   @Get(':id')
   @ApiOkResponse({ type: QuestionDetailDto })
-  @ApiNotFoundResponse({ type: ApiErrorDto, description: 'QUESTION_NOT_FOUND : inexistante ou masquée.' })
+  @ApiNotFoundResponse({ type: ApiErrorDto, description: 'QUESTION_NOT_FOUND : inexistante, masquée ou supprimée.' })
   detail(@Param('id', QuestionId) id: string, @CurrentUser() viewer?: AuthenticatedUser): Promise<QuestionDetailDto> {
     return this.questions.detail(id, viewer);
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  @ApiCookieAuth()
+  @ApiNoContentResponse({ description: 'Suppression logique par le propriétaire, relations conservées. Répétition par ce propriétaire : 204 sans changer deletedAt.' })
+  @ApiForbiddenResponse({ type: ApiErrorDto, description: 'NOT_AUTHOR : ADMIN ne reçoit aucun droit supplémentaire.' })
+  @ApiNotFoundResponse({ type: ApiErrorDto, description: 'Ressource inconnue ou déjà supprimée pour un tiers.' })
+  remove(@CurrentUser() user: AuthenticatedUser, @Param('id', QuestionId) id: string): Promise<void> {
+    return this.questions.remove(user, id);
   }
 
   @Patch(':id')

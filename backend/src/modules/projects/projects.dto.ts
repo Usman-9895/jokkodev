@@ -42,6 +42,7 @@ export class ProjectDetailDto extends ProjectSummaryDto {
 }
 
 export class OwnProjectSummaryDto extends ProjectSummaryDto {
+  @ApiProperty({ nullable: true, type: String, format: 'date-time', description: 'Suppression logique par le propriétaire, distincte du masquage. Contenu privé neutralisé hors administration.' }) deletedAt!: string | null;
   @ApiProperty({ enum: ['OWNER', 'MEMBER'] }) role!: 'OWNER' | 'MEMBER';
   @ApiProperty({ enum: ['VISIBLE', 'HIDDEN'] }) visibility!: 'VISIBLE' | 'HIDDEN';
 }

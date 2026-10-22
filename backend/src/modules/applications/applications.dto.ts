@@ -11,6 +11,7 @@ export const APPLICATION_STATUSES = ['PENDING', 'ACCEPTED', 'REJECTED', 'WITHDRA
 export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 
 export class ApplicationProjectDto {
+  @ApiProperty({ nullable: true, type: String, format: 'date-time', description: 'Suppression logique par le propriétaire, distincte du masquage. Contenu privé neutralisé hors administration.' }) deletedAt!: string | null;
   @ApiProperty({ format: 'uuid' }) id!: string;
   @ApiProperty({ description: 'false si le projet a été masqué : son contenu n’est plus publié, seul le statut de la demande reste suivi.' }) available!: boolean;
   @ApiPropertyOptional({ nullable: true, type: String }) title!: string | null;

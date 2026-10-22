@@ -148,6 +148,8 @@ model ProfileTechnology {
 }
 
 model Question {
+  /// Suppression logique par l’auteur, distincte de la modération.
+  deletedAt DateTime? @db.Timestamptz(3)
   id               String     @id @default(uuid(7)) @db.Uuid
   authorId         String     @db.Uuid
   title            String     @db.VarChar(150)
@@ -211,6 +213,8 @@ model Answer {
 }
 
 model Project {
+  /// Suppression logique par le responsable ; relations conservées.
+  deletedAt DateTime? @db.Timestamptz(3)
   id                String            @id @default(uuid(7)) @db.Uuid
   ownerId           String            @db.Uuid
   title             String            @db.VarChar(150)

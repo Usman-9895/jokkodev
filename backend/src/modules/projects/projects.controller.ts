@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiCookieAuth, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiTooManyRequestsResponse } from '@nestjs/swagger';
+import { Body, Delete, Controller, HttpCode, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiNoContentResponse, ApiCookieAuth, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiTooManyRequestsResponse } from '@nestjs/swagger';
 import type { AuthenticatedUser } from '../../common/auth/auth-context';
 import { CurrentUser, Public } from '../../common/auth/decorators';
 import { ApiErrorDto } from '../../common/filters/api-error.filter';
@@ -32,9 +32,19 @@ export class ProjectsController {
   @Public()
   @Get(':id')
   @ApiOkResponse({ type: ProjectDetailDto })
-  @ApiNotFoundResponse({ type: ApiErrorDto, description: 'PROJECT_NOT_FOUND : inexistant ou masqué.' })
+  @ApiNotFoundResponse({ type: ApiErrorDto, description: 'PROJECT_NOT_FOUND : inexistant, masqué ou supprimé.' })
   detail(@Param('id', ProjectId) id: string, @CurrentUser() viewer?: AuthenticatedUser): Promise<ProjectDetailDto> {
     return this.projects.detail(id, viewer);
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  @ApiCookieAuth()
+  @ApiNoContentResponse({ description: 'Suppression logique par le propriétaire, relations conservées. Répétition par ce propriétaire : 204 sans changer deletedAt.' })
+  @ApiForbiddenResponse({ type: ApiErrorDto, description: 'NOT_OWNER : ADMIN ne reçoit aucun droit supplémentaire.' })
+  @ApiNotFoundResponse({ type: ApiErrorDto, description: 'Ressource inconnue ou déjà supprimée pour un tiers.' })
+  remove(@CurrentUser() user: AuthenticatedUser, @Param('id', ProjectId) id: string): Promise<void> {
+    return this.projects.remove(user, id);
   }
 
   @Patch(':id')

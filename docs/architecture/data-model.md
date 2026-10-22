@@ -66,6 +66,8 @@ Aucune cascade sur les contenus publiés : supprimer un compte, une question, un
 
 ## Contraintes hors Prisma
 
+La suppression physique reste soumise aux restrictions ci-dessus. Le lot17 ajoute une suppression logique propriétaire des seules questions et projets via `deletedAt`, indépendante de `visibility`. Migration additive `20261022020000_owner_content_deletion`, aucune FK ou ligne retirée. Voir la [décision004](../decisions/004-owner-content-deletion.md) pour les transactions, répétitions et projections privées. Réponses, membres, candidatures, signalements et historiques conservés.
+
 Les CHECK et les index uniques partiels sont écrits en SQL à la fin de la migration `init`. Prisma ne les gère pas mais ne les considère pas comme une dérive : `prisma migrate diff` entre la base migrée et le schéma est vide (vérifié le 17 octobre 2026). Toute nouvelle contrainte de ce type doit être ajoutée de la même manière, dans une migration relue, et couverte par `backend/test/database.integration.ts`.
 
 ## Index de listes

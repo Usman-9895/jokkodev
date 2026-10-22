@@ -18,6 +18,7 @@ export class AdminUserDto {
 }
 
 export class ReportTargetDto {
+  @ApiProperty({ nullable: true, type: String, format: 'date-time', description: 'Date de suppression propriétaire de la cible, ou de la question parente pour ANSWER ; distincte du masquage.' }) deletedAt!: string | null;
   @ApiProperty({ enum: CONTENT_TYPES }) type!: ContentType;
   @ApiProperty({ format: 'uuid' }) id!: string;
   @ApiProperty({ description: 'Titre de la question, de la question parente d’une réponse, ou du projet.' }) title!: string;

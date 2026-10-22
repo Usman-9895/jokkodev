@@ -15,7 +15,7 @@ import { QUESTION_BODY_MAX, type AnswerDto, type AnswerWithQuestionDto, type Cre
 const HOUR = 60 * 60 * 1000;
 const answerSelect = { id: true, questionId: true, body: true, code: true, codeLanguage: true, createdAt: true, updatedAt: true, author: { select: publicAuthorSelect } } as const;
 const summarySelect = {
-  id: true, title: true, context: true, acceptedAnswerId: true, visibility: true, createdAt: true, updatedAt: true,
+  id: true, title: true, context: true, acceptedAnswerId: true, visibility: true, deletedAt: true, createdAt: true, updatedAt: true,
   author: { select: publicAuthorSelect },
   technologies: { select: { technology: { select: technologySelect } }, orderBy: { technology: { name: 'asc' } } },
   _count: { select: { answers: { where: { visibility: 'VISIBLE' } } } }
@@ -43,17 +43,17 @@ export class QuestionsService {
 
   async listByAuthor(userId: string, query: PageQueryDto): Promise<Page<QuestionSummaryDto>> {
     await this.assertUserExists(userId);
-    return this.page({ authorId: userId, visibility: 'VISIBLE' }, query, row => this.toSummary(row));
+    return this.page({ authorId: userId, visibility: 'VISIBLE', deletedAt: null }, query, row => this.toSummary(row));
   }
 
   /** Questions de l'auteur connecté, y compris celles masquées par la modération (signalées par visibility). */
   listOwn(userId: string, query: OwnQuestionQueryDto): Promise<Page<OwnQuestionSummaryDto>> {
-    const where: Prisma.QuestionWhereInput = { authorId: userId, acceptedAnswerId: resolvedFilter(query.status) };
-    return this.page(where, query, row => ({ ...this.toSummary(row), visibility: row.visibility }));
+    const where: Prisma.QuestionWhereInput = { authorId: userId, deletedAt: query.status && query.status !== 'all' ? null : undefined, acceptedAnswerId: resolvedFilter(query.status) };
+    return this.page(where, query, row => ({ ...this.toSummary(row), ...(row.deletedAt ? { title: 'Question supprimée', excerpt: '', technologies: [], resolved: false, answerCount: 0 } : {}), visibility: row.visibility, deletedAt: row.deletedAt?.toISOString() ?? null }));
   }
 
   async detail(id: string, viewer?: AuthenticatedUser): Promise<QuestionDetailDto> {
-    const question = await this.database.prisma.question.findFirst({ where: { id, visibility: 'VISIBLE' }, select: detailSelect });
+    const question = await this.database.prisma.question.findFirst({ where: { id, visibility: 'VISIBLE', deletedAt: null }, select: detailSelect });
     if (!question) throw notFound();
     return this.toDetail(question, viewer);
   }
@@ -71,7 +71,9 @@ export class QuestionsService {
   }
 
   async update(user: AuthenticatedUser, id: string, input: UpdateQuestionDto): Promise<QuestionDetailDto> {
-    const current = await this.database.prisma.question.findFirst({ where: { id, visibility: 'VISIBLE' }, select: { authorId: true, context: true, expected: true, actual: true, attempts: true, code: true, codeLanguage: true } });
+    await this.database.prisma.$transaction(async tx => {
+    await this.lockOwnQuestion(tx, user, id);
+    const current = await tx.question.findFirst({ where: { id, visibility: 'VISIBLE', deletedAt: null }, select: { authorId: true, context: true, expected: true, actual: true, attempts: true, code: true, codeLanguage: true } });
     if (!current) throw notFound();
     if (current.authorId !== user.id) throw notAuthor();
     const changes = {
@@ -84,7 +86,6 @@ export class QuestionsService {
     };
     assertBodyLength({ context: changes.context ?? current.context, expected: changes.expected ?? current.expected, actual: changes.actual ?? current.actual, attempts: changes.attempts ?? current.attempts });
     if (input.technologyIds) await this.technologies.assertExist(input.technologyIds, 'technologyIds');
-    await this.database.prisma.$transaction(async tx => {
       await tx.question.update({ where: { id }, data: changes });
       if (input.technologyIds) {
         await tx.questionTechnology.deleteMany({ where: { questionId: id } });
@@ -95,10 +96,10 @@ export class QuestionsService {
   }
 
   async answers(questionId: string, query: PageQueryDto): Promise<Page<AnswerDto>> {
-    const question = await this.database.prisma.question.findFirst({ where: { id: questionId, visibility: 'VISIBLE' }, select: { acceptedAnswerId: true } });
+    const question = await this.database.prisma.question.findFirst({ where: { id: questionId, visibility: 'VISIBLE', deletedAt: null }, select: { acceptedAnswerId: true } });
     if (!question) throw notFound();
     const { page, pageSize, skip, take } = pageWindow(query);
-    const where: Prisma.AnswerWhereInput = { questionId, visibility: 'VISIBLE' };
+    const where: Prisma.AnswerWhereInput = { questionId, visibility: 'VISIBLE', question: { deletedAt: null, visibility: 'VISIBLE' } };
     const [total, rows] = await this.database.prisma.$transaction([
       this.database.prisma.answer.count({ where }),
       this.database.prisma.answer.findMany({ where, orderBy: [{ createdAt: 'asc' }, { id: 'asc' }], skip, take, select: answerSelect })
@@ -110,7 +111,7 @@ export class QuestionsService {
   async answersByAuthor(userId: string, query: PageQueryDto): Promise<Page<AnswerWithQuestionDto>> {
     await this.assertUserExists(userId);
     const { page, pageSize, skip, take } = pageWindow(query);
-    const where: Prisma.AnswerWhereInput = { authorId: userId, visibility: 'VISIBLE', question: { visibility: 'VISIBLE' } };
+    const where: Prisma.AnswerWhereInput = { authorId: userId, visibility: 'VISIBLE', question: { visibility: 'VISIBLE', deletedAt: null } };
     const [total, rows] = await this.database.prisma.$transaction([
       this.database.prisma.answer.count({ where }),
       this.database.prisma.answer.findMany({ where, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], skip, take, select: { ...answerSelect, question: { select: { title: true, acceptedAnswerId: true } } } })
@@ -120,22 +121,24 @@ export class QuestionsService {
 
   async createAnswer(user: AuthenticatedUser, questionId: string, input: CreateAnswerDto): Promise<AnswerDto> {
     this.limiter.consume(`answer:${user.id}`, 30, HOUR);
-    const question = await this.database.prisma.question.findFirst({ where: { id: questionId, visibility: 'VISIBLE' }, select: { id: true } });
-    if (!question) throw notFound();
-    const answer = await this.database.prisma.answer.create({ data: { questionId, authorId: user.id, body: cleanText(input.body), ...codeFields(undefined, input) }, select: answerSelect });
-    return toAnswer(answer, null);
+    return this.database.prisma.$transaction(async tx => {
+      await this.lockActiveQuestion(tx, questionId);
+      const answer = await tx.answer.create({ data: { questionId, authorId: user.id, body: cleanText(input.body), ...codeFields(undefined, input) }, select: answerSelect });
+      return toAnswer(answer, null);
+    });
   }
 
   async updateAnswer(user: AuthenticatedUser, answerId: string, input: UpdateAnswerDto): Promise<AnswerDto> {
-    const answer = await this.database.prisma.answer.findFirst({ where: { id: answerId, visibility: 'VISIBLE', question: { visibility: 'VISIBLE' } }, select: { authorId: true, code: true, codeLanguage: true, question: { select: { acceptedAnswerId: true } } } });
-    if (!answer) throw answerNotFound();
-    if (answer.authorId !== user.id) throw notAuthor();
-    const updated = await this.database.prisma.answer.update({
-      where: { id: answerId },
-      data: { body: input.body === undefined ? undefined : cleanText(input.body), ...codeFields(answer, input) },
-      select: answerSelect
+    return this.database.prisma.$transaction(async tx => {
+      const parent = await tx.answer.findUnique({ where: { id: answerId }, select: { questionId: true } });
+      if (!parent) throw answerNotFound();
+      await this.lockActiveQuestion(tx, parent.questionId, answerNotFound);
+      const answer = await tx.answer.findFirst({ where: { id: answerId, visibility: 'VISIBLE' }, select: { authorId: true, code: true, codeLanguage: true, question: { select: { acceptedAnswerId: true } } } });
+      if (!answer) throw answerNotFound();
+      if (answer.authorId !== user.id) throw notAuthor();
+      const updated = await tx.answer.update({ where: { id: answerId }, data: { body: input.body === undefined ? undefined : cleanText(input.body), ...codeFields(answer, input) }, select: answerSelect });
+      return toAnswer(updated, answer.question.acceptedAnswerId);
     });
-    return toAnswer(updated, answer.question.acceptedAnswerId);
   }
 
   /**
@@ -163,9 +166,24 @@ export class QuestionsService {
   }
 
   private async lockOwnQuestion(tx: Prisma.TransactionClient, user: AuthenticatedUser, questionId: string): Promise<void> {
-    const [question] = await tx.$queryRaw<{ authorId: string; visibility: string }[]>`SELECT "authorId", visibility::text AS visibility FROM "Question" WHERE id = ${questionId}::uuid FOR UPDATE`;
-    if (!question || question.visibility !== 'VISIBLE') throw notFound();
+    const question = await this.lockActiveQuestion(tx, questionId);
     if (question.authorId !== user.id) throw notAuthor();
+  }
+
+  private async lockActiveQuestion(tx: Prisma.TransactionClient, id: string, missing = notFound) {
+    const [question] = await tx.$queryRaw<{ authorId: string; visibility: string; deletedAt: Date | null }[]>`SELECT "authorId", visibility::text AS visibility, "deletedAt" FROM "Question" WHERE id = ${id}::uuid FOR UPDATE`;
+    if (!question || question.deletedAt || question.visibility !== 'VISIBLE') throw missing();
+    return question;
+  }
+
+  async remove(user: AuthenticatedUser, id: string): Promise<void> {
+    await this.database.prisma.$transaction(async tx => {
+      const [question] = await tx.$queryRaw<{ authorId: string; visibility: string; deletedAt: Date | null }[]>`SELECT "authorId", visibility::text AS visibility, "deletedAt" FROM "Question" WHERE id = ${id}::uuid FOR UPDATE`;
+      if (!question || question.authorId !== user.id && (question.deletedAt || question.visibility !== 'VISIBLE')) throw notFound();
+      if (question.authorId !== user.id) throw notAuthor();
+      if (question.deletedAt) return;
+      await tx.question.update({ where: { id }, data: { deletedAt: new Date(), acceptedAnswerId: null } });
+    });
   }
 
   private async page<T>(where: Prisma.QuestionWhereInput, query: PageQueryDto, map: (row: SummaryRow) => T): Promise<Page<T>> {

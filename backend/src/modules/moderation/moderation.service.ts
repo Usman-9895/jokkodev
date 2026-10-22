@@ -15,9 +15,9 @@ const userSelect = { id: true, username: true, status: true, role: true } as con
 const reportSelect = {
   id: true, status: true, reason: true, decision: true, closedAt: true, createdAt: true, questionId: true, answerId: true, projectId: true,
   reporter: { select: userSelect }, closedBy: { select: userSelect },
-  question: { select: { id: true, title: true, context: true, visibility: true, author: { select: userSelect } } },
-  answer: { select: { id: true, body: true, visibility: true, questionId: true, author: { select: userSelect }, question: { select: { title: true } } } },
-  project: { select: { id: true, title: true, objective: true, visibility: true, owner: { select: userSelect } } }
+  question: { select: { id: true, title: true, context: true, visibility: true, deletedAt: true, author: { select: userSelect } } },
+  answer: { select: { id: true, body: true, visibility: true, questionId: true, author: { select: userSelect }, question: { select: { title: true, deletedAt: true } } } },
+  project: { select: { id: true, title: true, objective: true, visibility: true, deletedAt: true, owner: { select: userSelect } } }
 } as const satisfies Prisma.ReportSelect;
 const actionSelect = { id: true, decision: true, reason: true, reportId: true, questionId: true, answerId: true, projectId: true, targetUserId: true, createdAt: true, admin: { select: userSelect } } as const satisfies Prisma.ModerationActionSelect;
 
@@ -37,20 +37,29 @@ export class ModerationService {
   async report(user: AuthenticatedUser, input: CreateReportDto): Promise<CreatedReportDto> {
     this.limiter.consume(`report:${user.id}`, 20, HOUR);
     const target = { type: input.targetType, id: input.targetId.toLowerCase() };
-    const authorId = await this.publicAuthor(target);
+    return this.database.prisma.$transaction(async tx => {
+    // Same parent lock as owner deletion; no report may be inserted after deletion commits.
+    if (target.type === 'PROJECT') await tx.$queryRaw`SELECT id FROM "Project" WHERE id = ${target.id}::uuid FOR SHARE`;
+    else {
+      const parent = target.type === 'ANSWER' ? await tx.answer.findUnique({ where: { id: target.id }, select: { questionId: true } }) : { questionId: target.id };
+      if (!parent) throw targetNotFound();
+      await tx.$queryRaw`SELECT id FROM "Question" WHERE id = ${parent.questionId}::uuid FOR SHARE`;
+    }
+    const authorId = await this.publicAuthor(tx, target);
     if (!authorId) throw targetNotFound();
     if (authorId === user.id) throw new ApiException(403, 'SELF_REPORT_FORBIDDEN', 'Tu ne peux pas signaler ton propre contenu.');
     const column = targetColumn[target.type];
-    const exists = await this.database.prisma.report.count({ where: { reporterId: user.id, status: 'OPEN', [column]: target.id } });
+    const exists = await tx.report.count({ where: { reporterId: user.id, status: 'OPEN', [column]: target.id } });
     if (exists) throw alreadyOpen();
     try {
-      const report = await this.database.prisma.report.create({ data: { reporterId: user.id, reason: cleanText(input.reason), [column]: target.id }, select: { id: true, createdAt: true } });
-      return { id: report.id, status: 'OPEN', targetType: target.type, targetId: target.id, createdAt: report.createdAt.toISOString() };
+      const report = await tx.report.create({ data: { reporterId: user.id, reason: cleanText(input.reason), [column]: target.id }, select: { id: true, createdAt: true } });
+      return { id: report.id, status: 'OPEN' as const, targetType: target.type, targetId: target.id, createdAt: report.createdAt.toISOString() };
     } catch (error) {
       // Index unique partiel : deux envois simultanés ne créent qu'un signalement ouvert.
       if (isUniqueViolation(error)) throw alreadyOpen();
       throw error;
     }
+    });
   }
 
   async reports(query: ReportQueryDto): Promise<Page<ReportDto>> {
@@ -170,11 +179,10 @@ export class ModerationService {
     return (await tx.project.findUniqueOrThrow({ where: { id: target.id }, select: { ownerId: true } })).ownerId;
   }
 
-  private async publicAuthor(target: ContentTarget): Promise<string | null> {
-    const prisma = this.database.prisma;
-    if (target.type === 'QUESTION') return (await prisma.question.findFirst({ where: { id: target.id, visibility: 'VISIBLE' }, select: { authorId: true } }))?.authorId ?? null;
-    if (target.type === 'ANSWER') return (await prisma.answer.findFirst({ where: { id: target.id, visibility: 'VISIBLE', question: { visibility: 'VISIBLE' } }, select: { authorId: true } }))?.authorId ?? null;
-    return (await prisma.project.findFirst({ where: { id: target.id, visibility: 'VISIBLE' }, select: { ownerId: true } }))?.ownerId ?? null;
+  private async publicAuthor(prisma: Tx, target: ContentTarget): Promise<string | null> {
+    if (target.type === 'QUESTION') return (await prisma.question.findFirst({ where: { id: target.id, visibility: 'VISIBLE', deletedAt: null }, select: { authorId: true } }))?.authorId ?? null;
+    if (target.type === 'ANSWER') return (await prisma.answer.findFirst({ where: { id: target.id, visibility: 'VISIBLE', question: { visibility: 'VISIBLE', deletedAt: null } }, select: { authorId: true } }))?.authorId ?? null;
+    return (await prisma.project.findFirst({ where: { id: target.id, visibility: 'VISIBLE', deletedAt: null }, select: { ownerId: true } }))?.ownerId ?? null;
   }
 }
 
@@ -193,9 +201,9 @@ function actionTarget(decision: Decision, target: ContentTarget, authorId: strin
 
 function toReport(row: ReportRow): ReportDto {
   let target: ReportTargetDto;
-  if (row.question) target = { type: 'QUESTION', id: row.question.id, title: row.question.title, excerpt: excerptOf(row.question.context, 500), visibility: row.question.visibility, author: row.question.author, questionId: null };
-  else if (row.answer) target = { type: 'ANSWER', id: row.answer.id, title: row.answer.question.title, excerpt: excerptOf(row.answer.body, 500), visibility: row.answer.visibility, author: row.answer.author, questionId: row.answer.questionId };
-  else if (row.project) target = { type: 'PROJECT', id: row.project.id, title: row.project.title, excerpt: excerptOf(row.project.objective, 500), visibility: row.project.visibility, author: row.project.owner, questionId: null };
+  if (row.question) target = { type: 'QUESTION', id: row.question.id, title: row.question.title, excerpt: excerptOf(row.question.context, 500), visibility: row.question.visibility, deletedAt: row.question.deletedAt?.toISOString() ?? null, author: row.question.author, questionId: null };
+  else if (row.answer) target = { type: 'ANSWER', id: row.answer.id, title: row.answer.question.title, excerpt: excerptOf(row.answer.body, 500), visibility: row.answer.visibility, deletedAt: row.answer.question.deletedAt?.toISOString() ?? null, author: row.answer.author, questionId: row.answer.questionId };
+  else if (row.project) target = { type: 'PROJECT', id: row.project.id, title: row.project.title, excerpt: excerptOf(row.project.objective, 500), visibility: row.project.visibility, deletedAt: row.project.deletedAt?.toISOString() ?? null, author: row.project.owner, questionId: null };
   else throw new Error('Signalement sans cible.');
   return {
     id: row.id, status: row.status, reason: row.reason, reporter: row.reporter, target, decision: row.decision, closedBy: row.closedBy,

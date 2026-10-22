@@ -724,7 +724,7 @@
             }
           },
           "404": {
-            "description": "QUESTION_NOT_FOUND : inexistante ou masquée.",
+            "description": "QUESTION_NOT_FOUND : inexistante, masquée ou supprimée.",
             "content": {
               "application/json": {
                 "schema": {
@@ -734,6 +734,52 @@
             }
           }
         },
+        "tags": [
+          "questions"
+        ]
+      },
+      "delete": {
+        "operationId": "QuestionsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Suppression logique par le propriétaire, relations conservées. Répétition par ce propriétaire : 204 sans changer deletedAt."
+          },
+          "403": {
+            "description": "NOT_AUTHOR : ADMIN ne reçoit aucun droit supplémentaire.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ressource inconnue ou déjà supprimée pour un tiers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
         "tags": [
           "questions"
         ]
@@ -1421,7 +1467,7 @@
             }
           },
           "404": {
-            "description": "PROJECT_NOT_FOUND : inexistant ou masqué.",
+            "description": "PROJECT_NOT_FOUND : inexistant, masqué ou supprimé.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1431,6 +1477,52 @@
             }
           }
         },
+        "tags": [
+          "projects"
+        ]
+      },
+      "delete": {
+        "operationId": "ProjectsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Suppression logique par le propriétaire, relations conservées. Répétition par ce propriétaire : 204 sans changer deletedAt."
+          },
+          "403": {
+            "description": "NOT_OWNER : ADMIN ne reçoit aucun droit supplémentaire.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ressource inconnue ou déjà supprimée pour un tiers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
         "tags": [
           "projects"
         ]
@@ -3442,6 +3534,12 @@
             "type": "string",
             "format": "date-time"
           },
+          "deletedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Suppression logique par le propriétaire, distincte du masquage. Contenu privé neutralisé hors administration."
+          },
           "visibility": {
             "type": "string",
             "enum": [
@@ -3461,6 +3559,7 @@
           "answerCount",
           "createdAt",
           "updatedAt",
+          "deletedAt",
           "visibility"
         ]
       },
@@ -3925,6 +4024,12 @@
             "type": "string",
             "format": "date-time"
           },
+          "deletedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Suppression logique par le propriétaire, distincte du masquage. Contenu privé neutralisé hors administration."
+          },
           "role": {
             "type": "string",
             "enum": [
@@ -3950,6 +4055,7 @@
           "memberCount",
           "createdAt",
           "updatedAt",
+          "deletedAt",
           "role",
           "visibility"
         ]
@@ -3988,6 +4094,12 @@
       "ApplicationProjectDto": {
         "type": "object",
         "properties": {
+          "deletedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Suppression logique par le propriétaire, distincte du masquage. Contenu privé neutralisé hors administration."
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -4019,6 +4131,7 @@
           }
         },
         "required": [
+          "deletedAt",
           "id",
           "available"
         ]
@@ -4220,6 +4333,12 @@
       "ReportTargetDto": {
         "type": "object",
         "properties": {
+          "deletedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Date de suppression propriétaire de la cible, ou de la question parente pour ANSWER ; distincte du masquage."
+          },
           "type": {
             "type": "string",
             "enum": [
@@ -4263,6 +4382,7 @@
           }
         },
         "required": [
+          "deletedAt",
           "type",
           "id",
           "title",

@@ -57,3 +57,7 @@ Voir le [bilan central](integration-readiness.md) pour les domaines suivants. Ca
 ## Complément de recette globale (lot 15)
 
 Voir le [rapport de livraison](../release/readiness.md). Les membres de chaque page reçue sont présentés de manière déterministe (responsable présent en premier, puis identifiants). Aucun tri global avant pagination n’est promis ; l’écart API historique reste à coordonner.
+
+## Complément lot17 — suppression propriétaire
+
+Projets : suppression logique par leur responsable, recrutement fermé et relations/candidatures conservées. Voir le [guide et la recette](owner-content-deletion.md) pour les contrats, références privées, permissions et limites. Aucune suppression de réponse/compte, purge ou restauration utilisateur. Recette fonctionnelle valid?e par Ousmane ; publication autoris?e pour revue, sans fusion ni d?ploiement.
