@@ -1,5 +1,6 @@
 ﻿'use client';
 import Link from 'next/link';
+import {OwnTerangaPoints} from './teranga-points';
 import {ProfilePhoto,ProfileContact} from './profile-media';
 import {useEffect,useRef,useState} from 'react';
 import {useRouter} from 'next/navigation';
@@ -31,7 +32,7 @@ function Editor({initial,technologies}:{initial:OwnProfile;technologies:Technolo
  async function submit(){if(busy.current)return;setDone(false);const next=validateProfile(draft);setErrors(next);setFailure(null);if(Object.keys(next).length){requestAnimationFrame(()=>summary.current?.focus());return;}busy.current=true;setSending(true);
   try{const profile=await client.mutate<OwnProfile>('/users/me',profilePayload(draft),'PATCH',true);if(!profile)throw Error('Réponse absente');const updated=profileDraft(profile);setSaved(updated);setDraft(updated);setDone(true);await client.refresh();}
   catch(error){const failure=apiFailure(error);setFailure(failure);setErrors(failure.fields);requestAnimationFrame(()=>summary.current?.focus());}finally{busy.current=false;setSending(false);}}
- return <div className="profile-editor profile-editor--live"><section className="profile-editor-main"><Heading as="h1" size="page">Présente-toi à la communauté</Heading><p>Choisis les informations visibles sur ton profil public.</p><div className="profile-editor-grid"><Card><ProfilePhoto initial={initial}/>
+ return <div className="profile-editor profile-editor--live"><section className="profile-editor-main"><Heading as="h1" size="page">Présente-toi à la communauté</Heading><p>Choisis les informations visibles sur ton profil public.</p><div className="profile-editor-grid"><Card><OwnTerangaPoints initial={initial}/><ProfilePhoto initial={initial}/>
  <form noValidate onSubmit={e=>{e.preventDefault();void submit();}}><fieldset disabled={sending}><p className="profile-dirty" role="status">{dirty?'Modifications non enregistrées':'Profil à jour'}</p>
  {(failure||Object.keys(errors).length>0)&&<div className="account-error-summary" ref={summary} tabIndex={-1}>{failure&&<FailureMessage failure={failure}/ >}{Object.keys(errors).length>0&&<ul role="alert">{Object.entries(errors).map(([name,message])=><li key={name}><a href={'#profile-'+name}>{message}</a></li>)}</ul>}</div>}
  <TextField id="profile-username" label="Pseudonyme" autoComplete="username" required maxLength={30} value={draft.username} onChange={e=>change({username:e.target.value})} error={errors.username} help="Ce pseudonyme sera visible sur ton profil public."/>

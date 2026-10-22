@@ -1,5 +1,6 @@
 import { photoUrl } from '../users/projections';
 import { Injectable } from '@nestjs/common';
+import { ReputationService } from '../reputation/reputation.service';
 import { DatabaseService } from '../../database/database.service';
 import type { Prisma } from '../../generated/prisma/client';
 import type { AuthenticatedUser } from '../../common/auth/auth-context';
@@ -32,7 +33,7 @@ const targetColumn = { QUESTION: 'questionId', ANSWER: 'answerId', PROJECT: 'pro
 
 @Injectable()
 export class ModerationService {
-  constructor(private readonly database: DatabaseService, private readonly limiter: RateLimiter) {}
+  constructor(private readonly database: DatabaseService, private readonly limiter: RateLimiter, private readonly reputation: ReputationService) {}
 
   /** Le déclarant vient de la session ; la cible doit exister et être publique. Le signalement ne change pas la visibilité. */
   async report(user: AuthenticatedUser, input: CreateReportDto): Promise<CreatedReportDto> {
@@ -140,11 +141,13 @@ export class ModerationService {
    */
   private async hide(tx: Tx, target: ContentTarget, tolerateHidden: boolean): Promise<void> {
     const already = () => { if (!tolerateHidden) throw new ApiException(409, 'ALREADY_HIDDEN', 'Ce contenu est déjà masqué.'); };
+    if (target.type !== 'PROJECT') await this.reputation.lockMutation(tx);
     if (target.type === 'QUESTION') {
       const [question] = await tx.$queryRaw<{ visibility: string }[]>`SELECT visibility::text AS visibility FROM "Question" WHERE id = ${target.id}::uuid FOR UPDATE`;
       if (!question) throw targetNotFound();
       if (question.visibility === 'HIDDEN') return already();
       await tx.question.update({ where: { id: target.id }, data: { visibility: 'HIDDEN' } });
+      await this.reputation.syncQuestion(tx, target.id, 'QUESTION_HIDDEN');
     } else if (target.type === 'ANSWER') {
       const answer = await tx.answer.findUnique({ where: { id: target.id }, select: { questionId: true } });
       if (!answer) throw targetNotFound();
@@ -152,6 +155,7 @@ export class ModerationService {
       const { count } = await tx.answer.updateMany({ where: { id: target.id, visibility: 'VISIBLE' }, data: { visibility: 'HIDDEN' } });
       if (count === 0) return already();
       await tx.question.updateMany({ where: { id: answer.questionId, acceptedAnswerId: target.id }, data: { acceptedAnswerId: null } });
+      await this.reputation.syncQuestion(tx, answer.questionId, 'ANSWER_HIDDEN');
     } else {
       const { count } = await tx.project.updateMany({ where: { id: target.id, visibility: 'VISIBLE' }, data: { visibility: 'HIDDEN' } });
       if (count === 0) {

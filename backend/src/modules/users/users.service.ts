@@ -1,6 +1,7 @@
 import { photoUrl } from './projections';
 import { validCollaborationContact } from './collaboration';
 import { Injectable } from '@nestjs/common';
+import { ReputationService } from '../reputation/reputation.service';
 import { DatabaseService } from '../../database/database.service';
 import { isUniqueViolation } from '../../common/auth/prisma-errors';
 import { ApiException } from '../../common/http/api-exception';
@@ -18,7 +19,7 @@ const profileSelect = {
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly database: DatabaseService, private readonly technologies: TechnologiesService) {}
+  constructor(private readonly database: DatabaseService, private readonly technologies: TechnologiesService, private readonly reputation: ReputationService) {}
 
   /** Profil public par identifiant ou par pseudonyme (insensible à la casse). */
   async findPublic(reference: string): Promise<PublicProfileDto> {
@@ -65,13 +66,14 @@ export class UsersService {
 
   private async toPublic(user: { avatarKey?: string | null; id: string; username: string; createdAt: Date; profile: { bio: string | null; countryCode: string | null; links: string[]; skills: { technology: { id: string; name: string; slug: string } }[] } | null }): Promise<PublicProfileDto> {
     const prisma = this.database.prisma;
-    const [questions, answers, projects] = await Promise.all([
+    const [questions, answers, projects, terangaPoints] = await Promise.all([
       prisma.question.count({ where: { authorId: user.id, visibility: 'VISIBLE', deletedAt: null } }),
       prisma.answer.count({ where: { authorId: user.id, visibility: 'VISIBLE', question: { visibility: 'VISIBLE', deletedAt: null } } }),
-      prisma.project.count({ where: { visibility: 'VISIBLE', deletedAt: null, members: { some: { userId: user.id } } } })
+      prisma.project.count({ where: { visibility: 'VISIBLE', deletedAt: null, members: { some: { userId: user.id } } } }),
+      this.reputation.score(user.id)
     ]);
     return {
-      photoUrl: photoUrl(user.avatarKey), id: user.id, username: user.username, bio: user.profile?.bio ?? null, countryCode: user.profile?.countryCode ?? null, links: user.profile?.links ?? [],
+      terangaPoints, photoUrl: photoUrl(user.avatarKey), id: user.id, username: user.username, bio: user.profile?.bio ?? null, countryCode: user.profile?.countryCode ?? null, links: user.profile?.links ?? [],
       skills: user.profile?.skills.map(s => s.technology) ?? [], memberSince: user.createdAt.toISOString(), stats: { questions, answers, projects }
     };
   }

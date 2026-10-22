@@ -25,7 +25,8 @@
     "api:export": "pnpm --filter @jokkodev/backend api:export",
     "api:generate": "pnpm api:export && pnpm --filter @jokkodev/api-client generate",
     "licenses:inventory": "node scripts/licenses.mjs",
-    "test:smoke": "node scripts/smoke.mjs"
+    "test:smoke": "node scripts/smoke.mjs",
+    "reputation:rebuild": "pnpm --filter @jokkodev/backend reputation:rebuild"
   },
   "devDependencies": {
     "typescript": "6.0.3",
