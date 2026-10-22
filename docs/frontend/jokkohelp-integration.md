@@ -59,3 +59,7 @@ Comptes fictifs : ouvrir **localement** `.cache/lot11/test-accounts.json`, clés
 Écarts maintenus : carte simplifiée, avatar à initiales, footer textuel, édition adaptée de la création, code brut sans éditeur riche ; le panneau de questions de même technologie n’est pas une recommandation métier. Les compteurs des onglets personnels ne sont affichés que pour le filtre dont le total est réellement chargé. La réponse éditable est un formulaire inline, pas une nouvelle maquette indépendante. La fenêtre de pagination peut se replier sur deux lignes à320 pour garder ses cibles. Les détails chargés côté client nécessitent JavaScript et ont un HTML initial200 même si l’API répond404 ; ne pas les annoncer comme des404 HTTP de page.
 
 Projets, candidatures, tableau de bord général et modération restent à raccorder. SMTP réel, HTTPS complet, exploitation systemd/Datacloud, licences, contenus éditoriaux/confidentialité, coordonnées et assets définitifs restent ouverts. Production non validée. Aucun commit/push/PR/fusion pour ce lot avant validation fonctionnelle.
+
+## Complément lot17 — suppression propriétaire
+
+Questions : suppression logique par leur auteur, réponses conservées mais retirées du public et solution retirée. Voir le [guide et la recette](owner-content-deletion.md) pour les contrats, références privées, permissions et limites. Aucune suppression de réponse/compte, purge ou restauration utilisateur. Recette fonctionnelle valid?e par Ousmane ; publication autoris?e pour revue, sans fusion ni d?ploiement.

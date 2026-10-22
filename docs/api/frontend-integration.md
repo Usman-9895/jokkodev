@@ -101,3 +101,13 @@ L’administration utilise GET /admin/reports (status OPEN/CLOSED, page/pageSize
 ## Propriété et signalements — lot16
 
 POST /reports refuse désormais403 **SELF_REPORT_FORBIDDEN** pour sa propre question, réponse ou son propre projet, ADMIN compris. Propriété lue en base uniquement, après visibilité publique (404 TARGET_NOT_FOUND si absent/masqué). Pour une réponse, comparer son auteur, jamais celui de la question. Aucun signalement créé en cas de refus ; aucun ancien signalement supprimé. Les doublons d’un tiers restent409 REPORT_ALREADY_OPEN. Contrôleur NestJS et génération OpenAPI/types mis à jour. L’interface masque l’action tant que session/propriété sont inconnues ; les autorisations serveur restent la référence. Voir le [guide lot16](../frontend/navigation-self-report-animation.md).
+
+## Suppression logique propriétaire — lot17
+
+DELETE /questions/:id et DELETE /projects/:id sous /api/v1 : session et CSRF,204 propriétaire ; répétition204 sans changer la date ; tiers403 NOT_AUTHOR/NOT_OWNER sur contenu actif,404 après suppression ; inconnu404. ADMIN ne remplace pas la propriété. Question : solution retirée ; projet : recrutement fermé. Aucun DELETE de réponse ou de compte.
+
+Les DTO privés OwnQuestionSummaryDto, OwnProjectSummaryDto, ApplicationProjectDto et le DTO administratif ReportTargetDto exposent deletedAt nullable. Les projections publiques excluent ces contenus, y compris les réponses sous une question supprimée. Les références privées supprimées sont neutralisées ; un projet de candidature devient available=false, titre/recrutement/responsable null. Statuts conservés ; nouvelles décisions refusées, retrait PENDING par son candidat permis. Aucune clôture automatique des signalements.
+
+Après perte de réponse, lire la référence privée ; un404 public ne prouve pas la suppression. Aucun rejeu automatique. Voir le [guide lot17](../frontend/owner-content-deletion.md) et la [décision004](../decisions/004-owner-content-deletion.md). NestJS puis génération habituelle, migration additive sur base dédiée uniquement.
+
+Confidentialité de DELETE : un contenu masqué ou déjà supprimé est404 pour un tiers, y compris ADMIN. Seul son propriétaire peut agir sur sa référence privée masquée ou répéter une suppression.403 NOT_AUTHOR/NOT_OWNER concerne le contenu visible actif.

@@ -41,6 +41,7 @@ export class QuestionSummaryDto {
 }
 
 export class OwnQuestionSummaryDto extends QuestionSummaryDto {
+  @ApiProperty({ nullable: true, type: String, format: 'date-time', description: 'Suppression logique par le propriétaire, distincte du masquage. Contenu privé neutralisé hors administration.' }) deletedAt!: string | null;
   @ApiProperty({ enum: ['VISIBLE', 'HIDDEN'], description: 'HIDDEN : masquée par la modération, invisible du public.' }) visibility!: 'VISIBLE' | 'HIDDEN';
 }
 

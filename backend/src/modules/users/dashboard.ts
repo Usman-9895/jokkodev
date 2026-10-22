@@ -37,16 +37,16 @@ export class DashboardService {
   async summary(userId: string): Promise<DashboardDto> {
     const prisma = this.database.prisma;
     const [questions, resolved, hidden, answers, accepted, owned, joined, sent, sentPending, receivedPending] = await prisma.$transaction([
-      prisma.question.count({ where: { authorId: userId } }),
-      prisma.question.count({ where: { authorId: userId, acceptedAnswerId: { not: null } } }),
-      prisma.question.count({ where: { authorId: userId, visibility: 'HIDDEN' } }),
-      prisma.answer.count({ where: { authorId: userId, visibility: 'VISIBLE', question: { visibility: 'VISIBLE' } } }),
-      prisma.answer.count({ where: { authorId: userId, visibility: 'VISIBLE', acceptedFor: { isNot: null } } }),
-      prisma.project.count({ where: { ownerId: userId } }),
-      prisma.projectMember.count({ where: { userId, project: { ownerId: { not: userId } } } }),
+      prisma.question.count({ where: { authorId: userId, deletedAt: null } }),
+      prisma.question.count({ where: { authorId: userId, deletedAt: null, acceptedAnswerId: { not: null } } }),
+      prisma.question.count({ where: { authorId: userId, deletedAt: null, visibility: 'HIDDEN' } }),
+      prisma.answer.count({ where: { authorId: userId, visibility: 'VISIBLE', question: { visibility: 'VISIBLE', deletedAt: null } } }),
+      prisma.answer.count({ where: { authorId: userId, visibility: 'VISIBLE', acceptedFor: { is: { deletedAt: null, visibility: 'VISIBLE' } } } }),
+      prisma.project.count({ where: { ownerId: userId, deletedAt: null } }),
+      prisma.projectMember.count({ where: { userId, project: { ownerId: { not: userId }, deletedAt: null } } }),
       prisma.application.count({ where: { applicantId: userId } }),
       prisma.application.count({ where: { applicantId: userId, status: 'PENDING' } }),
-      prisma.application.count({ where: { status: 'PENDING', project: { ownerId: userId, visibility: 'VISIBLE' } } })
+      prisma.application.count({ where: { status: 'PENDING', project: { ownerId: userId, visibility: 'VISIBLE', deletedAt: null } } })
     ]);
     return {
       questions: { total: questions, resolved, open: questions - resolved, hidden },

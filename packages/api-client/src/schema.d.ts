@@ -270,7 +270,7 @@ export interface paths {
         get: operations["QuestionsController_detail"];
         put?: never;
         post?: never;
-        delete?: never;
+        delete: operations["QuestionsController_remove"];
         options?: never;
         head?: never;
         patch: operations["QuestionsController_update"];
@@ -398,7 +398,7 @@ export interface paths {
         get: operations["ProjectsController_detail"];
         put?: never;
         post?: never;
-        delete?: never;
+        delete: operations["ProjectsController_remove"];
         options?: never;
         head?: never;
         patch: operations["ProjectsController_update"];
@@ -945,6 +945,11 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
             /**
+             * Format: date-time
+             * @description Suppression logique par le propriétaire, distincte du masquage. Contenu privé neutralisé hors administration.
+             */
+            deletedAt: string | null;
+            /**
              * @description HIDDEN : masquée par la modération, invisible du public.
              * @enum {string}
              */
@@ -1098,6 +1103,11 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            /**
+             * Format: date-time
+             * @description Suppression logique par le propriétaire, distincte du masquage. Contenu privé neutralisé hors administration.
+             */
+            deletedAt: string | null;
             /** @enum {string} */
             role: "OWNER" | "MEMBER";
             /** @enum {string} */
@@ -1111,6 +1121,11 @@ export interface components {
             message: string;
         };
         ApplicationProjectDto: {
+            /**
+             * Format: date-time
+             * @description Suppression logique par le propriétaire, distincte du masquage. Contenu privé neutralisé hors administration.
+             */
+            deletedAt: string | null;
             /** Format: uuid */
             id: string;
             /** @description false si le projet a été masqué : son contenu n’est plus publié, seul le statut de la demande reste suivi. */
@@ -1181,6 +1196,11 @@ export interface components {
             role: "MEMBER" | "ADMIN";
         };
         ReportTargetDto: {
+            /**
+             * Format: date-time
+             * @description Date de suppression propriétaire de la cible, ou de la question parente pour ANSWER ; distincte du masquage.
+             */
+            deletedAt: string | null;
             /** @enum {string} */
             type: "QUESTION" | "ANSWER" | "PROJECT";
             /** Format: uuid */
@@ -1841,7 +1861,45 @@ export interface operations {
                     "application/json": components["schemas"]["QuestionDetailDto"];
                 };
             };
-            /** @description QUESTION_NOT_FOUND : inexistante ou masquée. */
+            /** @description QUESTION_NOT_FOUND : inexistante, masquée ou supprimée. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Suppression logique par le propriétaire, relations conservées. Répétition par ce propriétaire : 204 sans changer deletedAt. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description NOT_AUTHOR : ADMIN ne reçoit aucun droit supplémentaire. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description Ressource inconnue ou déjà supprimée pour un tiers. */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -2246,7 +2304,45 @@ export interface operations {
                     "application/json": components["schemas"]["ProjectDetailDto"];
                 };
             };
-            /** @description PROJECT_NOT_FOUND : inexistant ou masqué. */
+            /** @description PROJECT_NOT_FOUND : inexistant, masqué ou supprimé. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    ProjectsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Suppression logique par le propriétaire, relations conservées. Répétition par ce propriétaire : 204 sans changer deletedAt. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description NOT_OWNER : ADMIN ne reçoit aucun droit supplémentaire. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description Ressource inconnue ou déjà supprimée pour un tiers. */
             404: {
                 headers: {
                     [name: string]: unknown;

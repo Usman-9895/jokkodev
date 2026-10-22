@@ -192,7 +192,7 @@ describe('transitions', () => {
     const { body: application } = await candidate.browser.post(`/projects/${project.id}/applications`, { message: SECRET_MESSAGE });
     await sql.query(`UPDATE "Project" SET visibility = 'HIDDEN' WHERE id = $1`, [project.id]);
     const tracked = (await candidate.browser.get('/users/me/applications')).body.data[0];
-    assert.deepEqual(tracked.project, { id: project.id, available: false, title: null, recruitmentStatus: null, owner: null });
+    assert.deepEqual(tracked.project, { id: project.id, available: false, deletedAt: null, title: null, recruitmentStatus: null, owner: null });
     assert.equal((await owner.browser.patch(`/applications/${application.id}`, { status: 'ACCEPTED' })).status, 404);
     assert.equal((await owner.browser.get(`/projects/${project.id}/applications`)).status, 404);
     assert.equal((await candidate.browser.patch(`/applications/${application.id}`, { status: 'WITHDRAWN' })).body.status, 'WITHDRAWN');

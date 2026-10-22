@@ -18,7 +18,7 @@ export async function searchPage<T>(client: PrismaClient, kind: 'question' | 'pr
   const ownerId = question ? Prisma.sql`c."authorId"` : Prisma.sql`c."ownerId"`;
   const fields = question ? [Prisma.sql`c.title`, Prisma.sql`c.context`, Prisma.sql`c.expected`, Prisma.sql`c.actual`, Prisma.sql`c.attempts`] : [Prisma.sql`c.title`, Prisma.sql`c.objective`];
   const technologyMatch = (condition: Prisma.Sql) => Prisma.sql`EXISTS (SELECT 1 FROM ${relation} jt JOIN "Technology" t ON t.id=jt."technologyId" WHERE ${relationId}=c.id AND ${condition})`;
-  const conditions: Prisma.Sql[] = [Prisma.sql`c.visibility = 'VISIBLE'`];
+  const conditions: Prisma.Sql[] = [Prisma.sql`c.visibility = 'VISIBLE'`, Prisma.sql`c."deletedAt" IS NULL`];
   for (const word of (query.q ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().split(/\s+/).filter(Boolean)) {
     const pattern = `%${likeContains(word)}%`;
     const matches = [...fields, Prisma.sql`u.username`].map(field => Prisma.sql`${folded(field)} LIKE ${pattern}`);

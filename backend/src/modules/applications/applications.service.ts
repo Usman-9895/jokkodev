@@ -16,7 +16,7 @@ const HOUR = 60 * 60 * 1000;
 const applicationSelect = {
   id: true, status: true, message: true, createdAt: true, decidedAt: true, applicantId: true,
   applicant: { select: { ...publicAuthorSelect, profile: { select: { countryCode: true, skills: { select: { technology: { select: technologySelect } }, orderBy: { technology: { name: 'asc' } } } } } } },
-  project: { select: { id: true, ownerId: true, title: true, recruitmentStatus: true, visibility: true, owner: { select: publicAuthorSelect } } }
+  project: { select: { id: true, ownerId: true, title: true, recruitmentStatus: true, visibility: true, deletedAt: true, owner: { select: publicAuthorSelect } } }
 } as const satisfies Prisma.ApplicationSelect;
 type ApplicationRow = Prisma.ApplicationGetPayload<{ select: typeof applicationSelect }>;
 
@@ -35,9 +35,9 @@ export class ApplicationsService {
     this.limiter.consume(`application:${user.id}`, 20, HOUR);
     try {
       const id = await this.database.prisma.$transaction(async tx => {
-        const [project] = await tx.$queryRaw<{ ownerId: string; visibility: string; recruitmentStatus: string }[]>`
-          SELECT "ownerId", visibility::text AS visibility, "recruitmentStatus"::text AS "recruitmentStatus" FROM "Project" WHERE id = ${projectId}::uuid FOR SHARE`;
-        if (!project || project.visibility !== 'VISIBLE') throw projectNotFound();
+        const [project] = await tx.$queryRaw<{ ownerId: string; visibility: string; deletedAt: Date | null; recruitmentStatus: string }[]>`
+          SELECT "ownerId", "deletedAt", visibility::text AS visibility, "recruitmentStatus"::text AS "recruitmentStatus" FROM "Project" WHERE id = ${projectId}::uuid FOR SHARE`;
+        if (!project || project.deletedAt || project.visibility !== 'VISIBLE') throw projectNotFound();
         if (project.ownerId === user.id) throw conflict('OWN_PROJECT', 'Le responsable ne peut pas candidater à son propre projet.');
         if (await tx.projectMember.count({ where: { projectId, userId: user.id } })) throw conflict('ALREADY_MEMBER', 'Tu es déjà membre de ce projet.');
         if (await tx.application.count({ where: { projectId, applicantId: user.id } })) throw applicationExists();
@@ -54,7 +54,7 @@ export class ApplicationsService {
 
   /** Demandes reçues : réservé au responsable d'un projet visible. */
   async listForProject(user: AuthenticatedUser, projectId: string, query: ApplicationQueryDto): Promise<Page<ApplicationDto>> {
-    const project = await this.database.prisma.project.findFirst({ where: { id: projectId, visibility: 'VISIBLE' }, select: { ownerId: true } });
+    const project = await this.database.prisma.project.findFirst({ where: { id: projectId, OR: [{ visibility: 'VISIBLE' }, { deletedAt: { not: null } }] }, select: { ownerId: true } });
     if (!project) throw projectNotFound();
     if (project.ownerId !== user.id) throw new ApiException(403, 'NOT_OWNER', 'Seul le responsable du projet peut consulter les candidatures.');
     return this.page(user, { projectId, status: query.status }, query);
@@ -62,7 +62,7 @@ export class ApplicationsService {
 
   /** Demandes reçues sur l'ensemble des projets visibles dont la session est responsable. */
   listReceived(user: AuthenticatedUser, query: ApplicationQueryDto): Promise<Page<ApplicationDto>> {
-    return this.page(user, { project: { ownerId: user.id, visibility: 'VISIBLE' }, status: query.status }, query);
+    return this.page(user, { project: { ownerId: user.id, OR: [{ visibility: 'VISIBLE' }, { deletedAt: { not: null } }] }, status: query.status }, query);
   }
 
   listOwn(user: AuthenticatedUser, query: ApplicationQueryDto): Promise<Page<ApplicationDto>> {
@@ -73,7 +73,7 @@ export class ApplicationsService {
   async get(user: AuthenticatedUser, id: string): Promise<ApplicationDto> {
     const row = await this.database.prisma.application.findUnique({ where: { id }, select: applicationSelect });
     if (!row || !isParty(row, user)) throw notFound();
-    if (row.project.visibility !== 'VISIBLE' && row.applicantId !== user.id) throw notFound();
+    if (row.project.visibility !== 'VISIBLE' && !row.project.deletedAt && row.applicantId !== user.id) throw notFound();
     return toApplication(row, user);
   }
 
@@ -84,7 +84,10 @@ export class ApplicationsService {
    */
   async decide(user: AuthenticatedUser, id: string, input: DecideApplicationDto): Promise<ApplicationDto> {
     await this.database.prisma.$transaction(async tx => {
-      const row = await tx.application.findUnique({ where: { id }, select: { status: true, applicantId: true, projectId: true, applicant: { select: { status: true } }, project: { select: { ownerId: true, visibility: true } } } });
+      const parent = await tx.application.findUnique({ where: { id }, select: { projectId: true } });
+      if (!parent) throw notFound();
+      await tx.$queryRaw`SELECT id FROM "Project" WHERE id = ${parent.projectId}::uuid FOR SHARE`;
+      const row = await tx.application.findUnique({ where: { id }, select: { status: true, applicantId: true, projectId: true, applicant: { select: { status: true } }, project: { select: { ownerId: true, visibility: true, deletedAt: true } } } });
       if (!row || !isParty({ applicantId: row.applicantId, project: row.project }, user)) throw notFound();
       const actorIsOwner = row.project.ownerId === user.id;
       if (input.status === 'WITHDRAWN' ? row.applicantId !== user.id : !actorIsOwner) {
@@ -92,7 +95,7 @@ export class ApplicationsService {
       }
       if (row.status === input.status) return;
       if (row.status !== 'PENDING') throw invalidTransition();
-      if (input.status !== 'WITHDRAWN' && row.project.visibility !== 'VISIBLE') throw projectNotFound();
+      if (input.status !== 'WITHDRAWN' && (row.project.deletedAt || row.project.visibility !== 'VISIBLE')) throw projectNotFound();
       if (input.status === 'ACCEPTED' && row.applicant.status !== 'ACTIVE') throw conflict('APPLICANT_SUSPENDED', 'Ce compte est suspendu.');
       const { count } = await tx.application.updateMany({ where: { id, status: 'PENDING' }, data: { status: input.status, decidedAt: new Date() } });
       if (count !== 1) {
@@ -124,10 +127,10 @@ function isParty(row: { applicantId: string; project: { ownerId: string } }, use
 }
 
 function toApplication(row: ApplicationRow, viewer: AuthenticatedUser): ApplicationDto {
-  const available = row.project.visibility === 'VISIBLE';
+  const available = row.project.visibility === 'VISIBLE' && !row.project.deletedAt;
   return {
     id: row.id, status: row.status, message: row.message, applicant: toPublicAuthor(row.applicant), applicantSkills: row.applicant.profile?.skills.map(s => s.technology) ?? [],
-    project: { id: row.project.id, available, title: available ? row.project.title : null, recruitmentStatus: available ? row.project.recruitmentStatus : null, owner: available ? toPublicAuthor(row.project.owner) : null },
+    project: { id: row.project.id, available, deletedAt: row.project.deletedAt?.toISOString() ?? null, title: available ? row.project.title : null, recruitmentStatus: available ? row.project.recruitmentStatus : null, owner: available ? toPublicAuthor(row.project.owner) : null },
     createdAt: row.createdAt.toISOString(), decidedAt: row.decidedAt?.toISOString() ?? null,
     viewerRole: row.applicantId === viewer.id ? 'APPLICANT' : 'OWNER'
   };

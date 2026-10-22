@@ -1,6 +1,6 @@
 # Bilan central d’intégration frontend — pour Serge
 
-État du lot 16 : socle backend #10–#18 et correctif #20 fusionnés, #19 exclue. Comptes, session, profils, JokkoHelp, JokkoProjects, candidatures, tableau de bord et modération minimale raccordés aux endpoints réels. Le frontend n’est pas déclaré prêt à la production. Sources contractuelles : [guide API](../api/frontend-integration.md), [sessions/CSRF](../decisions/003-sessions-csrf.md). Détails : [comptes/profils lot 10](auth-integration.md) et [JokkoHelp lot 11](jokkohelp-integration.md) et [JokkoProjects lot 12](jokkoprojects-integration.md) et [tableau de bord/candidatures lot 13](dashboard-applications-integration.md) et [modération lot 14](moderation-integration.md).
+État du lot 17 (recette fonctionnelle validée par Ousmane) : socle backend #10–#18 et correctif #20 fusionnés, #19 exclue. Comptes, session, profils, JokkoHelp, JokkoProjects, candidatures, tableau de bord et modération minimale raccordés aux endpoints réels. Le frontend n’est pas déclaré prêt à la production. Sources contractuelles : [guide API](../api/frontend-integration.md), [sessions/CSRF](../decisions/003-sessions-csrf.md). Détails : [comptes/profils lot 10](auth-integration.md) et [JokkoHelp lot 11](jokkohelp-integration.md) et [JokkoProjects lot 12](jokkoprojects-integration.md) et [tableau de bord/candidatures lot 13](dashboard-applications-integration.md) et [modération lot 14](moderation-integration.md).
 
 ## Points d’intégration et références
 
@@ -42,3 +42,7 @@ Voir le [rapport central de livraison](../release/readiness.md) pour la matrice 
 ## Lot 16 — recette fonctionnelle validée
 
 [Navigation, animation et auto-signalement](navigation-self-report-animation.md) : entrée Administration principale partagée, commande pause/lecture accessible, interdiction serveur403 SELF_REPORT_FORBIDDEN pour toute cible propre, ADMIN compris. Contrat régénéré depuis NestJS ; pas de migration ou dépendance. Recette dédiée sur33080/33081. Les lots précédents et leurs données sont préservés. Recette fonctionnelle validée par Ousmane ; publication autorisée pour revue vers develop, sans fusion. Production toujours non validée.
+
+## Lot 17 — suppression logique, recette fonctionnelle validée
+
+[Guide et recette](owner-content-deletion.md), [décision004](../decisions/004-owner-content-deletion.md) : suppression propriétaire de questions/projets, dates distinctes de la modération, relations conservées, projections publiques retirées et références privées explicites. Deux DELETE avec session/CSRF et répétition204 ; aucun droit d’auteur supplémentaire pour ADMIN. Migration additive et contrat généré. Les scénarios de recette sont isolés des lots précédents. Pas de suppression des réponses/comptes, purge ou restauration utilisateur. Diagnostic CI startup_failure sans job/annotation ni cause démontrée ; pas de validation distante ou de production. Recette fonctionnelle validée par Ousmane ; publication autorisée pour revue vers develop, sans fusion ni déploiement.
