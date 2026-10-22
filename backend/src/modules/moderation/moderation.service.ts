@@ -1,3 +1,4 @@
+import { photoUrl } from '../users/projections';
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import type { Prisma } from '../../generated/prisma/client';
@@ -11,7 +12,7 @@ import type { ContentType, CreateReportDto, CreatedReportDto, Decision, DirectAc
 
 type Tx = Prisma.TransactionClient;
 const HOUR = 60 * 60 * 1000;
-const userSelect = { id: true, username: true, status: true, role: true } as const;
+const userSelect = { id: true, username: true, avatarKey: true, status: true, role: true } as const;
 const reportSelect = {
   id: true, status: true, reason: true, decision: true, closedAt: true, createdAt: true, questionId: true, answerId: true, projectId: true,
   reporter: { select: userSelect }, closedBy: { select: userSelect },
@@ -201,17 +202,19 @@ function actionTarget(decision: Decision, target: ContentTarget, authorId: strin
 
 function toReport(row: ReportRow): ReportDto {
   let target: ReportTargetDto;
-  if (row.question) target = { type: 'QUESTION', id: row.question.id, title: row.question.title, excerpt: excerptOf(row.question.context, 500), visibility: row.question.visibility, deletedAt: row.question.deletedAt?.toISOString() ?? null, author: row.question.author, questionId: null };
-  else if (row.answer) target = { type: 'ANSWER', id: row.answer.id, title: row.answer.question.title, excerpt: excerptOf(row.answer.body, 500), visibility: row.answer.visibility, deletedAt: row.answer.question.deletedAt?.toISOString() ?? null, author: row.answer.author, questionId: row.answer.questionId };
-  else if (row.project) target = { type: 'PROJECT', id: row.project.id, title: row.project.title, excerpt: excerptOf(row.project.objective, 500), visibility: row.project.visibility, deletedAt: row.project.deletedAt?.toISOString() ?? null, author: row.project.owner, questionId: null };
+  if (row.question) target = { type: 'QUESTION', id: row.question.id, title: row.question.title, excerpt: excerptOf(row.question.context, 500), visibility: row.question.visibility, deletedAt: row.question.deletedAt?.toISOString() ?? null, author: adminIdentity(row.question.author), questionId: null };
+  else if (row.answer) target = { type: 'ANSWER', id: row.answer.id, title: row.answer.question.title, excerpt: excerptOf(row.answer.body, 500), visibility: row.answer.visibility, deletedAt: row.answer.question.deletedAt?.toISOString() ?? null, author: adminIdentity(row.answer.author), questionId: row.answer.questionId };
+  else if (row.project) target = { type: 'PROJECT', id: row.project.id, title: row.project.title, excerpt: excerptOf(row.project.objective, 500), visibility: row.project.visibility, deletedAt: row.project.deletedAt?.toISOString() ?? null, author: adminIdentity(row.project.owner), questionId: null };
   else throw new Error('Signalement sans cible.');
   return {
-    id: row.id, status: row.status, reason: row.reason, reporter: row.reporter, target, decision: row.decision, closedBy: row.closedBy,
+    id: row.id, status: row.status, reason: row.reason, reporter: adminIdentity(row.reporter), target, decision: row.decision, closedBy: row.closedBy ? adminIdentity(row.closedBy) : null,
     closedAt: row.closedAt?.toISOString() ?? null, createdAt: row.createdAt.toISOString()
   };
 }
 
 function toAction(row: ActionRow): ModerationActionDto {
   const target = row.targetUserId ? { type: 'USER' as const, id: row.targetUserId } : contentTargetOf(row);
-  return { id: row.id, decision: row.decision, reason: row.reason, admin: row.admin, reportId: row.reportId, target, createdAt: row.createdAt.toISOString() };
+  return { id: row.id, decision: row.decision, reason: row.reason, admin: adminIdentity(row.admin), reportId: row.reportId, target, createdAt: row.createdAt.toISOString() };
 }
+
+function adminIdentity(user: {id:string;username:string;status:"ACTIVE"|"SUSPENDED";role:"MEMBER"|"ADMIN";avatarKey:string|null}) { const {avatarKey,...rest}=user;return {...rest,photoUrl:photoUrl(avatarKey)}; }

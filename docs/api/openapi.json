@@ -420,6 +420,150 @@
         ]
       }
     },
+    "/api/v1/users/me/photo": {
+      "post": {
+        "operationId": "PhotosController_upload",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "JPEG, PNG ou WebP non animé, 2 Mio maximum ; 4096 px par dimension et 4 millions de pixels."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhotoDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      },
+      "delete": {
+        "operationId": "PhotosController_remove",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhotoDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/users/photos/{key}": {
+      "get": {
+        "operationId": "PhotosController_read",
+        "parameters": [
+          {
+            "name": "key",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JPEG normalisé uniquement, clé encore référencée, no-store.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/v1/projects/{id}/members/{userId}/contact": {
+      "get": {
+        "operationId": "CollaborationController_read",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Membres effectifs d’un projet actif uniquement, sans privilège ADMIN. no-store.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollaborationContactDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "projects"
+        ]
+      }
+    },
     "/api/v1/users/me/dashboard": {
       "get": {
         "operationId": "DashboardController_summary",
@@ -2586,6 +2730,10 @@
       "CurrentUserDto": {
         "type": "object",
         "properties": {
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -2612,6 +2760,7 @@
           }
         },
         "required": [
+          "photoUrl",
           "id",
           "username",
           "email",
@@ -2779,6 +2928,31 @@
           "data"
         ]
       },
+      "PhotoDto": {
+        "type": "object",
+        "properties": {
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "photoUrl"
+        ]
+      },
+      "CollaborationContactDto": {
+        "type": "object",
+        "properties": {
+          "contact": {
+            "type": "string",
+            "nullable": true,
+            "description": "Privé. null : non renseigné ou partage désactivé. Aucun email de connexion par défaut."
+          }
+        },
+        "required": [
+          "contact"
+        ]
+      },
       "QuestionCountsDto": {
         "type": "object",
         "properties": {
@@ -2907,6 +3081,10 @@
       "OwnProfileDto": {
         "type": "object",
         "properties": {
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -2948,6 +3126,14 @@
           "stats": {
             "$ref": "#/components/schemas/ProfileStatsDto"
           },
+          "collaborationContact": {
+            "type": "string",
+            "nullable": true,
+            "description": "Privé : contact choisi, jamais l’email de connexion."
+          },
+          "collaborationContactEnabled": {
+            "type": "boolean"
+          },
           "email": {
             "type": "string",
             "example": "awa@example.com",
@@ -2958,12 +3144,15 @@
           }
         },
         "required": [
+          "photoUrl",
           "id",
           "username",
           "links",
           "skills",
           "memberSince",
           "stats",
+          "collaborationContact",
+          "collaborationContactEnabled",
           "email",
           "emailVerified"
         ]
@@ -2971,6 +3160,14 @@
       "UpdateProfileDto": {
         "type": "object",
         "properties": {
+          "collaborationContact": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 2048
+          },
+          "collaborationContactEnabled": {
+            "type": "boolean"
+          },
           "username": {
             "type": "string",
             "pattern": "^[A-Za-z0-9_]{3,30}$"
@@ -3006,6 +3203,10 @@
       "PublicProfileDto": {
         "type": "object",
         "properties": {
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -3049,6 +3250,7 @@
           }
         },
         "required": [
+          "photoUrl",
           "id",
           "username",
           "links",
@@ -3060,6 +3262,10 @@
       "PublicAuthorDto": {
         "type": "object",
         "properties": {
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -3075,6 +3281,7 @@
           }
         },
         "required": [
+          "photoUrl",
           "id",
           "username"
         ]
@@ -3781,6 +3988,10 @@
       "MemberDto": {
         "type": "object",
         "properties": {
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -3804,6 +4015,7 @@
           }
         },
         "required": [
+          "photoUrl",
           "id",
           "username",
           "isOwner",
@@ -4301,6 +4513,10 @@
       "AdminUserDto": {
         "type": "object",
         "properties": {
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -4324,6 +4540,7 @@
           }
         },
         "required": [
+          "photoUrl",
           "id",
           "username",
           "status",

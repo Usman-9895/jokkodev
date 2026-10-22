@@ -196,6 +196,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/me/photo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PhotosController_upload"];
+        delete: operations["PhotosController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/photos/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PhotosController_read"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{id}/members/{userId}/contact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CollaborationController_read"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users/me/dashboard": {
         parameters: {
             query?: never;
@@ -616,6 +664,7 @@ export interface components {
             password: string;
         };
         CurrentUserDto: {
+            photoUrl: string | null;
             /** Format: uuid */
             id: string;
             /** @example awa_dev */
@@ -678,6 +727,13 @@ export interface components {
         TechnologyListDto: {
             data: components["schemas"]["TechnologyDto"][];
         };
+        PhotoDto: {
+            photoUrl: string | null;
+        };
+        CollaborationContactDto: {
+            /** @description Privé. null : non renseigné ou partage désactivé. Aucun email de connexion par défaut. */
+            contact: string | null;
+        };
         QuestionCountsDto: {
             total: number;
             resolved: number;
@@ -720,6 +776,7 @@ export interface components {
             projects: number;
         };
         OwnProfileDto: {
+            photoUrl: string | null;
             /** Format: uuid */
             id: string;
             /** @example awa_dev */
@@ -740,6 +797,9 @@ export interface components {
             /** Format: date-time */
             memberSince: string;
             stats: components["schemas"]["ProfileStatsDto"];
+            /** @description Privé : contact choisi, jamais l’email de connexion. */
+            collaborationContact: string | null;
+            collaborationContactEnabled: boolean;
             /**
              * @description Privé : visible uniquement par le titulaire.
              * @example awa@example.com
@@ -748,6 +808,8 @@ export interface components {
             emailVerified: boolean;
         };
         UpdateProfileDto: {
+            collaborationContact?: string | null;
+            collaborationContactEnabled?: boolean;
             username?: string;
             bio?: string | null;
             /** @example SN */
@@ -758,6 +820,7 @@ export interface components {
             skillIds?: string[];
         };
         PublicProfileDto: {
+            photoUrl: string | null;
             /** Format: uuid */
             id: string;
             /** @example awa_dev */
@@ -780,6 +843,7 @@ export interface components {
             stats: components["schemas"]["ProfileStatsDto"];
         };
         PublicAuthorDto: {
+            photoUrl: string | null;
             /** Format: uuid */
             id: string;
             /** @example awa_dev */
@@ -1024,6 +1088,7 @@ export interface components {
             recruitmentStatus: "OPEN" | "CLOSED";
         };
         MemberDto: {
+            photoUrl: string | null;
             /** Format: uuid */
             id: string;
             /** @example awa_dev */
@@ -1187,6 +1252,7 @@ export interface components {
             createdAt: string;
         };
         AdminUserDto: {
+            photoUrl: string | null;
             /** Format: uuid */
             id: string;
             username: string;
@@ -1660,6 +1726,99 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TechnologyListDto"];
+                };
+            };
+        };
+    };
+    PhotosController_upload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: binary
+                     * @description JPEG, PNG ou WebP non animé, 2 Mio maximum ; 4096 px par dimension et 4 millions de pixels.
+                     */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PhotoDto"];
+                };
+            };
+        };
+    };
+    PhotosController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PhotoDto"];
+                };
+            };
+        };
+    };
+    PhotosController_read: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description JPEG normalisé uniquement, clé encore référencée, no-store. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+        };
+    };
+    CollaborationController_read: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Membres effectifs d’un projet actif uniquement, sans privilège ADMIN. no-store. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollaborationContactDto"];
                 };
             };
         };

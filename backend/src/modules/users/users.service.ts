@@ -1,3 +1,5 @@
+import { photoUrl } from './projections';
+import { validCollaborationContact } from './collaboration';
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { isUniqueViolation } from '../../common/auth/prisma-errors';
@@ -10,8 +12,8 @@ import { USERNAME_PATTERN, usernameKey } from './identity';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const profileSelect = {
-  id: true, username: true, email: true, emailVerifiedAt: true, createdAt: true,
-  profile: { select: { bio: true, countryCode: true, links: true, skills: { select: { technology: { select: technologySelect } }, orderBy: { technology: { name: 'asc' } } } } }
+  id: true, avatarKey: true, username: true, email: true, emailVerifiedAt: true, createdAt: true,
+  profile: { select: { collaborationContact: true, collaborationContactEnabled: true, bio: true, countryCode: true, links: true, skills: { select: { technology: { select: technologySelect } }, orderBy: { technology: { name: 'asc' } } } } }
 } as const;
 
 @Injectable()
@@ -28,19 +30,26 @@ export class UsersService {
 
   async findOwn(userId: string): Promise<OwnProfileDto> {
     const user = await this.database.prisma.user.findUniqueOrThrow({ where: { id: userId }, select: profileSelect });
-    return { ...await this.toPublic(user), email: user.email, emailVerified: user.emailVerifiedAt !== null };
+    return { ...await this.toPublic(user), collaborationContact: user.profile?.collaborationContact ?? null, collaborationContactEnabled: user.profile?.collaborationContactEnabled ?? false, email: user.email, emailVerified: user.emailVerifiedAt !== null };
   }
 
   async updateOwn(userId: string, input: UpdateProfileDto): Promise<OwnProfileDto> {
+    if (input.collaborationContact !== undefined && input.collaborationContact !== null && !validCollaborationContact(input.collaborationContact)) throw new ApiException(400,'VALIDATION_ERROR','Contact invalide.',{fieldErrors:{collaborationContact:['Utilise une adresse email ou une URL HTTPS complète sans identifiants.']}});
     if (input.skillIds) await this.technologies.assertExist(input.skillIds, 'skillIds');
     try {
       await this.database.prisma.$transaction(async tx => {
         if (input.username !== undefined) await tx.user.update({ where: { id: userId }, data: { username: input.username, usernameKey: usernameKey(input.username) } });
+        await tx.$queryRaw`SELECT id FROM "User" WHERE id=${userId}::uuid FOR UPDATE`;
+        const previous = await tx.profile.findUnique({where:{userId},select:{collaborationContact:true,collaborationContactEnabled:true}});
+        const rawContact = input.collaborationContact === undefined ? previous?.collaborationContact ?? null : input.collaborationContact;
+        const contact = rawContact && /^https:/i.test(rawContact) ? new URL(rawContact).href : rawContact;
+        const enabled = input.collaborationContact === null ? false : input.collaborationContactEnabled ?? previous?.collaborationContactEnabled ?? false;
+        if (enabled && !contact) throw new ApiException(400,'VALIDATION_ERROR','Contact requis.',{fieldErrors:{collaborationContact:['Renseigne un contact avant d’activer le partage.']}});
         const bio = optionalText(input.bio);
         await tx.profile.upsert({
           where: { userId },
-          create: { userId, bio: bio ?? null, countryCode: input.countryCode ?? null, links: input.links?.map(link => new URL(link).href) ?? [] },
-          update: { bio, countryCode: input.countryCode, links: input.links?.map(link => new URL(link).href) }
+          create: { userId, collaborationContact:contact, collaborationContactEnabled:enabled, bio: bio ?? null, countryCode: input.countryCode ?? null, links: input.links?.map(link => new URL(link).href) ?? [] },
+          update: { collaborationContact:contact, collaborationContactEnabled:enabled, bio, countryCode: input.countryCode, links: input.links?.map(link => new URL(link).href) }
         });
         if (input.skillIds) {
           await tx.profileTechnology.deleteMany({ where: { userId } });
@@ -54,7 +63,7 @@ export class UsersService {
     return this.findOwn(userId);
   }
 
-  private async toPublic(user: { id: string; username: string; createdAt: Date; profile: { bio: string | null; countryCode: string | null; links: string[]; skills: { technology: { id: string; name: string; slug: string } }[] } | null }): Promise<PublicProfileDto> {
+  private async toPublic(user: { avatarKey?: string | null; id: string; username: string; createdAt: Date; profile: { bio: string | null; countryCode: string | null; links: string[]; skills: { technology: { id: string; name: string; slug: string } }[] } | null }): Promise<PublicProfileDto> {
     const prisma = this.database.prisma;
     const [questions, answers, projects] = await Promise.all([
       prisma.question.count({ where: { authorId: user.id, visibility: 'VISIBLE', deletedAt: null } }),
@@ -62,7 +71,7 @@ export class UsersService {
       prisma.project.count({ where: { visibility: 'VISIBLE', deletedAt: null, members: { some: { userId: user.id } } } })
     ]);
     return {
-      id: user.id, username: user.username, bio: user.profile?.bio ?? null, countryCode: user.profile?.countryCode ?? null, links: user.profile?.links ?? [],
+      photoUrl: photoUrl(user.avatarKey), id: user.id, username: user.username, bio: user.profile?.bio ?? null, countryCode: user.profile?.countryCode ?? null, links: user.profile?.links ?? [],
       skills: user.profile?.skills.map(s => s.technology) ?? [], memberSince: user.createdAt.toISOString(), stats: { questions, answers, projects }
     };
   }

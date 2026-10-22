@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto';
+import path from 'node:path';
 
 export type MailTransport = 'smtp' | 'file';
 export interface MailEnvironment { transport: MailTransport; from: string; fileDir: string; smtp?: { host: string; port: number; secure: boolean; user?: string; password?: string } }
@@ -13,6 +14,7 @@ export interface Environment {
   csrfSecret: string;
   trustProxy: boolean | number | string[];
   mail: MailEnvironment;
+  avatarDir?: string;
 }
 
 // Secret de développement unique par processus : les jetons CSRF émis deviennent invalides au redémarrage, ce qui est acceptable hors production.
@@ -57,10 +59,18 @@ export function validateEnvironment(env: NodeJS.ProcessEnv): Environment {
     smtp = { host: env.SMTP_HOST ?? '', port: smtpPort, secure: smtpPort === 465, user: env.SMTP_USER || undefined, password: env.SMTP_PASSWORD || undefined };
   }
 
+  const avatarDir = env.AVATAR_STORAGE_DIR || undefined;
+  if (avatarDir && !path.isAbsolute(avatarDir)) errors.push('AVATAR_STORAGE_DIR');
+  if (production && avatarDir) {
+    const releaseRoot=path.basename(process.cwd())==='backend'?path.dirname(process.cwd()):process.cwd();
+    const relative=path.relative(releaseRoot,path.resolve(avatarDir));
+    if (!relative || !relative.startsWith('..'+path.sep) && relative!=='..' && !path.isAbsolute(relative)) errors.push('AVATAR_STORAGE_DIR');
+  }
   if (errors.length) throw new Error(`Configuration invalide : ${[...new Set(errors)].join(', ')}.`);
   return {
     nodeEnv: nodeEnv as Environment['nodeEnv'], host, port, databaseUrl, corsOrigins, appOrigin,
     sessionCookieSecure: rawSecure === 'true', csrfSecret, trustProxy: trustProxy as Environment['trustProxy'],
+    avatarDir,
     mail: { transport, from, fileDir: env.MAIL_FILE_DIR || '.cache/mail', smtp }
   };
 }

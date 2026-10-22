@@ -111,3 +111,9 @@ Les DTO privés OwnQuestionSummaryDto, OwnProjectSummaryDto, ApplicationProjectD
 Après perte de réponse, lire la référence privée ; un404 public ne prouve pas la suppression. Aucun rejeu automatique. Voir le [guide lot17](../frontend/owner-content-deletion.md) et la [décision004](../decisions/004-owner-content-deletion.md). NestJS puis génération habituelle, migration additive sur base dédiée uniquement.
 
 Confidentialité de DELETE : un contenu masqué ou déjà supprimé est404 pour un tiers, y compris ADMIN. Seul son propriétaire peut agir sur sa référence privée masquée ou répéter une suppression.403 NOT_AUTHOR/NOT_OWNER concerne le contenu visible actif.
+
+## Lot 18 — photo et contact de collaboration
+
+`POST /users/me/photo` reçoit un FormData contenant `file` (2 Mio, JPEG/PNG/WebP non animé), `DELETE /users/me/photo` retire la photo. Session/CSRF, réponse200 PhotoDto, jamais de Content-Type multipart sans boundary. `photoUrl` nullable enrichit CurrentUser, profils, PublicAuthor et identités administratives existantes ; l’ancienne URL ne doit pas être conservée après mutation. Les originaux ne sont jamais servis.
+
+Les seuls DTO privés OwnProfile/UpdateProfile portent `collaborationContact` et `collaborationContactEnabled`. Absence conserve ; null efface et désactive ; true exige une valeur valide. Pas de valeur dérivée de l’email de connexion. `GET /projects/:id/members/:userId/contact` est no-store, vérifie projet actif visible/non supprimé et participation effective des deux personnes à chaque lecture ; ADMIN seul ne suffit pas. null signifie non renseigné/désactivé, 404 une collaboration indisponible. Aucun contact dans les projections publiques. Fermer et vider les dialogues après déconnexion ; aucune relecture privée périmée acceptée. Voir le [guide lot18](../frontend/profile-photo-contact.md).

@@ -55,6 +55,7 @@ enum ModerationDecision {
 }
 
 model User {
+  avatarKey String? @unique @db.VarChar(40)
   id              String        @id @default(uuid(7)) @db.Uuid
   /// Forme normalisée (NFC, minuscules, sans espaces de bord).
   email           String        @unique @db.VarChar(254)
@@ -84,6 +85,8 @@ model User {
 }
 
 model Profile {
+  collaborationContact String? @db.VarChar(2048)
+  collaborationContactEnabled Boolean @default(false)
   userId      String   @id @db.Uuid
   bio         String?  @db.VarChar(500)
   /// Code pays ISO 3166-1 alpha-2.

@@ -10,7 +10,7 @@ const one=(v:string|string[]|undefined)=>Array.isArray(v)?v[0]??'':v??'';
 export function liveProjectCriteria(v:SearchValues):ProjectCriteria{const status=one(v.status),page=Number(one(v.page));return{q:one(v.q).trim(),technology:one(v.technology).trim(),status:status==='open'||status==='closed'?status:'all',page:Number.isSafeInteger(page)&&page>0&&page<=2147483647?page:1};}
 export function projectQuery(c:ProjectCriteria):NonNullable<paths['/api/v1/projects']['get']['parameters']['query']>{return{...c,pageSize:4};}
 export function ownProjectQuery(role:string,page:number):NonNullable<paths['/api/v1/users/me/projects']['get']['parameters']['query']>{return{...(role==='OWNER'||role==='MEMBER'?{role}:{}),page,pageSize:3};}
-export function personView(p:ProjectSchemas['PublicAuthorDto']):PublicPerson{return{name:p.username,reference:p.id,country:countryLabel(p.countryCode)};}
+export function personView(p:ProjectSchemas['PublicAuthorDto']):PublicPerson{return{name:p.username,photoUrl:p.photoUrl,reference:p.id,country:countryLabel(p.countryCode)};}
 export function projectView(p:ProjectSchemas['ProjectSummaryDto']):ProjectView{return{id:p.id,title:p.title,summary:p.summary,objective:'',owner:personView(p.owner),technologies:p.technologies.map(t=>t.name),availability:p.availability??undefined,recruitment:p.recruitmentStatus==='OPEN'?'open':'closed',memberCount:p.memberCount,date:p.createdAt};}
 export function projectDraft(p:ProjectSchemas['ProjectDetailDto']):ProjectInput{return{title:p.title,objective:p.objective,technologyIds:p.technologies.map(t=>t.id),availability:p.availability??'',recruitmentStatus:p.recruitmentStatus};}
 const clean=(s:string)=>s.normalize('NFC').replace(/\r\n?/g,'\n').trim();const length=(s:string)=>Array.from(s).length;

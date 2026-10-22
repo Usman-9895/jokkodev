@@ -37,7 +37,8 @@ describe('inscription et session', () => {
     const id = identity();
     const response = await browser.post('/auth/register', { email: `  ${id.email.toUpperCase()}`.trim(), username: id.username, password });
     assert.equal(response.status, 201);
-    assert.deepEqual(Object.keys(response.body.user).sort(), ['email', 'emailVerified', 'id', 'role', 'username']);
+    assert.deepEqual(Object.keys(response.body.user).sort(), ['email', 'emailVerified', 'id', 'photoUrl', 'role', 'username']);
+    assert.equal(response.body.user.photoUrl, null);
     assert.equal(response.body.user.email, id.email);
     assert.equal(response.body.user.role, 'MEMBER');
     assert.equal(response.body.user.emailVerified, false);

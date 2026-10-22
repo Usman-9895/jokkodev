@@ -795,6 +795,13 @@
     "flags": []
   },
   {
+    "name": "@types/pngjs",
+    "version": "6.0.5",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@types/pngjs/6.0.5",
+    "flags": []
+  },
+  {
     "name": "@types/qs",
     "version": "6.15.1",
     "license": "MIT",
@@ -2135,6 +2142,13 @@
     "flags": []
   },
   {
+    "name": "jpeg-js",
+    "version": "0.4.4",
+    "license": "BSD-3-Clause",
+    "source": "https://registry.npmjs.org/jpeg-js/0.4.4",
+    "flags": []
+  },
+  {
     "name": "js-levenshtein",
     "version": "1.1.6",
     "license": "MIT",
@@ -2636,6 +2650,13 @@
     "version": "8.0.0",
     "license": "MIT",
     "source": "https://registry.npmjs.org/pluralize/8.0.0",
+    "flags": []
+  },
+  {
+    "name": "pngjs",
+    "version": "7.0.0",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/pngjs/7.0.0",
     "flags": []
   },
   {
@@ -3264,6 +3285,13 @@
     "version": "1.1.2",
     "license": "MIT",
     "source": "https://registry.npmjs.org/vary/1.1.2",
+    "flags": []
+  },
+  {
+    "name": "wasm-webp",
+    "version": "0.1.0",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/wasm-webp/0.1.0",
     "flags": []
   },
   {

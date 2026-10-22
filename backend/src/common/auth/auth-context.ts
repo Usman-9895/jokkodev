@@ -1,6 +1,6 @@
 import type { AccountStatus, Role } from '../../generated/prisma/client';
 
-export interface AuthenticatedUser { id: string; username: string; email: string; role: Role; status: AccountStatus; emailVerifiedAt: Date | null }
+export interface AuthenticatedUser { avatarKey?: string | null; id: string; username: string; email: string; role: Role; status: AccountStatus; emailVerifiedAt: Date | null }
 export interface AuthContext { user: AuthenticatedUser; sessionId: string }
 
 declare global {

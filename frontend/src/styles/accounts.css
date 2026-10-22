@@ -127,3 +127,12 @@
 .account-error-summary > .jd-message {border:0;padding:0;background:none;}
 @media(max-width:800px){.developer-product-grid .developer-navigation--product a{font-size:10px;}.developer-nav-full{display:none;}.developer-nav-compact{display:inline;}}
 @media(max-width:359px){.profile-live .profile-tabs a{font-size:11px;}}
+
+/* Profile additions keep the existing card and spacing system. */
+.profile-photo,.profile-contact{min-width:0;margin-block:1.5rem;padding-block:1rem;border-bottom:1px solid var(--color-border)}
+.profile-photo input[type=file]{display:block;max-width:100%;margin-block:1rem;min-height:44px}
+.profile-photo .profile-actions,.profile-contact .profile-actions{flex-wrap:wrap}
+.profile-contact-optin{display:flex;align-items:center;gap:.75rem;margin-block:1rem;min-height:44px}
+.profile-contact-optin input{width:20px;height:20px;flex-shrink:0}
+.collaboration-link{overflow-wrap:anywhere;word-break:break-word;max-width:100%;height:auto;min-height:44px}
+.project-members>div{flex-wrap:wrap}

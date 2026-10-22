@@ -1,6 +1,6 @@
 /** Présentation locale des exemples approuvés, pas des DTO de l’API. */
 export type Recruitment = 'open' | 'closed';
-export type PublicPerson = { name:string; country?:string; reference?:string; isOwner?:boolean };
+export type PublicPerson = { photoUrl?:string|null; name:string; country?:string; reference?:string; isOwner?:boolean };
 export type ProjectView = {
  id:string; title:string; summary:string; objective:string; technologies:string[];
  availability?:string; recruitment:Recruitment; owner:PublicPerson; members?:PublicPerson[]; memberCount?:number; date:string;

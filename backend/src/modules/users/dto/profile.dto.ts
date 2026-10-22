@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ArrayMaxSize, ArrayUnique, IsArray, IsISO31661Alpha2, IsOptional, IsString, IsUUID, Matches, MaxLength } from 'class-validator';
+import { ArrayMaxSize, ArrayUnique, IsArray, IsBoolean, IsISO31661Alpha2, IsOptional, IsString, IsUUID, Matches, MaxLength } from 'class-validator';
 import { IsPublicHttpsUrl, MAX_URL_LENGTH, OptionalButNotNull } from '../../../common/http/validators';
 import { TechnologyDto } from '../../technologies/technologies.dto';
 import { USERNAME_PATTERN } from '../identity';
@@ -15,6 +15,7 @@ export class ProfileStatsDto {
 }
 
 export class PublicProfileDto {
+  @ApiProperty({ nullable: true, type: String }) photoUrl!: string | null;
   @ApiProperty({ format: 'uuid' }) id!: string;
   @ApiProperty({ example: 'awa_dev' }) username!: string;
   @ApiPropertyOptional({ nullable: true, type: String, maxLength: MAX_BIO_LENGTH }) bio!: string | null;
@@ -26,12 +27,16 @@ export class PublicProfileDto {
 }
 
 export class OwnProfileDto extends PublicProfileDto {
+  @ApiProperty({ nullable: true, type: String, description: "Privé : contact choisi, jamais l’email de connexion." }) collaborationContact!: string | null;
+  @ApiProperty() collaborationContactEnabled!: boolean;
   @ApiProperty({ example: 'awa@example.com', description: 'Privé : visible uniquement par le titulaire.' }) email!: string;
   @ApiProperty() emailVerified!: boolean;
 }
 
 /** Champs absents : inchangés. null efface la biographie ou le pays ; [] vide les liens ou les compétences. */
 export class UpdateProfileDto {
+  @ApiPropertyOptional({ nullable: true, type: String, maxLength: 2048 }) @IsOptional() @IsString() @MaxLength(2048) collaborationContact?: string | null;
+  @ApiPropertyOptional() @OptionalButNotNull() @IsBoolean() collaborationContactEnabled?: boolean;
   @ApiPropertyOptional({ pattern: USERNAME_PATTERN.source }) @OptionalButNotNull() @IsString() @Matches(USERNAME_PATTERN) username?: string;
   @ApiPropertyOptional({ nullable: true, type: String, maxLength: MAX_BIO_LENGTH }) @IsOptional() @IsString() @MaxLength(MAX_BIO_LENGTH) bio?: string | null;
   @ApiPropertyOptional({ nullable: true, type: String, example: 'SN' }) @IsOptional() @IsString() @Matches(/^[A-Z]{2}$/) @IsISO31661Alpha2() countryCode?: string | null;
