@@ -73,3 +73,5 @@ Les CHECK et les index uniques partiels sont écrits en SQL à la fin de la migr
 ## Index de listes
 
 Tri stable `createdAt DESC, id DESC` pour les questions et projets publics (index préfixés par `visibility`), files de signalements par `status`, candidatures reçues par `(projectId, status, createdAt)` et suivies par `(applicantId, createdAt)`. Toutes les clés étrangères utilisées en filtre sont indexées. La recherche textuelle MVP reste une requête paramétrée sur titre et contenu ; un index plein texte sera ajouté seulement après mesure.
+
+Lot18 : migration additive `20261022050000_profile_photo_contact`, clé photo nullable unique sur User et réglages facultatifs de contact privé sur Profile, partage false par défaut. Les fichiers JPEG normalisés sont hors base dans un stockage durable dédié ; les sauvegardes doivent couvrir DB et fichiers de façon cohérente. Le contact n’est exposé dans aucune projection publique ; accès selon les participations réelles à un projet visible non supprimé. Voir [décision005](../decisions/005-profile-photo-collaboration-contact.md).

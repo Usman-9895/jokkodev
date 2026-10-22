@@ -1,0 +1,24 @@
+{
+  "runtimeDecoderVersion": "1.3.2",
+  "libwebpSourceReference": "6c484cbf92e81a5673b24485ac02d211f69be5b7",
+  "files": [
+    {
+      "file": "wasm-webp/dist/esm/webp-wasm.wasm",
+      "sha256": "4d438a73dfe550d608d6b89eee34ea9374d58d3ffa0355218766281fc9a76c22"
+    },
+    {
+      "file": "wasm-webp/dist/esm/webp-wasm.js",
+      "sha256": "ea9023c6313b758105d1ab3d8adf27b504ec26d40ea59f4926ae4ae81fd1a32a"
+    },
+    {
+      "file": "jpeg-js/package.json",
+      "sha256": "8a0418edb81e7bdb69d1d78c4c1aeedeecc839deb58a8eeba6f25ae92ed14e62"
+    },
+    {
+      "file": "pngjs/package.json",
+      "sha256": "85b17f2f852aece03e71edb4ed4d9fddf6a0a8f0b69ac75d7f00b6592d62d37c"
+    }
+  ],
+  "runtimeMemoryCeilingBytes": 134217728,
+  "boundedRuntimeWasmSha256": "ba65f4354795eb4d384e57de9577a2d928f99d76a2177650707f021bb6fad592"
+}

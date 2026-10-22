@@ -81,9 +81,9 @@ export class AccountClient {
       this.forgetCsrf(); this.publish('guest', null, true);
     }
   }
-  async mutate<T>(path: string, body?: unknown, method = 'POST', privateData = false): Promise<T | undefined> {
+  async mutate<T>(path: string, body?: unknown, method = 'POST', privateData = false, signal?:AbortSignal): Promise<T | undefined> {
     const revision = this.state.revision;
-    try { const value = await this.request<T>(path, { method, csrfToken: await this.csrf(), headers: { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) });
+    try { const multipart=typeof FormData!=='undefined'&&body instanceof FormData; const value = await this.request<T>(path, { method, signal, csrfToken: await this.csrf(), headers: multipart?undefined:{ 'Content-Type': 'application/json' }, body: multipart?body:body === undefined ? undefined : JSON.stringify(body) });
       if (privateData && (revision !== this.state.revision || this.state.phase !== 'authenticated')) throw new HttpError('aborted', 'Résultat privé périmé.');
       return value; }
     catch (error) {

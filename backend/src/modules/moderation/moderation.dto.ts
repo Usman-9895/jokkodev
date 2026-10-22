@@ -11,6 +11,7 @@ export const DECISIONS = ['NO_ACTION', 'HIDE_CONTENT', 'SUSPEND_ACCOUNT'] as con
 export type Decision = (typeof DECISIONS)[number];
 
 export class AdminUserDto {
+  @ApiProperty({nullable:true,type:String}) photoUrl!: string | null;
   @ApiProperty({ format: 'uuid' }) id!: string;
   @ApiProperty() username!: string;
   @ApiProperty({ enum: ['ACTIVE', 'SUSPENDED'] }) status!: 'ACTIVE' | 'SUSPENDED';

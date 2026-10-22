@@ -1,6 +1,6 @@
 # Inventaire des dépendances installées
 
-Généré par pnpm licenses list --json, puis enrichi avec les manifests et notices des paquets installés. Plateforme : win32/x64. 465 entrées directes/transitives, production et développement. Relancer pnpm licenses:inventory après installation ou changement du lockfile.
+Généré par pnpm licenses list --json, puis enrichi avec les manifests et notices des paquets installés. Plateforme : win32/x64. 469 entrées directes/transitives, production et développement. Relancer pnpm licenses:inventory après installation ou changement du lockfile.
 
 Ce contrôle ne certifie pas la conformité complète. Les dépendances natives d’une autre plateforme et bibliothèques embarquées nécessitent une revue complémentaire. Voir open-questions.md et third-party-notices.txt.
 
@@ -111,6 +111,7 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | @types/node | 24.19.2 | Directe | MIT | [npm](https://registry.npmjs.org/@types/node/24.19.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | @types/nodemailer | 8.0.2 | Directe | MIT | [npm](https://registry.npmjs.org/@types/nodemailer/8.0.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | @types/pg | 8.23.1 | Directe | MIT | [npm](https://registry.npmjs.org/@types/pg/8.23.1) | Notice à conserver ; déclaration non auditée juridiquement |
+| @types/pngjs | 6.0.5 | Directe | MIT | [npm](https://registry.npmjs.org/@types/pngjs/6.0.5) | Notice à conserver ; déclaration non auditée juridiquement |
 | @types/qs | 6.15.1 | Transitive | MIT | [npm](https://registry.npmjs.org/@types/qs/6.15.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | @types/range-parser | 1.2.7 | Transitive | MIT | [npm](https://registry.npmjs.org/@types/range-parser/1.2.7) | Notice à conserver ; déclaration non auditée juridiquement |
 | @types/react | 19.3.0 | Directe | MIT | [npm](https://registry.npmjs.org/@types/react/19.3.0) | Notice à conserver ; déclaration non auditée juridiquement |
@@ -301,6 +302,7 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | isexe | 2.0.0 | Transitive | ISC | [npm](https://registry.npmjs.org/isexe/2.0.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | iterare | 1.2.1 | Transitive | ISC | [npm](https://registry.npmjs.org/iterare/1.2.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | jiti | 2.7.0 | Transitive | MIT | [npm](https://registry.npmjs.org/jiti/2.7.0) | Notice à conserver ; déclaration non auditée juridiquement |
+| jpeg-js | 0.4.4 | Directe | BSD-3-Clause | [npm](https://registry.npmjs.org/jpeg-js/0.4.4) | Notice à conserver ; déclaration non auditée juridiquement |
 | js-levenshtein | 1.1.6 | Transitive | MIT | [npm](https://registry.npmjs.org/js-levenshtein/1.1.6) | Notice à conserver ; déclaration non auditée juridiquement |
 | js-tokens | 4.0.0 | Transitive | MIT | [npm](https://registry.npmjs.org/js-tokens/4.0.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | js-yaml | 4.3.2 | Transitive | MIT | [npm](https://registry.npmjs.org/js-yaml/4.3.2) | Notice à conserver ; déclaration non auditée juridiquement |
@@ -371,6 +373,7 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | picomatch | 4.0.7 | Transitive | MIT | [npm](https://registry.npmjs.org/picomatch/4.0.7) | Notice à conserver ; déclaration non auditée juridiquement |
 | pkg-types | 2.3.3 | Transitive | MIT | [npm](https://registry.npmjs.org/pkg-types/2.3.3) | Notice à conserver ; déclaration non auditée juridiquement |
 | pluralize | 8.0.0 | Transitive | MIT | [npm](https://registry.npmjs.org/pluralize/8.0.0) | Notice à conserver ; déclaration non auditée juridiquement |
+| pngjs | 7.0.0 | Directe | MIT | [npm](https://registry.npmjs.org/pngjs/7.0.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | postcss | 8.5.23 | Transitive | MIT | [npm](https://registry.npmjs.org/postcss/8.5.23) | Notice à conserver ; déclaration non auditée juridiquement |
 | postcss | 8.5.29 | Transitive | MIT | [npm](https://registry.npmjs.org/postcss/8.5.29) | Notice à conserver ; déclaration non auditée juridiquement |
 | postgres | 3.4.7 | Transitive | Unlicense | [npm](https://registry.npmjs.org/postgres/3.4.7) | Notice absente du paquet : retrouver la notice à la source |
@@ -459,6 +462,7 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | valibot | 1.4.2 | Transitive | MIT | [npm](https://registry.npmjs.org/valibot/1.4.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | validator | 13.15.35 | Transitive | MIT | [npm](https://registry.npmjs.org/validator/13.15.35) | Notice à conserver ; déclaration non auditée juridiquement |
 | vary | 1.1.2 | Transitive | MIT | [npm](https://registry.npmjs.org/vary/1.1.2) | Notice à conserver ; déclaration non auditée juridiquement |
+| wasm-webp | 0.1.0 | Directe | MIT | [npm](https://registry.npmjs.org/wasm-webp/0.1.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | which | 2.0.2 | Transitive | ISC | [npm](https://registry.npmjs.org/which/2.0.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | word-wrap | 1.2.5 | Transitive | MIT | [npm](https://registry.npmjs.org/word-wrap/1.2.5) | Notice à conserver ; déclaration non auditée juridiquement |
 | wrap-ansi | 9.0.2 | Transitive | MIT | [npm](https://registry.npmjs.org/wrap-ansi/9.0.2) | Notice à conserver ; déclaration non auditée juridiquement |

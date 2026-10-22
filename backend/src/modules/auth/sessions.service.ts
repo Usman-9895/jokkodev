@@ -21,7 +21,7 @@ export class SessionsService {
   async resolve(token: string): Promise<AuthContext | undefined> {
     if (!isTokenFormat(token)) return undefined;
     const now = Date.now();
-    const session = await this.database.prisma.session.findUnique({ where: { tokenHash: hashToken(token) }, include: { user: { select: { id: true, username: true, email: true, role: true, status: true, emailVerifiedAt: true } } } });
+    const session = await this.database.prisma.session.findUnique({ where: { tokenHash: hashToken(token) }, include: { user: { select: { id: true, avatarKey: true, username: true, email: true, role: true, status: true, emailVerifiedAt: true } } } });
     if (!session || session.revokedAt || session.expiresAt.getTime() <= now || session.lastSeenAt.getTime() <= now - SESSION_IDLE_MS) return undefined;
     if (session.user.status !== 'ACTIVE') return undefined;
     if (session.lastSeenAt.getTime() <= now - SESSION_TOUCH_MS) await this.database.prisma.session.update({ where: { id: session.id }, data: { lastSeenAt: new Date(now) } });

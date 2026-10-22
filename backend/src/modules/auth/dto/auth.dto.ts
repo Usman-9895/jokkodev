@@ -29,6 +29,7 @@ export class VerifyEmailDto {
 }
 
 export class CurrentUserDto {
+  @ApiProperty({ nullable: true, type: String }) photoUrl!: string | null;
   @ApiProperty({ format: 'uuid' }) id!: string;
   @ApiProperty({ example: 'awa_dev' }) username!: string;
   @ApiProperty({ example: 'awa@example.com', description: 'Visible uniquement par le titulaire de la session.' }) email!: string;

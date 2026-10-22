@@ -1,3 +1,4 @@
+import { photoUrl } from '../users/projections';
 import { Inject, Injectable } from '@nestjs/common';
 import { ENVIRONMENT } from '../../config/config.module';
 import type { Environment } from '../../config/environment';
@@ -17,10 +18,10 @@ import { SessionsService } from './sessions.service';
 
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
-const userSelect = { id: true, username: true, email: true, role: true, status: true, emailVerifiedAt: true, passwordHash: true } as const;
+const userSelect = { id: true, avatarKey: true, username: true, email: true, role: true, status: true, emailVerifiedAt: true, passwordHash: true } as const;
 
 export function toCurrentUser(user: AuthenticatedUser): CurrentUserDto {
-  return { id: user.id, username: user.username, email: user.email, role: user.role, emailVerified: user.emailVerifiedAt !== null };
+  return { photoUrl: photoUrl(user.avatarKey), id: user.id, username: user.username, email: user.email, role: user.role, emailVerified: user.emailVerifiedAt !== null };
 }
 
 @Injectable()
