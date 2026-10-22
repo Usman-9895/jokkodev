@@ -18,3 +18,6 @@ export function reportDetailHref(id:string,c:ReturnType<typeof reportCriteria>){
 export function targetHref(t:Report['target']){return t.visibility!=='VISIBLE'?undefined:t.type==='PROJECT'?'/projets/'+encodeURIComponent(t.id):'/questions/'+encodeURIComponent(t.questionId??t.id)+(t.type==='ANSWER'?'#reponse-'+encodeURIComponent(t.id):'');}
 export function checkedReport(value:ReportSchemas['CreatedReportDto']|undefined,input:ReportInput){if(!value?.id||value.status!=='OPEN'||value.targetType!==input.targetType||value.targetId!==input.targetId)throw new HttpError('protocol','Réponse de signalement incomplète. Aucun nouvel envoi automatique.');return value;}
 export function checkedResolution(value:ReportDetail|undefined,id:string){if(!value||value.id!==id||value.status!=='CLOSED'||!value.decision||!value.closedAt||!value.closedBy)throw new HttpError('protocol','Réponse de décision incomplète. Relis le signalement.');return value;}
+
+/** Ownership is the target author's ID, never its parent author or a displayed name. */
+export function canReportTarget(phase:'loading'|'guest'|'authenticated'|'unavailable',userId:string|undefined,ownerId:string|undefined){return !!ownerId&&(phase==='guest'||phase==='authenticated'&&!!userId&&userId!==ownerId);}

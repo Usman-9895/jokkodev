@@ -2603,6 +2603,15 @@ export interface operations {
                     "application/json": components["schemas"]["CreatedReportDto"];
                 };
             };
+            /** @description SELF_REPORT_FORBIDDEN : impossible de signaler son propre contenu, administrateur compris. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
             /** @description TARGET_NOT_FOUND : cible inexistante ou déjà non publique. */
             404: {
                 headers: {

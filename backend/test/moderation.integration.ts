@@ -71,6 +71,39 @@ describe('signalement par un membre', () => {
   });
 });
 
+describe('interdiction de signaler son propre contenu', () => {
+  for (const role of ['MEMBER', 'ADMIN'] as const) test(role+' cannot self-report any target, even with a previous open report', async () => {
+    const owner = role === 'ADMIN' ? admin : await author();
+    const questionId = await questionBy(owner);
+    const answer = await owner.browser.post('/questions/'+questionId+'/answers', { body: 'Réponse de son propre auteur pour la règle de signalement.' });
+    assert.equal(answer.status, 201);
+    const project = await owner.browser.post('/projects', { title: 'Projet pour refus auto signalement '+role, objective: 'Un projet jetable pour vérifier que seul un tiers peut signaler le contenu.', technologyIds: [tech.get('go')] });
+    assert.equal(project.status, 201);
+    for (const [type, id, column] of [['QUESTION', questionId, 'questionId'], ['ANSWER', answer.body.id, 'answerId'], ['PROJECT', project.body.id, 'projectId']]) {
+      const before = (await sql.query('SELECT count(*)::int n FROM "Report" WHERE "'+column+'"=$1', [id])).rows[0].n;
+      const response = await report(type, id, owner);
+      assert.equal(response.status, 403);
+      assert.equal(response.body.code, 'SELF_REPORT_FORBIDDEN');
+      assert.equal((await sql.query('SELECT count(*)::int n FROM "Report" WHERE "'+column+'"=$1', [id])).rows[0].n, before);
+    }
+    // Existing reports are preserved, including historical self-reports.
+    await sql.query('INSERT INTO "Report"(id,"reporterId","questionId",reason) VALUES(gen_random_uuid(),$1,$2,$3)', [owner.id, questionId, REASON]);
+    assert.equal((await report('QUESTION', questionId, owner)).body.code, 'SELF_REPORT_FORBIDDEN');
+    assert.equal((await sql.query('SELECT count(*)::int n FROM "Report" WHERE "reporterId"=$1 AND "questionId"=$2', [owner.id, questionId])).rows[0].n, 1);
+  });
+  test('question author can report another author’s answer; answer author cannot', async () => {
+    const owner=await author(), responder=await author();
+    const questionId=await questionBy(owner);
+    const answer=await responder.browser.post('/questions/'+questionId+'/answers',{body:'Une réponse dont l’auteur diffère de celui de la question.'});
+    assert.equal(answer.status,201);
+    assert.equal((await report('ANSWER',answer.body.id,owner)).status,201);
+    assert.equal((await report('ANSWER',answer.body.id,responder)).body.code,'SELF_REPORT_FORBIDDEN');
+    assert.equal((await report('ANSWER',answer.body.id,owner)).body.code,'REPORT_ALREADY_OPEN');
+    await sql.query('UPDATE "Answer" SET visibility=$1 WHERE id=$2',['HIDDEN',answer.body.id]);
+    assert.equal((await report('ANSWER',answer.body.id,owner)).body.code,'TARGET_NOT_FOUND');
+  });
+});
+
 describe('administration réservée', () => {
   test('un membre ou un visiteur est refusé sur toutes les routes admin', async () => {
     const id = '00000000-0000-4000-8000-000000000000';

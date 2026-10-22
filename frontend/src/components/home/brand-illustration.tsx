@@ -26,6 +26,7 @@ export function BrandIllustration() {
     if (ref.current) observer?.observe(ref.current);
     return () => { observer?.disconnect(); media.removeEventListener('change', preference); document.removeEventListener('visibilitychange', visibility); };
   }, []);
+  const controlLabel=reduced?'Animation désactivée : mouvement réduit':userPaused?'Reprendre l’animation':'Mettre l’animation en pause';
   const paused = !ready || !visible || hidden || reduced || userPaused;
   return <div className="brand-illustration" ref={ref} data-paused={paused} data-user-paused={userPaused} data-reduced={reduced}>
     <div className="brand-scene" aria-hidden="true">
@@ -34,6 +35,6 @@ export function BrandIllustration() {
       <div className="brand-logo-card"><Image src="/brand/jokkodev-original.png" width={826} height={990} alt="" priority /></div>
       <div className="brand-orbit">{(['code','users','gear','bulb'] as const).map((type,index)=><div className={`brand-position brand-position--${type}`} key={type} style={{'--angle':`${[-135,-45,135,45][index]}deg`} as CSSProperties}><div className="brand-medallion"><MedallionIcon type={type} /></div></div>)}</div>
     </div>
-    <button type="button" className="brand-animation-control" hidden={!ready} disabled={reduced} aria-pressed={userPaused} onClick={() => setUserPaused(value => !value)}>{reduced ? 'Animation désactivée : mouvement réduit' : userPaused ? 'Reprendre l’animation' : 'Mettre l’animation en pause'}</button>
+    <button type="button" className="brand-animation-control" hidden={!ready} disabled={reduced} aria-label={controlLabel} title={controlLabel} aria-pressed={userPaused} onClick={() => setUserPaused(value => !value)}><Icon name={!reduced&&userPaused?'play':'pause'}/></button>
   </div>;
 }

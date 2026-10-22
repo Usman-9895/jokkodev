@@ -51,3 +51,7 @@ Le PNG original pèse environ 1,28 Mo ; l’optimisation Next reste désactivée
 Le harnais contrôle les vrais comportements du menu et de la pause, les liens, le mode sans JavaScript, le mouvement réduit et une orbite en temps réel à chacune des quatre largeurs. La visibilité d’onglet est simulée dans Chrome headless et reste à confirmer dans un navigateur interactif. Les tests ne remplacent pas l’examen des images.
 
 Voir `lot-2-verification.md` pour les résultats exécutés, captures, conditions et différences restantes. La revue visuelle du lot 2 est validée ; la revue indépendante du code et toute validation de fusion restent à effectuer dans la PR.
+
+## Complément lot16
+
+La [commande d’animation](navigation-self-report-animation.md) remplace le texte visible par pause/lecture, sans changer les mécanismes de suspension et de réduction des mouvements. Nom accessible, title et cible44px conservés. Administration utilise la navigation principale commune sous rôle réel ; la documentation des lots initiaux ci-dessus reste historique.
