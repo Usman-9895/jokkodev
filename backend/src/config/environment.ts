@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import path from 'node:path';
+import { isIP } from 'node:net';
 
 export type MailTransport = 'smtp' | 'file';
 export interface MailEnvironment { transport: MailTransport; from: string; fileDir: string; smtp?: { host: string; port: number; secure: boolean; user?: string; password?: string } }
@@ -12,7 +13,7 @@ export interface Environment {
   appOrigin: string;
   sessionCookieSecure: boolean;
   csrfSecret: string;
-  trustProxy: boolean | number | string[];
+  trustProxy: false | string[];
   mail: MailEnvironment;
   avatarDir?: string;
 }
@@ -79,12 +80,11 @@ function isOrigin(value: string): boolean {
   try { const url = new URL(value); return ['http:', 'https:'].includes(url.protocol) && url.origin === value; } catch { return false; }
 }
 
-// Vide ou false : aucun relais de confiance. Un entier : nombre de relais. Sinon une liste d'adresses ou de sous-réseaux, jamais true.
+// Direct: socket address only. Relay: exact, independently verified peer IPs, never hop counts or broad ranges.
 function parseTrustProxy(value: string): Environment['trustProxy'] | undefined {
   const trimmed = value.trim();
   if (trimmed === '' || trimmed === 'false') return false;
-  if (/^\d+$/.test(trimmed)) return Number(trimmed);
   const list = trimmed.split(',').map(s => s.trim()).filter(Boolean);
-  if (list.length === 0 || list.some(item => !/^[0-9a-fA-F:.]+(\/\d{1,3})?$/.test(item))) return undefined;
+  if (list.length === 0 || list.some(item => !isIP(item) || ['0.0.0.0','::'].includes(item))) return undefined;
   return list;
 }

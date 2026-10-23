@@ -5,6 +5,8 @@ export type Report=ReportSchemas['ReportDto'];
 export type ReportDetail=ReportSchemas['ReportDetailDto'];
 export type ReportInput=ReportSchemas['CreateReportDto'];
 export type Decision=ReportSchemas['ResolveReportDto']['decision'];
+/** A proxy 502 cannot prove whether the server committed the write before its response was lost. */
+export function reportReceiptUncertain(error:unknown){return error instanceof HttpError&&(['network','protocol'].includes(error.kind)||error.status===502&&!!error.details&&typeof error.details==='object'&&'code' in error.details&&error.details.code==='API_UNAVAILABLE');}
 export const decisions=['NO_ACTION','HIDE_CONTENT','SUSPEND_ACCOUNT'] as const;
 export const decisionLabels:Record<Decision,string>={NO_ACTION:'Clôturer sans sanction',HIDE_CONTENT:'Masquer le contenu',SUSPEND_ACCOUNT:'Suspendre le compte auteur'};
 export const reportTypes={question:'QUESTION',answer:'ANSWER',project:'PROJECT'} as const;

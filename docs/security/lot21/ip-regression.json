@@ -1,0 +1,357 @@
+{
+  "baseCommit": "d300b0ba17fbf8d0665c26f6cad52c17ac0011a2",
+  "time": "2026-10-23T02:04:42.277Z",
+  "records": [
+    {
+      "name": "direct CSRF/cookie handshake",
+      "pass": true,
+      "observed": {
+        "status": 200
+      }
+    },
+    {
+      "name": "direct CSRF still enforced",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "CSRF_TOKEN_INVALID"
+      }
+    },
+    {
+      "name": "direct origin still enforced",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "CSRF_ORIGIN_REJECTED"
+      }
+    },
+    {
+      "name": "direct body validation intact",
+      "pass": true,
+      "observed": {
+        "status": 400
+      }
+    },
+    {
+      "name": "direct failed login 1",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "direct failed login 2",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "direct failed login 3",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "direct failed login 4",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "direct failed login 5",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "direct sixth limited",
+      "pass": true,
+      "observed": {
+        "status": 429,
+        "code": "RATE_LIMITED",
+        "retryAfterPresent": true
+      }
+    },
+    {
+      "name": "direct forwarding variant remains limited",
+      "pass": true,
+      "observed": {
+        "status": 429
+      }
+    },
+    {
+      "name": "direct forwarding variant remains limited",
+      "pass": true,
+      "observed": {
+        "status": 429
+      }
+    },
+    {
+      "name": "direct forwarding variant remains limited",
+      "pass": true,
+      "observed": {
+        "status": 429
+      }
+    },
+    {
+      "name": "direct forwarding variant remains limited",
+      "pass": true,
+      "observed": {
+        "status": 429
+      }
+    },
+    {
+      "name": "direct CSRF/cookie handshake",
+      "pass": true,
+      "observed": {
+        "status": 200
+      }
+    },
+    {
+      "name": "direct actual second TCP peer has independent quota",
+      "pass": true,
+      "observed": {
+        "status": 401,
+        "realSource": "127.0.0.2 (localAddress socket bind, not a header)"
+      }
+    },
+    {
+      "name": "node-relay CSRF/cookie handshake",
+      "pass": true,
+      "observed": {
+        "status": 200
+      }
+    },
+    {
+      "name": "node-relay CSRF still enforced",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "CSRF_TOKEN_INVALID"
+      }
+    },
+    {
+      "name": "node-relay origin still enforced",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "CSRF_ORIGIN_REJECTED"
+      }
+    },
+    {
+      "name": "node-relay body validation intact",
+      "pass": true,
+      "observed": {
+        "status": 400
+      }
+    },
+    {
+      "name": "node-relay failed login 1",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "node-relay failed login 2",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "node-relay failed login 3",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "node-relay failed login 4",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "node-relay failed login 5",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "node-relay sixth limited",
+      "pass": true,
+      "observed": {
+        "status": 429,
+        "code": "RATE_LIMITED",
+        "retryAfterPresent": true
+      }
+    },
+    {
+      "name": "node-relay forwarding variant remains limited",
+      "pass": true,
+      "observed": {
+        "status": 429
+      }
+    },
+    {
+      "name": "node-relay forwarding variant remains limited",
+      "pass": true,
+      "observed": {
+        "status": 429
+      }
+    },
+    {
+      "name": "node-relay forwarding variant remains limited",
+      "pass": true,
+      "observed": {
+        "status": 429
+      }
+    },
+    {
+      "name": "node-relay forwarding variant remains limited",
+      "pass": true,
+      "observed": {
+        "status": 429
+      }
+    },
+    {
+      "name": "node-relay CSRF/cookie handshake",
+      "pass": true,
+      "observed": {
+        "status": 200
+      }
+    },
+    {
+      "name": "node-relay actual second TCP peer has independent quota",
+      "pass": true,
+      "observed": {
+        "status": 401,
+        "realSource": "127.0.0.2 (localAddress socket bind, not a header)"
+      }
+    },
+    {
+      "name": "next-node-entry CSRF/cookie handshake",
+      "pass": true,
+      "observed": {
+        "status": 200
+      }
+    },
+    {
+      "name": "next-node-entry CSRF still enforced",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "CSRF_TOKEN_INVALID"
+      }
+    },
+    {
+      "name": "next-node-entry origin still enforced",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "CSRF_ORIGIN_REJECTED"
+      }
+    },
+    {
+      "name": "next-node-entry body validation intact",
+      "pass": true,
+      "observed": {
+        "status": 400
+      }
+    },
+    {
+      "name": "next-node-entry failed login 1",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "next-node-entry failed login 2",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "next-node-entry failed login 3",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "next-node-entry failed login 4",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "next-node-entry failed login 5",
+      "pass": true,
+      "observed": {
+        "status": 401
+      }
+    },
+    {
+      "name": "next-node-entry sixth limited",
+      "pass": true,
+      "observed": {
+        "status": 429,
+        "code": "RATE_LIMITED",
+        "retryAfterPresent": true
+      }
+    },
+    {
+      "name": "next-node-entry forwarding variant remains limited",
+      "pass": true,
+      "observed": {
+        "status": 429
+      }
+    },
+    {
+      "name": "next-node-entry forwarding variant remains limited",
+      "pass": true,
+      "observed": {
+        "status": 429
+      }
+    },
+    {
+      "name": "next-node-entry forwarding variant remains limited",
+      "pass": true,
+      "observed": {
+        "status": 429
+      }
+    },
+    {
+      "name": "next-node-entry forwarding variant remains limited",
+      "pass": true,
+      "observed": {
+        "status": 429
+      }
+    },
+    {
+      "name": "next-node-entry CSRF/cookie handshake",
+      "pass": true,
+      "observed": {
+        "status": 200
+      }
+    },
+    {
+      "name": "next-node-entry actual second TCP peer has independent quota",
+      "pass": true,
+      "observed": {
+        "status": 401,
+        "realSource": "127.0.0.2 (localAddress socket bind, not a header)"
+      }
+    }
+  ]
+}

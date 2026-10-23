@@ -1,0 +1,363 @@
+{
+  "time": "2026-10-23T07:10:59.979Z",
+  "before": {
+    "exitCode": 1,
+    "metadata": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 1,
+        "high": 4,
+        "critical": 2
+      },
+      "dependencies": 501,
+      "devDependencies": 0,
+      "optionalDependencies": 0,
+      "totalDependencies": 501
+    },
+    "mutedCount": 0,
+    "advisories": [
+      {
+        "id": "GHSA-ggr8-5vv4-36mx",
+        "severity": "high",
+        "module": "deepmerge-ts",
+        "affected": "<8.0.0",
+        "patched": ">=8.0.0",
+        "url": "https://github.com/advisories/GHSA-ggr8-5vv4-36mx",
+        "findings": [
+          {
+            "version": "7.1.5",
+            "paths": [
+              "backend>prisma>@prisma/config>deepmerge-ts"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "GHSA-3f6p-5ww8-9rcr",
+        "severity": "high",
+        "module": "mysql2",
+        "affected": "<3.22.0",
+        "patched": ">=3.22.0",
+        "url": "https://github.com/advisories/GHSA-3f6p-5ww8-9rcr",
+        "findings": [
+          {
+            "version": "3.15.3",
+            "paths": [
+              "backend>prisma>mysql2"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "GHSA-rgwj-5xj2-c3m3",
+        "severity": "moderate",
+        "module": "mysql2",
+        "affected": "<=3.23.0",
+        "patched": ">=3.23.1",
+        "url": "https://github.com/advisories/GHSA-rgwj-5xj2-c3m3",
+        "findings": [
+          {
+            "version": "3.15.3",
+            "paths": [
+              "backend>prisma>mysql2"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "GHSA-vfj7-8cjw-p6xm",
+        "severity": "high",
+        "module": "braces",
+        "affected": "<=3.0.3",
+        "patched": "<0.0.0",
+        "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+        "findings": [
+          {
+            "version": "3.0.3",
+            "paths": [
+              ".>@next/eslint-plugin-next>fast-glob>micromatch>braces"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "GHSA-2464-fhr4-w9xw",
+        "severity": "critical",
+        "module": "next",
+        "affected": ">=16.0.0 <=16.4.0",
+        "patched": ">=16.4.1",
+        "url": "https://github.com/advisories/GHSA-2464-fhr4-w9xw",
+        "findings": [
+          {
+            "version": "16.4.0",
+            "paths": [
+              "frontend>next"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "GHSA-p3m5-59mp-jv5r",
+        "severity": "high",
+        "module": "next",
+        "affected": ">=16.0.0 <=16.4.0",
+        "patched": ">=16.4.1",
+        "url": "https://github.com/advisories/GHSA-p3m5-59mp-jv5r",
+        "findings": [
+          {
+            "version": "16.4.0",
+            "paths": [
+              "frontend>next"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "GHSA-673q-mjm6-r5xr",
+        "severity": "critical",
+        "module": "next",
+        "affected": ">=16.0.0 <=16.4.0",
+        "patched": ">=16.4.1",
+        "url": "https://github.com/advisories/GHSA-673q-mjm6-r5xr",
+        "findings": [
+          {
+            "version": "16.4.0",
+            "paths": [
+              "frontend>next"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "after": {
+    "exitCode": 1,
+    "metadata": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 1,
+        "critical": 0
+      },
+      "dependencies": 499,
+      "devDependencies": 0,
+      "optionalDependencies": 0,
+      "totalDependencies": 499
+    },
+    "mutedCount": 0,
+    "advisories": [
+      {
+        "id": "GHSA-vfj7-8cjw-p6xm",
+        "severity": "high",
+        "module": "braces",
+        "affected": "<=3.0.3",
+        "patched": "<0.0.0",
+        "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+        "findings": [
+          {
+            "version": "3.0.3",
+            "paths": [
+              ".>@next/eslint-plugin-next>fast-glob>micromatch>braces"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "installedInventory": {
+    "platform": "win32/x64",
+    "before": 469,
+    "after": 467,
+    "changes": [
+      {
+        "name": "@next/env",
+        "before": [
+          "16.4.0"
+        ],
+        "after": [
+          "16.4.2"
+        ]
+      },
+      {
+        "name": "@next/eslint-plugin-next",
+        "before": [
+          "16.4.0"
+        ],
+        "after": [
+          "16.4.2"
+        ]
+      },
+      {
+        "name": "@next/swc-win32-x64-msvc",
+        "before": [
+          "16.4.0"
+        ],
+        "after": [
+          "16.4.2"
+        ]
+      },
+      {
+        "name": "@prisma/adapter-pg",
+        "before": [
+          "7.10.0"
+        ],
+        "after": [
+          "7.10.1"
+        ]
+      },
+      {
+        "name": "@prisma/client",
+        "before": [
+          "7.10.0"
+        ],
+        "after": [
+          "7.10.1"
+        ]
+      },
+      {
+        "name": "@prisma/client-runtime-utils",
+        "before": [
+          "7.10.0"
+        ],
+        "after": [
+          "7.10.1"
+        ]
+      },
+      {
+        "name": "@prisma/config",
+        "before": [
+          "7.10.0"
+        ],
+        "after": [
+          "7.10.1"
+        ]
+      },
+      {
+        "name": "@prisma/debug",
+        "before": [
+          "7.10.0",
+          "7.2.0"
+        ],
+        "after": [
+          "7.10.1",
+          "7.2.0"
+        ]
+      },
+      {
+        "name": "@prisma/driver-adapter-utils",
+        "before": [
+          "7.10.0"
+        ],
+        "after": [
+          "7.10.1"
+        ]
+      },
+      {
+        "name": "@prisma/engines",
+        "before": [
+          "7.10.0"
+        ],
+        "after": [
+          "7.10.1"
+        ]
+      },
+      {
+        "name": "@prisma/engines-version",
+        "before": [
+          "7.10.0-4.0edf323efd1d98336f3f0a68684b56f689b900d3"
+        ],
+        "after": [
+          "8.1.0-1.d1b3f377ca835d73fd50954a5e22128b9ebdd6b8"
+        ]
+      },
+      {
+        "name": "@prisma/fetch-engine",
+        "before": [
+          "7.10.0"
+        ],
+        "after": [
+          "7.10.1"
+        ]
+      },
+      {
+        "name": "@prisma/get-platform",
+        "before": [
+          "7.10.0",
+          "7.2.0"
+        ],
+        "after": [
+          "7.10.1",
+          "7.2.0"
+        ]
+      },
+      {
+        "name": "deepmerge-ts",
+        "before": [
+          "7.1.5"
+        ],
+        "after": [
+          "8.0.2"
+        ]
+      },
+      {
+        "name": "denque",
+        "before": [
+          "2.1.0"
+        ],
+        "after": []
+      },
+      {
+        "name": "mysql2",
+        "before": [
+          "3.15.3"
+        ],
+        "after": [
+          "3.24.4"
+        ]
+      },
+      {
+        "name": "next",
+        "before": [
+          "16.4.0"
+        ],
+        "after": [
+          "16.4.2"
+        ]
+      },
+      {
+        "name": "prisma",
+        "before": [
+          "7.10.0"
+        ],
+        "after": [
+          "7.10.1"
+        ]
+      },
+      {
+        "name": "seq-queue",
+        "before": [
+          "0.0.5"
+        ],
+        "after": []
+      },
+      {
+        "name": "sqlstring",
+        "before": [
+          "2.3.3"
+        ],
+        "after": []
+      },
+      {
+        "name": "sql-escaper",
+        "before": [],
+        "after": [
+          "1.5.2"
+        ]
+      }
+    ]
+  },
+  "overridesAdded": false,
+  "noticesUpdated": true
+}

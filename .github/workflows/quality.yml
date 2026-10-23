@@ -57,6 +57,12 @@ jobs:
         run: git diff --exit-code -- docs/api/openapi.json packages/api-client/src/schema.d.ts
       - run: pnpm lint && pnpm typecheck && pnpm test
       - run: pnpm test:integration
+      - name: IP trust regression with real TCP clients
+        env:
+          SECURITY_DATABASE_URL: postgresql://ci:disposable_ci_only@127.0.0.1:5432/jokkodev_ci
+          SECURITY_CONFIRM_DATABASE: jokkodev_ci
+          SECURITY_BASE_PORT: '34000'
+        run: pnpm test:security-ip
       - run: pnpm build
       - name: Production smoke with unavailable database
         run: pnpm test:smoke

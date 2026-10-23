@@ -1,0 +1,58 @@
+{
+  "commit": "d300b0ba17fbf8d0665c26f6cad52c17ac0011a2",
+  "time": "2026-10-23T01:29:39.988Z",
+  "topology": "Next rewrite -> Nest trusting loopback; nginx template not running",
+  "boundedRequests": 7,
+  "reproduced": true,
+  "results": [
+    {
+      "request": 1,
+      "forwardedIdentity": "same",
+      "status": 401,
+      "code": "INVALID_CREDENTIALS",
+      "retryAfterPresent": false
+    },
+    {
+      "request": 2,
+      "forwardedIdentity": "same",
+      "status": 401,
+      "code": "INVALID_CREDENTIALS",
+      "retryAfterPresent": false
+    },
+    {
+      "request": 3,
+      "forwardedIdentity": "same",
+      "status": 401,
+      "code": "INVALID_CREDENTIALS",
+      "retryAfterPresent": false
+    },
+    {
+      "request": 4,
+      "forwardedIdentity": "same",
+      "status": 401,
+      "code": "INVALID_CREDENTIALS",
+      "retryAfterPresent": false
+    },
+    {
+      "request": 5,
+      "forwardedIdentity": "same",
+      "status": 401,
+      "code": "INVALID_CREDENTIALS",
+      "retryAfterPresent": false
+    },
+    {
+      "request": 6,
+      "forwardedIdentity": "same",
+      "status": 429,
+      "code": "RATE_LIMITED",
+      "retryAfterPresent": true
+    },
+    {
+      "request": 7,
+      "forwardedIdentity": "changed",
+      "status": 401,
+      "code": "INVALID_CREDENTIALS",
+      "retryAfterPresent": false
+    }
+  ]
+}

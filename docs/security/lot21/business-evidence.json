@@ -1,0 +1,1467 @@
+{
+  "commit": "d300b0ba17fbf8d0665c26f6cad52c17ac0011a2",
+  "time": "2026-10-23T01:41:55.218Z",
+  "results": [
+    {
+      "id": "AUTH.hash",
+      "pass": true,
+      "observed": {
+        "algorithm": "argon2id",
+        "parameters": {
+          "m": "19456",
+          "p": "1",
+          "t": "2"
+        }
+      },
+      "expected": "argon2id with documented costs"
+    },
+    {
+      "id": "AUTH.visitor",
+      "pass": true,
+      "observed": 401,
+      "expected": 401
+    },
+    {
+      "id": "CSRF.login.no-token",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "CSRF_TOKEN_INVALID"
+      },
+      "expected": "403 CSRF_TOKEN_INVALID"
+    },
+    {
+      "id": "CSRF.origin",
+      "pass": true,
+      "observed": "CSRF_ORIGIN_REJECTED",
+      "expected": "CSRF_ORIGIN_REJECTED"
+    },
+    {
+      "id": "AUTH.rotation",
+      "pass": true,
+      "observed": "old session rejected",
+      "expected": "401"
+    },
+    {
+      "id": "CACHE.private",
+      "pass": true,
+      "observed": "no-store",
+      "expected": "no-store"
+    },
+    {
+      "id": "AUTH.cookie",
+      "pass": true,
+      "observed": {
+        "httpOnly": true,
+        "sameSiteLax": true,
+        "domainAbsent": true,
+        "secureLocal": false
+      },
+      "expected": "local HTTP policy, not production TLS"
+    },
+    {
+      "id": "MASS.role",
+      "pass": true,
+      "observed": {
+        "status": 400,
+        "code": "VALIDATION_ERROR"
+      },
+      "expected": [
+        400
+      ]
+    },
+    {
+      "id": "MASS.points",
+      "pass": true,
+      "observed": {
+        "status": 400,
+        "code": "VALIDATION_ERROR"
+      },
+      "expected": [
+        400
+      ]
+    },
+    {
+      "id": "MASS.owner",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "NOT_FOUND"
+      },
+      "expected": [
+        404
+      ]
+    },
+    {
+      "id": "LINK.javascript",
+      "pass": true,
+      "observed": {
+        "status": 400,
+        "code": "VALIDATION_ERROR"
+      },
+      "expected": [
+        400
+      ]
+    },
+    {
+      "id": "CONTACT.credentials",
+      "pass": true,
+      "observed": {
+        "status": 400,
+        "code": "VALIDATION_ERROR"
+      },
+      "expected": [
+        400
+      ]
+    },
+    {
+      "id": "CONTACT.protocol",
+      "pass": true,
+      "observed": {
+        "status": 400,
+        "code": "VALIDATION_ERROR"
+      },
+      "expected": [
+        400
+      ]
+    },
+    {
+      "id": "PROFILE.marker",
+      "pass": true,
+      "observed": {
+        "status": 200
+      },
+      "expected": [
+        200
+      ]
+    },
+    {
+      "id": "setup.question.principale",
+      "pass": true,
+      "observed": {
+        "status": 201,
+        "code": "<svg onload=\"window.__auditXss=1\">AUDIT_MARKER</svg>"
+      },
+      "expected": [
+        201
+      ]
+    },
+    {
+      "id": "setup.answer",
+      "pass": true,
+      "observed": {
+        "status": 201,
+        "code": null
+      },
+      "expected": [
+        201
+      ]
+    },
+    {
+      "id": "BOLA.question.patch.member",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "NOT_AUTHOR"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "BOLA.question.delete.member",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "NOT_AUTHOR"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "BOLA.solution.member",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "NOT_AUTHOR"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "BOLA.question.patch.admin",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "NOT_AUTHOR"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "BOLA.question.delete.admin",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "NOT_AUTHOR"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "BOLA.solution.admin",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "NOT_AUTHOR"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "BOLA.answer",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "NOT_AUTHOR"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "ADMIN.member",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "FORBIDDEN"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "ADMIN.visitor",
+      "pass": true,
+      "observed": {
+        "status": 401,
+        "code": "UNAUTHORIZED"
+      },
+      "expected": [
+        401
+      ]
+    },
+    {
+      "id": "REPORT.self",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "SELF_REPORT_FORBIDDEN"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "REPORT.self.no-write",
+      "pass": true,
+      "observed": "unchanged",
+      "expected": "unchanged"
+    },
+    {
+      "id": "REPORT.third-party-answer",
+      "pass": true,
+      "observed": {
+        "status": 201
+      },
+      "expected": [
+        201
+      ]
+    },
+    {
+      "id": "REPORT.duplicate",
+      "pass": true,
+      "observed": {
+        "status": 409,
+        "code": "REPORT_ALREADY_OPEN"
+      },
+      "expected": [
+        409
+      ]
+    },
+    {
+      "id": "setup.project.actif",
+      "pass": true,
+      "observed": {
+        "status": 201
+      },
+      "expected": [
+        201
+      ]
+    },
+    {
+      "id": "setup.application",
+      "pass": true,
+      "observed": {
+        "status": 201
+      },
+      "expected": [
+        201
+      ]
+    },
+    {
+      "id": "BOLA.application.read.other",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "APPLICATION_NOT_FOUND"
+      },
+      "expected": [
+        404
+      ]
+    },
+    {
+      "id": "BOLA.application.decide.other",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "APPLICATION_NOT_FOUND"
+      },
+      "expected": [
+        404,
+        403
+      ]
+    },
+    {
+      "id": "BOLA.project.patch.other",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "NOT_OWNER"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "BOLA.project.delete.other",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "NOT_OWNER"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "CONTACT.before.other",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "COLLABORATION_UNAVAILABLE"
+      },
+      "expected": [
+        404
+      ]
+    },
+    {
+      "id": "BOLA.application.read.admin",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "APPLICATION_NOT_FOUND"
+      },
+      "expected": [
+        404
+      ]
+    },
+    {
+      "id": "BOLA.application.decide.admin",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "APPLICATION_NOT_FOUND"
+      },
+      "expected": [
+        404,
+        403
+      ]
+    },
+    {
+      "id": "BOLA.project.patch.admin",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "NOT_OWNER"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "BOLA.project.delete.admin",
+      "pass": true,
+      "observed": {
+        "status": 403,
+        "code": "NOT_OWNER"
+      },
+      "expected": [
+        403
+      ]
+    },
+    {
+      "id": "CONTACT.before.admin",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "COLLABORATION_UNAVAILABLE"
+      },
+      "expected": [
+        404
+      ]
+    },
+    {
+      "id": "CONTACT.pending",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "COLLABORATION_UNAVAILABLE"
+      },
+      "expected": [
+        404
+      ]
+    },
+    {
+      "id": "APPLICATION.duplicate",
+      "pass": true,
+      "observed": {
+        "status": 409,
+        "code": "APPLICATION_EXISTS"
+      },
+      "expected": [
+        409
+      ]
+    },
+    {
+      "id": "APPLICATION.accept",
+      "pass": true,
+      "observed": {
+        "status": 200
+      },
+      "expected": [
+        200
+      ]
+    },
+    {
+      "id": "APPLICATION.accept.repeat",
+      "pass": true,
+      "observed": {
+        "status": 200
+      },
+      "expected": [
+        200
+      ]
+    },
+    {
+      "id": "APPLICATION.invalid-transition",
+      "pass": true,
+      "observed": {
+        "status": 409,
+        "code": "INVALID_TRANSITION"
+      },
+      "expected": [
+        409
+      ]
+    },
+    {
+      "id": "CONTACT.effective",
+      "pass": true,
+      "observed": "available",
+      "expected": "available"
+    },
+    {
+      "id": "CONTACT.revocation",
+      "pass": true,
+      "observed": "null",
+      "expected": "null"
+    },
+    {
+      "id": "PRIVACY.public",
+      "pass": true,
+      "observed": {
+        "noEmail": true,
+        "noContact": true
+      },
+      "expected": "no private fields"
+    },
+    {
+      "id": "SQL.search.49",
+      "pass": true,
+      "observed": {
+        "status": 200,
+        "total": 0
+      },
+      "expected": "literal matches: 0"
+    },
+    {
+      "id": "SQL.search.50",
+      "pass": true,
+      "observed": {
+        "status": 200,
+        "total": 0
+      },
+      "expected": "literal matches: 0"
+    },
+    {
+      "id": "SQL.search.51",
+      "pass": true,
+      "observed": {
+        "status": 200,
+        "total": 1
+      },
+      "expected": "literal matches: 1"
+    },
+    {
+      "id": "SQL.search.52",
+      "pass": true,
+      "observed": {
+        "status": 200,
+        "total": 0
+      },
+      "expected": "literal matches: 0"
+    },
+    {
+      "id": "SQL.id",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "QUESTION_NOT_FOUND"
+      },
+      "expected": [
+        404,
+        400
+      ]
+    },
+    {
+      "id": "INPUT.query",
+      "pass": true,
+      "observed": {
+        "status": 400,
+        "code": "VALIDATION_ERROR"
+      },
+      "expected": [
+        400
+      ]
+    },
+    {
+      "id": "INPUT.null",
+      "pass": true,
+      "observed": {
+        "status": 400,
+        "code": "VALIDATION_ERROR"
+      },
+      "expected": [
+        400
+      ]
+    },
+    {
+      "id": "INPUT.json",
+      "pass": true,
+      "observed": {
+        "status": 400,
+        "code": "BAD_REQUEST"
+      },
+      "expected": [
+        400
+      ]
+    },
+    {
+      "id": "INPUT.limit",
+      "pass": true,
+      "observed": {
+        "status": 413,
+        "code": "PAYLOAD_TOO_LARGE"
+      },
+      "expected": [
+        413
+      ]
+    },
+    {
+      "id": "INPUT.prototype",
+      "pass": true,
+      "observed": {
+        "status": 200
+      },
+      "expected": [
+        200,
+        400
+      ]
+    },
+    {
+      "id": "INPUT.prototype.no-global",
+      "pass": true,
+      "observed": "absent",
+      "expected": "absent"
+    },
+    {
+      "id": "CSRF.cross-session",
+      "pass": true,
+      "observed": 403,
+      "expected": 403
+    },
+    {
+      "id": "CSRF.no-write",
+      "pass": true,
+      "observed": "unchanged",
+      "expected": "unchanged"
+    },
+    {
+      "id": "RATE.login",
+      "pass": true,
+      "observed": {
+        "status": 429,
+        "retryAfterPresent": true
+      },
+      "expected": "429 with retry delay"
+    },
+    {
+      "id": "SEC21.proxy-ip",
+      "pass": true,
+      "observed": {
+        "blocked": 429,
+        "spoofed": 429
+      },
+      "expected": "same TCP peer remains limited"
+    },
+    {
+      "id": "AUTH.logout.replay",
+      "pass": true,
+      "observed": "rejected",
+      "expected": 401
+    },
+    {
+      "id": "MOD.suspension",
+      "pass": true,
+      "observed": {
+        "status": 201
+      },
+      "expected": [
+        201
+      ]
+    },
+    {
+      "id": "AUTH.suspension",
+      "pass": true,
+      "observed": "revoked",
+      "expected": 401
+    },
+    {
+      "id": "PHOTO.decode-real",
+      "pass": true,
+      "observed": 200,
+      "expected": "valid PNG normalized despite untrusted name/type"
+    },
+    {
+      "id": "PHOTO.serve",
+      "pass": true,
+      "observed": {
+        "status": 200,
+        "width": 256,
+        "height": 256,
+        "cache": "no-store",
+        "nosniff": "nosniff"
+      },
+      "expected": "JPEG256/no-store/nosniff"
+    },
+    {
+      "id": "PHOTO.svg",
+      "pass": true,
+      "observed": 400,
+      "expected": 400
+    },
+    {
+      "id": "PHOTO.size",
+      "pass": true,
+      "observed": 413,
+      "expected": 413
+    },
+    {
+      "id": "PHOTO.dimensions",
+      "pass": true,
+      "observed": 400,
+      "expected": 400
+    },
+    {
+      "id": "PHOTO.other-path",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "NOT_FOUND"
+      },
+      "expected": [
+        404
+      ]
+    },
+    {
+      "id": "PHOTO.mass-key",
+      "pass": true,
+      "observed": {
+        "status": 400,
+        "code": "VALIDATION_ERROR"
+      },
+      "expected": [
+        400
+      ]
+    },
+    {
+      "id": "PHOTO.traversal",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "PHOTO_NOT_FOUND"
+      },
+      "expected": [
+        404
+      ]
+    },
+    {
+      "id": "setup.question.suppression",
+      "pass": true,
+      "observed": {
+        "status": 201,
+        "code": "<svg onload=\"window.__auditXss=1\">AUDIT_MARKER</svg>"
+      },
+      "expected": [
+        201
+      ]
+    },
+    {
+      "id": "POINTS.award",
+      "pass": true,
+      "observed": 10,
+      "expected": 10
+    },
+    {
+      "id": "POINTS.delete",
+      "pass": true,
+      "observed": 0,
+      "expected": 0
+    },
+    {
+      "id": "DELETE.public",
+      "pass": true,
+      "observed": "unavailable",
+      "expected": 404
+    },
+    {
+      "id": "MOD.hide-project",
+      "pass": true,
+      "observed": {
+        "status": 201
+      },
+      "expected": [
+        201
+      ]
+    },
+    {
+      "id": "CONTACT.hidden",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "COLLABORATION_UNAVAILABLE"
+      },
+      "expected": [
+        404
+      ]
+    },
+    {
+      "id": "setup.project.suppression",
+      "pass": true,
+      "observed": {
+        "status": 201
+      },
+      "expected": [
+        201
+      ]
+    },
+    {
+      "id": "CONTACT.deleted",
+      "pass": true,
+      "observed": {
+        "status": 404,
+        "code": "COLLABORATION_UNAVAILABLE"
+      },
+      "expected": [
+        404
+      ]
+    }
+  ],
+  "wire": [
+    {
+      "method": "GET",
+      "path": "/auth/csrf",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/auth/csrf",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/auth/csrf",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/auth/csrf",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/auth/csrf",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/auth/verify-email",
+      "status": 204,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/users/me",
+      "status": 401,
+      "code": "UNAUTHORIZED"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 403,
+      "code": "CSRF_TOKEN_INVALID"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/csrf",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 403,
+      "code": "CSRF_ORIGIN_REJECTED"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me",
+      "status": 401,
+      "code": "UNAUTHORIZED"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/auth/csrf",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 400,
+      "code": "VALIDATION_ERROR"
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 400,
+      "code": "VALIDATION_ERROR"
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/01a1666b-e94a-73cf-9bf7-2a72749939e0",
+      "status": 404,
+      "code": "NOT_FOUND"
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 400,
+      "code": "VALIDATION_ERROR"
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 400,
+      "code": "VALIDATION_ERROR"
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 400,
+      "code": "VALIDATION_ERROR"
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/technologies",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/questions",
+      "status": 201,
+      "code": "<svg onload=\"window.__auditXss=1\">AUDIT_MARKER</svg>"
+    },
+    {
+      "method": "POST",
+      "path": "/questions/01a1666b-f3fb-77cc-8465-03da70d6ab0b/answers",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "PATCH",
+      "path": "/questions/01a1666b-f3fb-77cc-8465-03da70d6ab0b",
+      "status": 403,
+      "code": "NOT_AUTHOR"
+    },
+    {
+      "method": "DELETE",
+      "path": "/questions/01a1666b-f3fb-77cc-8465-03da70d6ab0b",
+      "status": 403,
+      "code": "NOT_AUTHOR"
+    },
+    {
+      "method": "PUT",
+      "path": "/questions/01a1666b-f3fb-77cc-8465-03da70d6ab0b/accepted-answer",
+      "status": 403,
+      "code": "NOT_AUTHOR"
+    },
+    {
+      "method": "PATCH",
+      "path": "/questions/01a1666b-f3fb-77cc-8465-03da70d6ab0b",
+      "status": 403,
+      "code": "NOT_AUTHOR"
+    },
+    {
+      "method": "DELETE",
+      "path": "/questions/01a1666b-f3fb-77cc-8465-03da70d6ab0b",
+      "status": 403,
+      "code": "NOT_AUTHOR"
+    },
+    {
+      "method": "PUT",
+      "path": "/questions/01a1666b-f3fb-77cc-8465-03da70d6ab0b/accepted-answer",
+      "status": 403,
+      "code": "NOT_AUTHOR"
+    },
+    {
+      "method": "PATCH",
+      "path": "/answers/01a1666b-f432-72fb-94a5-0b0b99e46171",
+      "status": 403,
+      "code": "NOT_AUTHOR"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/reports",
+      "status": 403,
+      "code": "FORBIDDEN"
+    },
+    {
+      "method": "GET",
+      "path": "/admin/reports",
+      "status": 401,
+      "code": "UNAUTHORIZED"
+    },
+    {
+      "method": "POST",
+      "path": "/reports",
+      "status": 403,
+      "code": "SELF_REPORT_FORBIDDEN"
+    },
+    {
+      "method": "POST",
+      "path": "/reports",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/reports",
+      "status": 409,
+      "code": "REPORT_ALREADY_OPEN"
+    },
+    {
+      "method": "POST",
+      "path": "/projects",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/projects/01a1666b-f4ed-731e-9ff7-5b09fbf8ad12/applications",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/applications/01a1666b-f52d-71dd-b555-e046d664e7ac",
+      "status": 404,
+      "code": "APPLICATION_NOT_FOUND"
+    },
+    {
+      "method": "PATCH",
+      "path": "/applications/01a1666b-f52d-71dd-b555-e046d664e7ac",
+      "status": 404,
+      "code": "APPLICATION_NOT_FOUND"
+    },
+    {
+      "method": "PATCH",
+      "path": "/projects/01a1666b-f4ed-731e-9ff7-5b09fbf8ad12",
+      "status": 403,
+      "code": "NOT_OWNER"
+    },
+    {
+      "method": "DELETE",
+      "path": "/projects/01a1666b-f4ed-731e-9ff7-5b09fbf8ad12",
+      "status": 403,
+      "code": "NOT_OWNER"
+    },
+    {
+      "method": "GET",
+      "path": "/projects/01a1666b-f4ed-731e-9ff7-5b09fbf8ad12/members/01a1666b-e94a-73cf-9bf7-2a72749939e0/contact",
+      "status": 404,
+      "code": "COLLABORATION_UNAVAILABLE"
+    },
+    {
+      "method": "GET",
+      "path": "/applications/01a1666b-f52d-71dd-b555-e046d664e7ac",
+      "status": 404,
+      "code": "APPLICATION_NOT_FOUND"
+    },
+    {
+      "method": "PATCH",
+      "path": "/applications/01a1666b-f52d-71dd-b555-e046d664e7ac",
+      "status": 404,
+      "code": "APPLICATION_NOT_FOUND"
+    },
+    {
+      "method": "PATCH",
+      "path": "/projects/01a1666b-f4ed-731e-9ff7-5b09fbf8ad12",
+      "status": 403,
+      "code": "NOT_OWNER"
+    },
+    {
+      "method": "DELETE",
+      "path": "/projects/01a1666b-f4ed-731e-9ff7-5b09fbf8ad12",
+      "status": 403,
+      "code": "NOT_OWNER"
+    },
+    {
+      "method": "GET",
+      "path": "/projects/01a1666b-f4ed-731e-9ff7-5b09fbf8ad12/members/01a1666b-e94a-73cf-9bf7-2a72749939e0/contact",
+      "status": 404,
+      "code": "COLLABORATION_UNAVAILABLE"
+    },
+    {
+      "method": "GET",
+      "path": "/projects/01a1666b-f4ed-731e-9ff7-5b09fbf8ad12/members/01a1666b-e94a-73cf-9bf7-2a72749939e0/contact",
+      "status": 404,
+      "code": "COLLABORATION_UNAVAILABLE"
+    },
+    {
+      "method": "POST",
+      "path": "/projects/01a1666b-f4ed-731e-9ff7-5b09fbf8ad12/applications",
+      "status": 409,
+      "code": "APPLICATION_EXISTS"
+    },
+    {
+      "method": "PATCH",
+      "path": "/applications/01a1666b-f52d-71dd-b555-e046d664e7ac",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "PATCH",
+      "path": "/applications/01a1666b-f52d-71dd-b555-e046d664e7ac",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "PATCH",
+      "path": "/applications/01a1666b-f52d-71dd-b555-e046d664e7ac",
+      "status": 409,
+      "code": "INVALID_TRANSITION"
+    },
+    {
+      "method": "GET",
+      "path": "/projects/01a1666b-f4ed-731e-9ff7-5b09fbf8ad12/members/01a1666b-e94a-73cf-9bf7-2a72749939e0/contact",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/projects/01a1666b-f4ed-731e-9ff7-5b09fbf8ad12/members/01a1666b-e94a-73cf-9bf7-2a72749939e0/contact",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/users/01a1666b-e94a-73cf-9bf7-2a72749939e0",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/questions",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/questions",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/questions",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/questions",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/questions/'%20OR%201%3D1--",
+      "status": 404,
+      "code": "QUESTION_NOT_FOUND"
+    },
+    {
+      "method": "GET",
+      "path": "/questions",
+      "status": 400,
+      "code": "VALIDATION_ERROR"
+    },
+    {
+      "method": "PATCH",
+      "path": "/questions/01a1666b-f3fb-77cc-8465-03da70d6ab0b",
+      "status": 400,
+      "code": "VALIDATION_ERROR"
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 400,
+      "code": "BAD_REQUEST"
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 413,
+      "code": "PAYLOAD_TOO_LARGE"
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/users/me",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 403,
+      "code": "CSRF_TOKEN_INVALID"
+    },
+    {
+      "method": "GET",
+      "path": "/users/me",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/auth/csrf",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 401,
+      "code": "INVALID_CREDENTIALS"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 401,
+      "code": "INVALID_CREDENTIALS"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 401,
+      "code": "INVALID_CREDENTIALS"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 401,
+      "code": "INVALID_CREDENTIALS"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 401,
+      "code": "INVALID_CREDENTIALS"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 429,
+      "code": "RATE_LIMITED"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 429,
+      "code": "RATE_LIMITED"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/logout",
+      "status": 204,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me",
+      "status": 401,
+      "code": "UNAUTHORIZED"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/moderation-actions",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/users/me",
+      "status": 401,
+      "code": "UNAUTHORIZED"
+    },
+    {
+      "method": "POST",
+      "path": "/users/me/photo",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/users/photos/jd-83e847d2c4504cb394c702b8a6c6b288.jpg",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/users/me/photo",
+      "status": 400,
+      "code": "INVALID_PHOTO"
+    },
+    {
+      "method": "POST",
+      "path": "/users/me/photo",
+      "status": 413,
+      "code": "PAYLOAD_TOO_LARGE"
+    },
+    {
+      "method": "POST",
+      "path": "/users/me/photo",
+      "status": 400,
+      "code": "INVALID_PHOTO"
+    },
+    {
+      "method": "DELETE",
+      "path": "/users/01a1666b-e94a-73cf-9bf7-2a72749939e0/photo",
+      "status": 404,
+      "code": "NOT_FOUND"
+    },
+    {
+      "method": "PATCH",
+      "path": "/users/me",
+      "status": 400,
+      "code": "VALIDATION_ERROR"
+    },
+    {
+      "method": "GET",
+      "path": "/users/photos/%2e%2e%2f.env",
+      "status": 404,
+      "code": "PHOTO_NOT_FOUND"
+    },
+    {
+      "method": "POST",
+      "path": "/questions",
+      "status": 201,
+      "code": "<svg onload=\"window.__auditXss=1\">AUDIT_MARKER</svg>"
+    },
+    {
+      "method": "POST",
+      "path": "/questions/01a1666b-fab5-73da-9b5f-61fd4fa87371/answers",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "PUT",
+      "path": "/questions/01a1666b-fab5-73da-9b5f-61fd4fa87371/accepted-answer",
+      "status": 200,
+      "code": "<svg onload=\"window.__auditXss=1\">AUDIT_MARKER</svg>"
+    },
+    {
+      "method": "GET",
+      "path": "/users/01a1666b-e9d8-71cf-9614-cc9e68c96efb",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "DELETE",
+      "path": "/questions/01a1666b-fab5-73da-9b5f-61fd4fa87371",
+      "status": 204,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/users/01a1666b-e9d8-71cf-9614-cc9e68c96efb",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/questions/01a1666b-fab5-73da-9b5f-61fd4fa87371",
+      "status": 404,
+      "code": "QUESTION_NOT_FOUND"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/moderation-actions",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/projects/01a1666b-f4ed-731e-9ff7-5b09fbf8ad12/members/01a1666b-e94a-73cf-9bf7-2a72749939e0/contact",
+      "status": 404,
+      "code": "COLLABORATION_UNAVAILABLE"
+    },
+    {
+      "method": "POST",
+      "path": "/projects",
+      "status": 201,
+      "code": null
+    },
+    {
+      "method": "DELETE",
+      "path": "/projects/01a1666b-fb5c-72ae-94b6-db794cfeeca4",
+      "status": 204,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/projects/01a1666b-fb5c-72ae-94b6-db794cfeeca4/members/01a1666b-e94a-73cf-9bf7-2a72749939e0/contact",
+      "status": 404,
+      "code": "COLLABORATION_UNAVAILABLE"
+    }
+  ]
+}
