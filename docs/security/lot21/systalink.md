@@ -1,0 +1,14 @@
+# Préalables SystaLink et exposition publique
+
+**Aucun déploiement effectué. Topologie SystaLink inconnue et non validée par le lot 21.**
+
+1. Faire confirmer le frontal réellement public, ses pairs et l’éventuel CDN. Si nginx est le premier relais fiable, conserver API → Nest directement et XFF remplacé par `$remote_addr`, jamais ajouté au header client. Si un autre relais précède nginx, sa seule présence ne prouve pas l’adresse utilisateur : définir cette frontière avant activation. Ne pas faire transiter toute l’API publique par un Node qui ne verrait que l’IP de ce relais.
+2. Interdire les ports internes Next/Nest/PG au public et aux réseaux non fiables ; vérifier les règles réellement appliquées. Les exactes IP `TRUST_PROXY` doivent être celles des pairs observés. Refuser true, nombre de sauts et CIDR. Tester le contournement et deux véritables sources réseau depuis le point d’entrée autorisé.
+3. Distribuer `frontend/server.mjs` et `frontend/server/api-relay.mjs`, appliquer l’unité web préparée ; `next start` seul n’a plus le rewrite. `API_INTERNAL_ORIGIN` est une variable serveur au démarrage. Ne pas utiliser `output: standalone` sans adaptation revue. Le build reste Next standard ; aucune standalone tracing de ce serveur n’est revendiquée.
+4. Vérifier HTTPS réel, origine canonique, cookies Secure/HttpOnly/SameSite/__Host-, CSRF et Retry-After à travers le frontal. Les essais HTTP locaux, même avec configuration production du smoke, ne le valident pas. Préserver les limites JSON/photo et les délais ; vérifier qu’aucun journal frontal ne conserve les URL email à token, cookies, corps ou contacts.
+5. Rejouer droits, session/révocation, confidentialité, cache intersession, perte de réponse sans rejeu, profils/photos/contacts et réputation avec comptes fictifs dédiés. Le contrat ne permet toujours pas de confirmer un signalement dont la réponse est perdue : afficher l’incertitude, pas une réception inventée.
+6. Stockage photo durable hors release, droits, montage, quotas, sauvegarde DB+photos, restauration sur cible jetable vérifiée vide et retour arrière à contrôler. Ne pas appliquer de migration ou reconstruction sur une base d’équipe par simple lecture de ce document.
+7. Valider les dépendances/notices natives Linux et le résiduel braces ; veiller aux codecs embarqués hors scan npm. Faire trancher les licences et contenus définitifs ; aucune conformité CADEV globale.
+8. Obtenir des jobs CI réellement exécutés et une revue indépendante. Les runs observés sont startup_failure sans job ; protections de branche non lisibles (403). Ne pas les confondre avec des tests exécutés ou modifier les réglages pour forcer un résultat vert.
+
+L’exposition publique n’est **pas approuvée** par les résultats locaux. Cette liste complète la [décision 006](../../decisions/006-proxy-ip-trust.md) et le rapport du lot 20 conservé localement, sans transformer ses contrôles non exécutés en réussites.

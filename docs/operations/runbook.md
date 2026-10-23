@@ -13,6 +13,7 @@ Fichiers de référence : `infra/nginx/jokkodev.conf`, `infra/systemd/*.service|
 5. Configuration (mode 600, propriétaire root) :
    - `/etc/jokkodev/api.env` : variables de `backend/.env.example` avec `NODE_ENV=production`, `HOST=127.0.0.1`, `DATABASE_URL` du rôle `jokkodev_app`, `APP_ORIGIN=https://<domaine>`, `SESSION_COOKIE_SECURE=true`, `CSRF_SECRET` (`openssl rand -hex 32`), `TRUST_PROXY=127.0.0.1`, `MAIL_TRANSPORT=smtp`, `MAIL_FROM`, `SMTP_*`, `APP_VERSION=<version>`. Aucun `TEST_DATABASE_URL`.
    - `/etc/jokkodev/web.env` : `NODE_ENV=production`, `API_INTERNAL_ORIGIN=http://127.0.0.1:3001`.
+   - Depuis le lot 21, l’unité web lance `node server.mjs` ; distribuer aussi `frontend/server/api-relay.mjs`. Le rewrite Next n’existe plus et l’origine API est lue au démarrage. La [décision 006](../decisions/006-proxy-ip-trust.md) définit les topologies prises en charge ; ne pas exposer les ports internes, ni ajouter un relais/CDN implicitement fiable. Le routage nginx `/api/v1/` doit rester direct vers Nest.
    - `/etc/jokkodev/backup.env` : `BACKUP_DATABASE_URL` (rôle `jokkodev_migrator`), `BACKUP_DIR=/var/backups/jokkodev`, `BACKUP_KEY_FILE=/etc/jokkodev/backup.key`, `BACKUP_COPY_COMMAND` (copie hors serveur).
    - Ne jamais déposer de fichier `backend/.env` sur le serveur : il serait chargé en complément de la configuration systemd.
 6. Migrations : section 3.

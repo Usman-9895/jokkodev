@@ -1,0 +1,3 @@
+import fs from 'node:fs';import {execFileSync} from 'node:child_process';
+const records=JSON.parse(fs.readFileSync('.cache/verification/processes.json'));
+for(const r of records){if(!r.owned||!Number.isSafeInteger(r.pid)||r.pid<=1||![33300,33301].includes(r.port))throw Error('Not an audit process');const lines=execFileSync('netstat',['-ano'],{encoding:'utf8',windowsHide:true});if(!lines.split('\n').some(l=>l.includes('LISTENING')&&l.trim().split(/\s+/)[1]==='127.0.0.1:'+r.port&&new RegExp('\\s'+r.pid+'\\s*$').test(l))){console.log(r.name+' no owned listener; left untouched');continue;}process.kill(r.pid);console.log('Stopped owned '+r.name+' PID '+r.pid);}

@@ -24,7 +24,7 @@ pnpm api:generate
 pnpm dev
 ```
 
-Frontend : http://localhost:3000 ; backend : http://127.0.0.1:3001 ; Swagger de développement : http://127.0.0.1:3001/api/docs. Arrêt avec Ctrl+C. Le backend démarre sans base accessible si sa configuration est valide ; readiness renvoie alors 503. Voir [PostgreSQL local et Datacloud](infra/README.md).
+Frontend : http://localhost:3000 ; backend : http://127.0.0.1:3001 ; Swagger de développement : http://127.0.0.1:3001/api/docs. Les scripts frontend utilisent `server.mjs` : le relais API prend l’IP du socket, remplace les en-têtes entrants et lit `API_INTERNAL_ORIGIN` au démarrage. Employer `TRUST_PROXY=127.0.0.1` derrière ce relais local ; vide/false seulement pour Nest en accès direct. Ne pas exposer les ports internes. `next dev/start` seuls ne relaient plus l’API. Voir la [frontière de confiance](docs/decisions/006-proxy-ip-trust.md). Arrêt avec Ctrl+C. Le backend démarre sans base accessible si sa configuration est valide ; readiness renvoie alors 503. Voir [PostgreSQL local et Datacloud](infra/README.md).
 
 ## Commandes
 
@@ -45,6 +45,7 @@ Frontend : http://localhost:3000 ; backend : http://127.0.0.1:3001 ; Swagger de 
 | `pnpm admin:grant <email>` / `pnpm admin:revoke <email>` | Attribution contrôlée du rôle ADMIN, sur le serveur uniquement |
 | `REPUTATION_REBUILD_DATABASE=<base vérifiée> pnpm reputation:rebuild` | Réconciliation atomique du journal Teranga Points, après contrôle de destination et autorisation ; voir décision 004 |
 | `pnpm test:integration` | Contraintes PostgreSQL sur la base `TEST_DATABASE_URL`, dans un schéma temporaire |
+| `pnpm test:security-ip` | Régression IP avec vraies connexions TCP ; exige une base migrée jetable explicitement confirmée, voir lot 21 |
 | `pnpm api:export` | Export OpenAPI sans base ni secret de production |
 | `pnpm api:generate` | Export puis génération des types partagés |
 | `pnpm licenses:inventory` | Inventaire direct et transitif des licences installées |
@@ -53,7 +54,7 @@ La première génération Prisma suit l’installation et la copie de l’exempl
 
 Les ports 3000 et 3001 doivent être libres avant `test:smoke`. Les caches locaux sont ignorés par Git. Sur la machine de préparation, les fichiers `.env` locaux ont été créés à partir des exemples ; la connexion PostgreSQL reste à adapter. Les résultats et les adaptations liées à l’environnement Windows restreint sont détaillés dans le rapport de vérification.
 
-Pour préserver des serveurs existants, le smoke accepte `SMOKE_FRONTEND_PORT` et `SMOKE_BACKEND_PORT`. Construire le frontend avec `API_INTERNAL_ORIGIN` correspondant au port API retenu, car les réécritures peuvent être calculées au build. Le smoke prépare une configuration de production fictive conforme, sans base accessible ni émission d’email, et n'arrête que ses propres processus. Ne pas exporter `NODE_ENV=development` pour un build Next.js de production.
+Pour préserver des serveurs existants, le smoke accepte `SMOKE_FRONTEND_PORT` et `SMOKE_BACKEND_PORT`. Il utilise le serveur Node frontend et lui transmet `API_INTERNAL_ORIGIN` au démarrage. Le smoke prépare une configuration de production fictive conforme, sans base accessible ni émission d’email, et n'arrête que ses propres processus. Ne pas exporter `NODE_ENV=development` pour un build Next.js de production.
 
 ## Organisation
 
@@ -109,7 +110,7 @@ Le lot 9 propose `/regles`, `/contact` et une attente publique sur `/confidentia
 
 ## Smoke isolé
 
-`pnpm test:smoke` attend un build de production. Les ports sont configurables par `SMOKE_FRONTEND_PORT` et `SMOKE_BACKEND_PORT` ; la réécriture Next est fixée au build, donc utiliser le même `API_INTERNAL_ORIGIN` lors du build. Les ports occupés sont refusés. Le mode par défaut cible volontairement une base inaccessible sur 127.0.0.1:1, vérifie liveness 200/readiness 503, session absente, CSRF avant validation, cookies Secure/HttpOnly/SameSite et Swagger absent en production. Il utilise une configuration SMTP locale sans envoyer d’email ; `MAIL_TRANSPORT=file` reste réservé au développement/test et aux tests d’intégration.
+`pnpm test:smoke` attend un build de production. Les ports sont configurables par `SMOKE_FRONTEND_PORT` et `SMOKE_BACKEND_PORT` ; le relais Node lit API_INTERNAL_ORIGIN au démarrage. Les ports occupés sont refusés. Le mode par défaut cible volontairement une base inaccessible sur 127.0.0.1:1, vérifie liveness 200/readiness 503, session absente, CSRF avant validation, cookies Secure/HttpOnly/SameSite et Swagger absent en production. Il utilise une configuration SMTP locale sans envoyer d’email ; `MAIL_TRANSPORT=file` reste réservé au développement/test et aux tests d’intégration.
 
 Pour vérifier aussi readiness 200 et les erreurs 429 traversant Next/CORS : fournir explicitement `SMOKE_DATABASE_URL` (base migrée dédiée), et `SMOKE_CONFIRM_DATABASE` égal au nom de cette base après vérification du serveur, port et caractère jetable. Aucune reprise implicite de `DATABASE_URL`, aucune migration ni création de compte. Des connexions volontairement invalides avec des adresses aléatoires `example.test` déclenchent la limitation ; aucun email n’est envoyé. Ces contrôles Node sur HTTP ne remplacent pas une session navigateur sous HTTPS ni SMTP réel. Seuls les processus démarrés par le smoke sont arrêtés.
 

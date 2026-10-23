@@ -1,0 +1,117 @@
+{
+  "time": "2026-10-23T07:14:46.055Z",
+  "ownedStopped": [
+    {
+      "name": "backend",
+      "port": 33301,
+      "pid": 52676,
+      "owned": true
+    },
+    {
+      "name": "frontend",
+      "port": 33300,
+      "pid": 9680,
+      "owned": true
+    }
+  ],
+  "results": [
+    {
+      "port": 33070,
+      "pid": 10916,
+      "readyHttp": 200
+    },
+    {
+      "port": 33071,
+      "pid": 18576,
+      "readyHttp": 200
+    },
+    {
+      "port": 33080,
+      "pid": 1028,
+      "readyHttp": 200
+    },
+    {
+      "port": 33081,
+      "pid": 33652,
+      "readyHttp": 200
+    },
+    {
+      "port": 33090,
+      "pid": 14932,
+      "readyHttp": 200
+    },
+    {
+      "port": 33091,
+      "pid": 34024,
+      "readyHttp": 200
+    },
+    {
+      "port": 33100,
+      "pid": 52264,
+      "readyHttp": 200
+    },
+    {
+      "port": 33101,
+      "pid": 25684,
+      "readyHttp": 200
+    },
+    {
+      "port": 33120,
+      "pid": 51236,
+      "readyHttp": 200
+    },
+    {
+      "port": 33121,
+      "pid": 39348,
+      "readyHttp": 200
+    },
+    {
+      "port": 33300,
+      "pid": null,
+      "readyHttp": null
+    },
+    {
+      "port": 33301,
+      "pid": null,
+      "readyHttp": null
+    },
+    {
+      "port": 33303,
+      "pid": null,
+      "readyHttp": null
+    },
+    {
+      "port": 33304,
+      "pid": null,
+      "readyHttp": null
+    },
+    {
+      "port": 33305,
+      "pid": null,
+      "readyHttp": null
+    },
+    {
+      "port": 33309,
+      "pid": null,
+      "readyHttp": null
+    },
+    {
+      "port": 33310,
+      "pid": null,
+      "readyHttp": null
+    },
+    {
+      "port": 33311,
+      "pid": null,
+      "readyHttp": null
+    },
+    {
+      "port": 9296,
+      "pid": null,
+      "readyHttp": null
+    }
+  ],
+  "ownedContainerLeftovers": [],
+  "ownedNetworkLeftovers": [],
+  "note": "Only lot21 processes stopped. Team services and databases not restarted/reset. Readiness is not a diagnosis of historical failures."
+}

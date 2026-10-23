@@ -39,9 +39,17 @@ test('configuration invalide sans fuite de valeur', () => {
 test('production : secrets, HTTPS et SMTP obligatoires', () => {
   assert.throws(() => validateEnvironment({ NODE_ENV: 'production', DATABASE_URL: 'postgresql://x:y@localhost/test' }), { message: 'Configuration invalide : APP_ORIGIN, CSRF_SECRET, MAIL_FROM, SMTP_HOST.' });
   assert.throws(() => validateEnvironment({ NODE_ENV: 'production', DATABASE_URL: 'postgresql://x:y@localhost/test', APP_ORIGIN: 'https://jokkodev.example', CSRF_SECRET: 'x'.repeat(32), MAIL_FROM: 'a@b.c', SMTP_HOST: 'smtp.example', SESSION_COOKIE_SECURE: 'false' }), { message: 'Configuration invalide : SESSION_COOKIE_SECURE.' });
-  const env = validateEnvironment({ NODE_ENV: 'production', DATABASE_URL: 'postgresql://x:y@localhost/test', APP_ORIGIN: 'https://jokkodev.example', CSRF_SECRET: 'x'.repeat(32), MAIL_FROM: 'a@b.c', SMTP_HOST: 'smtp.example', TRUST_PROXY: '10.0.0.0/8' });
+  const env = validateEnvironment({ NODE_ENV: 'production', DATABASE_URL: 'postgresql://x:y@localhost/test', APP_ORIGIN: 'https://jokkodev.example', CSRF_SECRET: 'x'.repeat(32), MAIL_FROM: 'a@b.c', SMTP_HOST: 'smtp.example', TRUST_PROXY: '127.0.0.1,::1' });
   assert.equal(env.sessionCookieSecure, true);
-  assert.deepEqual(env.trustProxy, ['10.0.0.0/8']);
+  assert.deepEqual(env.trustProxy, ['127.0.0.1','::1']);
+});
+
+test('proxy trust accepts exact peers only; direct mode ignores forwarding headers', () => {
+  const base={DATABASE_URL:'postgresql://x:y@localhost/test'};
+  for(const value of ['true','1','2','0','0.0.0.0/0','::/0','10.0.0.0/8','0.0.0.0','::','loopback','*'])assert.throws(()=>validateEnvironment({...base,TRUST_PROXY:value}),{message:'Configuration invalide : TRUST_PROXY.'});
+  assert.equal(validateEnvironment(base).trustProxy,false);
+  assert.equal(validateEnvironment({...base,TRUST_PROXY:'false'}).trustProxy,false);
+  assert.deepEqual(validateEnvironment({...base,TRUST_PROXY:'127.0.0.1, ::1'}).trustProxy,['127.0.0.1','::1']);
 });
 test('lecture des cookies tolérante', () => {
   assert.deepEqual(parseCookies('a=1; b=%E0%A4%A; a=2; =x; c=d%20e'), { a: '1', c: 'd e' });

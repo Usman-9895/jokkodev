@@ -1,0 +1,7 @@
+{
+  "time": "2026-10-23T07:06:41.712Z",
+  "test": "Single incomplete JSON upload cancelled on own socket; no credentials or complete login payload",
+  "boundedBytesSent": 1,
+  "afterProxyReadiness": 200,
+  "pass": true
+}

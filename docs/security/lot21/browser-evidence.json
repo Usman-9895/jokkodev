@@ -1,0 +1,57 @@
+{
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/155.0.8059.85",
+    "revision": "@0e66b94549a8bd85f03fbdf189b752d6e7b63c32",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+    "jsVersion": "15.5.35.25"
+  },
+  "reports": [
+    {
+      "route": "/profils/01a1666b-e94a-73cf-9bf7-2a72749939e0",
+      "result": "escaped text",
+      "executed": 0,
+      "hasMarker": true,
+      "svgInjected": false
+    },
+    {
+      "route": "/questions/01a1666b-f3fb-77cc-8465-03da70d6ab0b",
+      "result": "escaped text",
+      "executed": 0,
+      "hasMarker": true,
+      "svgInjected": false
+    },
+    {
+      "name": "external return rejected",
+      "origin": "local"
+    },
+    {
+      "name": "HttpOnly and no improvised credential storage",
+      "result": "passed"
+    },
+    {
+      "name": "private editor cleared after real logout",
+      "result": "passed",
+      "privateFieldWasPresent": true
+    }
+  ],
+  "errors": [],
+  "foreignRequestsBlocked": [
+    {
+      "protocol": "http:",
+      "host": "gc.kis.v2.scr.kaspersky-labs.com"
+    },
+    {
+      "protocol": "http:",
+      "host": "gc.kis.v2.scr.kaspersky-labs.com"
+    },
+    {
+      "protocol": "http:",
+      "host": "gc.kis.v2.scr.kaspersky-labs.com"
+    },
+    {
+      "protocol": "http:",
+      "host": "gc.kis.v2.scr.kaspersky-labs.com"
+    }
+  ]
+}

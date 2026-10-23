@@ -1,0 +1,87 @@
+{
+  "pr": {
+    "status": 200,
+    "number": 30,
+    "merged": true,
+    "mergeCommit": "d300b0ba17fbf8d0665c26f6cad52c17ac0011a2"
+  },
+  "runs": [
+    {
+      "id": 39852787647,
+      "sha": "d300b0ba17fbf8d0665c26f6cad52c17ac0011a2",
+      "event": "push",
+      "conclusion": "startup_failure",
+      "status": "completed",
+      "url": "https://github.com/Usman-9895/jokkodev/actions/runs/39852787647",
+      "jobsStatus": 200,
+      "jobs": [],
+      "checksStatus": 200,
+      "checkRuns": [],
+      "detailStatus": 200,
+      "logsStatus": 404,
+      "suiteStatus": 200,
+      "suiteConclusion": "startup_failure",
+      "suiteCheckCount": 0,
+      "detailMessage": null
+    },
+    {
+      "id": 39852788334,
+      "sha": "2876bfeb4f9ae4010deab4ce404c90cc5091f88d",
+      "event": "pull_request",
+      "conclusion": "startup_failure",
+      "status": "completed",
+      "url": "https://github.com/Usman-9895/jokkodev/actions/runs/39852788334",
+      "jobsStatus": 200,
+      "jobs": [],
+      "checksStatus": 200,
+      "checkRuns": [],
+      "detailStatus": 200,
+      "logsStatus": 404,
+      "suiteStatus": 200,
+      "suiteConclusion": "startup_failure",
+      "suiteCheckCount": 0,
+      "detailMessage": null
+    },
+    {
+      "id": 39798922379,
+      "sha": "2876bfeb4f9ae4010deab4ce404c90cc5091f88d",
+      "event": "pull_request",
+      "conclusion": "startup_failure",
+      "status": "completed",
+      "url": "https://github.com/Usman-9895/jokkodev/actions/runs/39798922379",
+      "jobsStatus": 200,
+      "jobs": [],
+      "checksStatus": 200,
+      "checkRuns": [],
+      "detailStatus": 200,
+      "logsStatus": 404,
+      "suiteStatus": 200,
+      "suiteConclusion": "startup_failure",
+      "suiteCheckCount": 0,
+      "detailMessage": null
+    },
+    {
+      "id": 39798849988,
+      "sha": "2876bfeb4f9ae4010deab4ce404c90cc5091f88d",
+      "event": "push",
+      "conclusion": "startup_failure",
+      "status": "completed",
+      "url": "https://github.com/Usman-9895/jokkodev/actions/runs/39798849988",
+      "jobsStatus": 200,
+      "jobs": [],
+      "checksStatus": 200,
+      "checkRuns": [],
+      "detailStatus": 200,
+      "logsStatus": 404,
+      "suiteStatus": 200,
+      "suiteConclusion": "startup_failure",
+      "suiteCheckCount": 0,
+      "detailMessage": null
+    }
+  ],
+  "branchProtection": {
+    "status": 403
+  },
+  "workflowSha256": "2ab469fdcbcfbb70813af3f0b73aed626756f909da1b7d8b7038baf7bbc1e9b1",
+  "observedAt": "2026-10-23T07:14:40.772Z"
+}

@@ -1,0 +1,112 @@
+{
+  "time": "2026-10-23T07:11:00.049Z",
+  "baseCommit": "d300b0ba17fbf8d0665c26f6cad52c17ac0011a2",
+  "basis": "Observed command exit codes during mission; corresponding logs hashed in manifest. Launcher current-name summary is overwritten by a later same-name task; failed lint attempt retained separately.",
+  "prefixAttempt": [
+    {
+      "name": "validate",
+      "command": "pnpm db:validate",
+      "code": 0
+    },
+    {
+      "name": "generate",
+      "command": "pnpm db:generate",
+      "code": 0
+    },
+    {
+      "name": "migrate",
+      "command": "pnpm db:migrate:deploy",
+      "code": 0
+    },
+    {
+      "name": "migrate-replay",
+      "command": "pnpm db:migrate:deploy",
+      "code": 0
+    },
+    {
+      "name": "catalogue",
+      "command": "pnpm db:seed",
+      "code": 0
+    },
+    {
+      "name": "catalogue-replay",
+      "command": "pnpm db:seed",
+      "code": 0
+    },
+    {
+      "name": "contract",
+      "command": "pnpm api:generate",
+      "code": 0
+    },
+    {
+      "name": "lint",
+      "command": "pnpm lint",
+      "code": 1
+    }
+  ],
+  "finalCommands": [
+    {
+      "name": "lint",
+      "command": "pnpm lint",
+      "code": 0,
+      "log": ".cache/verification/logs/lint.log"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm typecheck",
+      "code": 0,
+      "log": ".cache/verification/logs/typecheck.log"
+    },
+    {
+      "name": "unit",
+      "command": "pnpm test",
+      "code": 0,
+      "log": ".cache/verification/logs/unit.log"
+    },
+    {
+      "name": "integration",
+      "command": "pnpm test:integration",
+      "code": 0,
+      "log": ".cache/verification/logs/integration.log"
+    },
+    {
+      "name": "security-ip",
+      "command": "pnpm test:security-ip",
+      "code": 0,
+      "log": ".cache/verification/logs/security-ip.log"
+    },
+    {
+      "name": "build",
+      "command": "pnpm build",
+      "code": 0,
+      "log": ".cache/verification/logs/build.log"
+    }
+  ],
+  "testCounts": {
+    "backend": 14,
+    "frontendClientTooling": 99,
+    "postgresql": 123
+  },
+  "smoke": [
+    {
+      "name": "unavailable",
+      "code": 0
+    },
+    {
+      "name": "dedicated",
+      "code": 0
+    }
+  ],
+  "linuxSubset": {
+    "node": "24.19.0",
+    "platform": "linux/alpine",
+    "tests": 5,
+    "code": 0,
+    "log": ".cache/verification/linux-relay-final.log"
+  },
+  "frozenInstallation": {
+    "code": 0,
+    "log": ".cache/verification/install-final.log"
+  },
+  "generationDiff": ""
+}

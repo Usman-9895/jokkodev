@@ -43,10 +43,10 @@ try {
     });
   }
   // Configuration de production valide ; aucun email envoyé. Base dédiée uniquement sur opt-in.
-  const env = { NODE_ENV:'production',DATABASE_URL:smokeDatabase ?? 'postgresql://test:test@127.0.0.1:1/unavailable',PORT:String(backendPort),HOST:'127.0.0.1',API_INTERNAL_ORIGIN:`http://127.0.0.1:${backendPort}`,APP_ORIGIN:'https://smoke.example.test',CORS_ORIGINS:'https://smoke.example.test',SESSION_COOKIE_SECURE:'true',CSRF_SECRET:randomBytes(32).toString('hex'),MAIL_TRANSPORT:'smtp',MAIL_FROM:'smoke@example.test',SMTP_HOST:'127.0.0.1',SMTP_PORT:'1',SMTP_USER:'',SMTP_PASSWORD:'' };
+  const env = { NODE_ENV:'production',DATABASE_URL:smokeDatabase ?? 'postgresql://test:test@127.0.0.1:1/unavailable',PORT:String(backendPort),HOST:'127.0.0.1',TRUST_PROXY:'127.0.0.1',API_INTERNAL_ORIGIN:`http://127.0.0.1:${backendPort}`,APP_ORIGIN:'https://smoke.example.test',CORS_ORIGINS:'https://smoke.example.test',SESSION_COOKIE_SECURE:'true',CSRF_SECRET:randomBytes(32).toString('hex'),MAIL_TRANSPORT:'smtp',MAIL_FROM:'smoke@example.test',SMTP_HOST:'127.0.0.1',SMTP_PORT:'1',SMTP_USER:'',SMTP_PASSWORD:'' };
   const backend = start('dist/src/main.js', path.join(root, 'backend'), env);
   await waitFor(`http://127.0.0.1:${backendPort}/api/v1/health/live`, backend.child);
-  const frontend = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '--port', String(frontendPort), '--hostname', '127.0.0.1'], { cwd: path.join(root, 'frontend'), env: { ...process.env, ...env }, stdio: 'ignore', windowsHide: true });
+  const frontend = spawn(process.execPath, ['server.mjs', '--port', String(frontendPort), '--hostname', '127.0.0.1'], { cwd: path.join(root, 'frontend'), env: { ...process.env, ...env }, stdio: 'ignore', windowsHide: true });
   children.push(frontend);
   await waitFor(`http://127.0.0.1:${frontendPort}`, frontend);
   for (const [route, expected] of [['/', 'Accueil'], ['/connexion', 'Connexion'], ['/espace', 'Tableau de bord'], ['/admin', 'Administration']]) {

@@ -1,6 +1,6 @@
 # Inventaire des dépendances installées
 
-Généré par pnpm licenses list --json, puis enrichi avec les manifests et notices des paquets installés. Plateforme : win32/x64. 469 entrées directes/transitives, production et développement. Relancer pnpm licenses:inventory après installation ou changement du lockfile.
+Généré par pnpm licenses list --json, puis enrichi avec les manifests et notices des paquets installés. Plateforme : win32/x64. 467 entrées directes/transitives, production et développement. Relancer pnpm licenses:inventory après installation ou changement du lockfile.
 
 Ce contrôle ne certifie pas la conformité complète. Les dépendances natives d’une autre plateforme et bibliothèques embarquées nécessitent une revue complémentaire. Voir open-questions.md et third-party-notices.txt.
 
@@ -44,25 +44,25 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | @nestjs/mapped-types | 12.0.0 | Transitive | MIT | [npm](https://registry.npmjs.org/@nestjs/mapped-types/12.0.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | @nestjs/platform-express | 12.1.2 | Directe | MIT | [npm](https://registry.npmjs.org/@nestjs/platform-express/12.1.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | @nestjs/swagger | 12.0.2 | Directe | MIT | [npm](https://registry.npmjs.org/@nestjs/swagger/12.0.2) | Notice à conserver ; déclaration non auditée juridiquement |
-| @next/env | 16.4.0 | Transitive | MIT | [npm](https://registry.npmjs.org/@next/env/16.4.0) | Examiner aussi composants embarqués/natifs; Notice absente du paquet : retrouver la notice à la source |
-| @next/eslint-plugin-next | 16.4.0 | Directe | MIT | [npm](https://registry.npmjs.org/@next/eslint-plugin-next/16.4.0) | Examiner aussi composants embarqués/natifs; Notice absente du paquet : retrouver la notice à la source |
-| @next/swc-win32-x64-msvc | 16.4.0 | Transitive | MIT | [npm](https://registry.npmjs.org/@next/swc-win32-x64-msvc/16.4.0) | Examiner aussi composants embarqués/natifs; Notice absente du paquet : retrouver la notice à la source |
+| @next/env | 16.4.2 | Transitive | MIT | [npm](https://registry.npmjs.org/@next/env/16.4.2) | Examiner aussi composants embarqués/natifs; Notice absente du paquet : retrouver la notice à la source |
+| @next/eslint-plugin-next | 16.4.2 | Directe | MIT | [npm](https://registry.npmjs.org/@next/eslint-plugin-next/16.4.2) | Examiner aussi composants embarqués/natifs; Notice absente du paquet : retrouver la notice à la source |
+| @next/swc-win32-x64-msvc | 16.4.2 | Transitive | MIT | [npm](https://registry.npmjs.org/@next/swc-win32-x64-msvc/16.4.2) | Examiner aussi composants embarqués/natifs; Notice absente du paquet : retrouver la notice à la source |
 | @nodelib/fs.scandir | 2.1.5 | Transitive | MIT | [npm](https://registry.npmjs.org/@nodelib/fs.scandir/2.1.5) | Notice à conserver ; déclaration non auditée juridiquement |
 | @nodelib/fs.stat | 2.0.5 | Transitive | MIT | [npm](https://registry.npmjs.org/@nodelib/fs.stat/2.0.5) | Notice à conserver ; déclaration non auditée juridiquement |
 | @nodelib/fs.walk | 1.2.8 | Transitive | MIT | [npm](https://registry.npmjs.org/@nodelib/fs.walk/1.2.8) | Notice à conserver ; déclaration non auditée juridiquement |
 | @phc/format | 1.0.0 | Transitive | MIT | [npm](https://registry.npmjs.org/@phc/format/1.0.0) | Notice à conserver ; déclaration non auditée juridiquement |
-| @prisma/adapter-pg | 7.10.0 | Directe | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/adapter-pg/7.10.0) | Examiner aussi composants embarqués/natifs |
-| @prisma/client | 7.10.0 | Directe | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/client/7.10.0) | Examiner aussi composants embarqués/natifs |
-| @prisma/client-runtime-utils | 7.10.0 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/client-runtime-utils/7.10.0) | Examiner aussi composants embarqués/natifs |
-| @prisma/config | 7.10.0 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/config/7.10.0) | Examiner aussi composants embarqués/natifs |
-| @prisma/debug | 7.10.0 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/debug/7.10.0) | Examiner aussi composants embarqués/natifs |
+| @prisma/adapter-pg | 7.10.1 | Directe | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/adapter-pg/7.10.1) | Examiner aussi composants embarqués/natifs |
+| @prisma/client | 7.10.1 | Directe | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/client/7.10.1) | Examiner aussi composants embarqués/natifs |
+| @prisma/client-runtime-utils | 7.10.1 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/client-runtime-utils/7.10.1) | Examiner aussi composants embarqués/natifs |
+| @prisma/config | 7.10.1 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/config/7.10.1) | Examiner aussi composants embarqués/natifs |
+| @prisma/debug | 7.10.1 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/debug/7.10.1) | Examiner aussi composants embarqués/natifs |
 | @prisma/debug | 7.2.0 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/debug/7.2.0) | Examiner aussi composants embarqués/natifs |
 | @prisma/dev | 0.24.17 | Transitive | ISC | [npm](https://registry.npmjs.org/@prisma/dev/0.24.17) | Examiner aussi composants embarqués/natifs; Notice absente du paquet : retrouver la notice à la source |
-| @prisma/driver-adapter-utils | 7.10.0 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/driver-adapter-utils/7.10.0) | Examiner aussi composants embarqués/natifs |
-| @prisma/engines | 7.10.0 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/engines/7.10.0) | Examiner aussi composants embarqués/natifs |
-| @prisma/engines-version | 7.10.0-4.0edf323efd1d98336f3f0a68684b56f689b900d3 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/engines-version/7.10.0-4.0edf323efd1d98336f3f0a68684b56f689b900d3) | Examiner aussi composants embarqués/natifs |
-| @prisma/fetch-engine | 7.10.0 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/fetch-engine/7.10.0) | Examiner aussi composants embarqués/natifs |
-| @prisma/get-platform | 7.10.0 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/get-platform/7.10.0) | Examiner aussi composants embarqués/natifs |
+| @prisma/driver-adapter-utils | 7.10.1 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/driver-adapter-utils/7.10.1) | Examiner aussi composants embarqués/natifs |
+| @prisma/engines | 7.10.1 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/engines/7.10.1) | Examiner aussi composants embarqués/natifs |
+| @prisma/engines-version | 8.1.0-1.d1b3f377ca835d73fd50954a5e22128b9ebdd6b8 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/engines-version/8.1.0-1.d1b3f377ca835d73fd50954a5e22128b9ebdd6b8) | Examiner aussi composants embarqués/natifs |
+| @prisma/fetch-engine | 7.10.1 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/fetch-engine/7.10.1) | Examiner aussi composants embarqués/natifs |
+| @prisma/get-platform | 7.10.1 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/get-platform/7.10.1) | Examiner aussi composants embarqués/natifs |
 | @prisma/get-platform | 7.2.0 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/get-platform/7.2.0) | Examiner aussi composants embarqués/natifs |
 | @prisma/query-plan-executor | 7.2.0 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/query-plan-executor/7.2.0) | Examiner aussi composants embarqués/natifs |
 | @prisma/streams-local | 0.1.11 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/@prisma/streams-local/0.1.11) | Examiner aussi composants embarqués/natifs |
@@ -203,10 +203,9 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | d3-time-format | 4.1.0 | Transitive | ISC | [npm](https://registry.npmjs.org/d3-time-format/4.1.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | debug | 4.4.3 | Transitive | MIT | [npm](https://registry.npmjs.org/debug/4.4.3) | Notice à conserver ; déclaration non auditée juridiquement |
 | deep-is | 0.1.4 | Transitive | MIT | [npm](https://registry.npmjs.org/deep-is/0.1.4) | Notice à conserver ; déclaration non auditée juridiquement |
-| deepmerge-ts | 7.1.5 | Transitive | BSD-3-Clause | [npm](https://registry.npmjs.org/deepmerge-ts/7.1.5) | Notice à conserver ; déclaration non auditée juridiquement |
+| deepmerge-ts | 8.0.2 | Transitive | BSD-3-Clause | [npm](https://registry.npmjs.org/deepmerge-ts/8.0.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | defu | 6.1.7 | Transitive | MIT | [npm](https://registry.npmjs.org/defu/6.1.7) | Notice à conserver ; déclaration non auditée juridiquement |
 | delaunator | 5.1.0 | Transitive | ISC | [npm](https://registry.npmjs.org/delaunator/5.1.0) | Notice à conserver ; déclaration non auditée juridiquement |
-| denque | 2.1.0 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/denque/2.1.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | depd | 2.0.0 | Transitive | MIT | [npm](https://registry.npmjs.org/depd/2.0.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | destr | 2.0.5 | Transitive | MIT | [npm](https://registry.npmjs.org/destr/2.0.5) | Notice à conserver ; déclaration non auditée juridiquement |
 | detect-libc | 2.1.2 | Transitive | Apache-2.0 | [npm](https://registry.npmjs.org/detect-libc/2.1.2) | Notice à conserver ; déclaration non auditée juridiquement |
@@ -335,12 +334,12 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | minimatch | 5.1.9 | Transitive | ISC | [npm](https://registry.npmjs.org/minimatch/5.1.9) | Notice à conserver ; déclaration non auditée juridiquement |
 | ms | 2.1.3 | Transitive | MIT | [npm](https://registry.npmjs.org/ms/2.1.3) | Notice à conserver ; déclaration non auditée juridiquement |
 | multer | 2.4.0 | Transitive | MIT | [npm](https://registry.npmjs.org/multer/2.4.0) | Notice à conserver ; déclaration non auditée juridiquement |
-| mysql2 | 3.15.3 | Transitive | MIT | [npm](https://registry.npmjs.org/mysql2/3.15.3) | Notice à conserver ; déclaration non auditée juridiquement |
+| mysql2 | 3.24.4 | Transitive | MIT | [npm](https://registry.npmjs.org/mysql2/3.24.4) | Notice à conserver ; déclaration non auditée juridiquement |
 | named-placeholders | 1.1.6 | Transitive | MIT | [npm](https://registry.npmjs.org/named-placeholders/1.1.6) | Notice à conserver ; déclaration non auditée juridiquement |
 | nanoid | 3.3.20 | Transitive | MIT | [npm](https://registry.npmjs.org/nanoid/3.3.20) | Notice à conserver ; déclaration non auditée juridiquement |
 | natural-compare | 1.4.0 | Transitive | MIT | [npm](https://registry.npmjs.org/natural-compare/1.4.0) | Notice absente du paquet : retrouver la notice à la source |
 | negotiator | 1.1.0 | Transitive | MIT | [npm](https://registry.npmjs.org/negotiator/1.1.0) | Notice à conserver ; déclaration non auditée juridiquement |
-| next | 16.4.0 | Directe | MIT | [npm](https://registry.npmjs.org/next/16.4.0) | Examiner aussi composants embarqués/natifs |
+| next | 16.4.2 | Directe | MIT | [npm](https://registry.npmjs.org/next/16.4.2) | Examiner aussi composants embarqués/natifs |
 | node-addon-api | 8.9.2 | Transitive | MIT | [npm](https://registry.npmjs.org/node-addon-api/8.9.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | node-gyp-build | 4.8.4 | Transitive | MIT | [npm](https://registry.npmjs.org/node-gyp-build/4.8.4) | Notice à conserver ; déclaration non auditée juridiquement |
 | nodemailer | 10.1.2 | Directe | MIT-0 | [npm](https://registry.npmjs.org/nodemailer/10.1.2) | Notice à conserver ; déclaration non auditée juridiquement |
@@ -383,7 +382,7 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | postgres-date | 1.0.7 | Transitive | MIT | [npm](https://registry.npmjs.org/postgres-date/1.0.7) | Notice à conserver ; déclaration non auditée juridiquement |
 | postgres-interval | 1.2.0 | Transitive | MIT | [npm](https://registry.npmjs.org/postgres-interval/1.2.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | prelude-ls | 1.2.1 | Transitive | MIT | [npm](https://registry.npmjs.org/prelude-ls/1.2.1) | Notice à conserver ; déclaration non auditée juridiquement |
-| prisma | 7.10.0 | Directe | Apache-2.0 | [npm](https://registry.npmjs.org/prisma/7.10.0) | Examiner aussi composants embarqués/natifs |
+| prisma | 7.10.1 | Directe | Apache-2.0 | [npm](https://registry.npmjs.org/prisma/7.10.1) | Examiner aussi composants embarqués/natifs |
 | proper-lockfile | 4.1.2 | Transitive | MIT | [npm](https://registry.npmjs.org/proper-lockfile/4.1.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | proxy-addr | 2.0.8 | Transitive | MIT | [npm](https://registry.npmjs.org/proxy-addr/2.0.8) | Notice à conserver ; déclaration non auditée juridiquement |
 | punycode | 2.3.1 | Transitive | MIT | [npm](https://registry.npmjs.org/punycode/2.3.1) | Notice à conserver ; déclaration non auditée juridiquement |
@@ -412,7 +411,6 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | scheduler | 0.28.0 | Transitive | MIT | [npm](https://registry.npmjs.org/scheduler/0.28.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | semver | 7.8.5 | Transitive | ISC | [npm](https://registry.npmjs.org/semver/7.8.5) | Notice à conserver ; déclaration non auditée juridiquement |
 | send | 1.2.1 | Transitive | MIT | [npm](https://registry.npmjs.org/send/1.2.1) | Notice à conserver ; déclaration non auditée juridiquement |
-| seq-queue | 0.0.5 | Transitive | MIT | [npm](https://registry.npmjs.org/seq-queue/0.0.5) | Notice à conserver ; déclaration non auditée juridiquement |
 | serve-static | 2.2.1 | Transitive | MIT | [npm](https://registry.npmjs.org/serve-static/2.2.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | server-only | 0.0.1 | Directe | MIT | [npm](https://registry.npmjs.org/server-only/0.0.1) | Notice absente du paquet : retrouver la notice à la source |
 | setprototypeof | 1.2.0 | Transitive | ISC | [npm](https://registry.npmjs.org/setprototypeof/1.2.0) | Notice à conserver ; déclaration non auditée juridiquement |
@@ -427,7 +425,7 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | signal-exit | 4.1.0 | Transitive | ISC | [npm](https://registry.npmjs.org/signal-exit/4.1.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | source-map-js | 1.2.2 | Transitive | BSD-3-Clause | [npm](https://registry.npmjs.org/source-map-js/1.2.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | split2 | 4.2.0 | Transitive | ISC | [npm](https://registry.npmjs.org/split2/4.2.0) | Notice à conserver ; déclaration non auditée juridiquement |
-| sqlstring | 2.3.3 | Transitive | MIT | [npm](https://registry.npmjs.org/sqlstring/2.3.3) | Notice à conserver ; déclaration non auditée juridiquement |
+| sql-escaper | 1.5.2 | Transitive | MIT | [npm](https://registry.npmjs.org/sql-escaper/1.5.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | statuses | 2.0.2 | Transitive | MIT | [npm](https://registry.npmjs.org/statuses/2.0.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | std-env | 3.10.0 | Transitive | MIT | [npm](https://registry.npmjs.org/std-env/3.10.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | streamsearch | 1.1.0 | Transitive | MIT | [npm](https://registry.npmjs.org/streamsearch/1.1.0) | Notice à conserver ; déclaration non auditée juridiquement |

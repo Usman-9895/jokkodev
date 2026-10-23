@@ -1,0 +1,26 @@
+{
+  "time": "2026-10-23T07:09:34.493Z",
+  "next": "16.4.2",
+  "out": [
+    {
+      "path": "/questions/00000000-0000-4000-8000-000000000001",
+      "status": 200,
+      "notFoundText": true
+    },
+    {
+      "path": "/projets/00000000-0000-4000-8000-000000000001",
+      "status": 200,
+      "notFoundText": true
+    },
+    {
+      "path": "/api/v1/questions/00000000-0000-4000-8000-000000000001",
+      "status": 404,
+      "notFoundText": true
+    },
+    {
+      "path": "/api/v1/projects/00000000-0000-4000-8000-000000000001",
+      "status": 404,
+      "notFoundText": true
+    }
+  ]
+}
