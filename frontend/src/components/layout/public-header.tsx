@@ -15,7 +15,7 @@ export function PublicHeader() {
     if (returnFocus) summary.current?.focus();
   }
   useEffect(() => {
-    const media = window.matchMedia('(min-width: 768px)');
+    const media = window.matchMedia('(min-width: 1200px)');
     const resize = () => {
       if (media.matches && details.current?.open) {
         const contained = details.current.contains(document.activeElement);
