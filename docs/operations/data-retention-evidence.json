@@ -1,0 +1,340 @@
+{
+  "at": "2026-10-26T20:58:39.614Z",
+  "base": "33a0d9f548f3345c42066530fa15649cf646dab2",
+  "branch": "feature/data-retention",
+  "versions": {
+    "node": "v24.15.0",
+    "pnpm": "10.34.6",
+    "postgresql": "17.11"
+  },
+  "checks": [
+    {
+      "name": "validate",
+      "started": "2026-10-26T20:47:44.543Z",
+      "ended": "2026-10-26T20:47:52.322Z",
+      "code": 0
+    },
+    {
+      "name": "generate",
+      "started": "2026-10-26T20:47:52.326Z",
+      "ended": "2026-10-26T20:47:59.405Z",
+      "code": 0
+    },
+    {
+      "name": "migrate",
+      "started": "2026-10-26T20:07:10.483Z",
+      "ended": "2026-10-26T20:07:21.281Z",
+      "code": 0
+    },
+    {
+      "name": "replay",
+      "started": "2026-10-26T20:27:36.298Z",
+      "ended": "2026-10-26T20:27:45.558Z",
+      "code": 0
+    },
+    {
+      "name": "seed",
+      "started": "2026-10-26T20:07:31.380Z",
+      "ended": "2026-10-26T20:08:00.915Z",
+      "code": 0
+    },
+    {
+      "name": "seedReplay",
+      "started": "2026-10-26T20:27:45.560Z",
+      "ended": "2026-10-26T20:28:16.394Z",
+      "code": 0
+    },
+    {
+      "name": "backend",
+      "started": "2026-10-26T20:38:08.531Z",
+      "ended": "2026-10-26T20:38:25.074Z",
+      "code": 0
+    },
+    {
+      "name": "target",
+      "started": "2026-10-26T20:38:25.080Z",
+      "ended": "2026-10-26T20:39:04.788Z",
+      "code": 0
+    },
+    {
+      "name": "api",
+      "started": "2026-10-26T20:47:59.406Z",
+      "ended": "2026-10-26T20:48:33.542Z",
+      "code": 0
+    },
+    {
+      "name": "lint",
+      "started": "2026-10-26T20:48:33.543Z",
+      "ended": "2026-10-26T20:48:49.049Z",
+      "code": 0
+    },
+    {
+      "name": "types",
+      "started": "2026-10-26T20:48:49.050Z",
+      "ended": "2026-10-26T20:49:07.705Z",
+      "code": 0
+    },
+    {
+      "name": "unit",
+      "started": "2026-10-26T20:49:07.706Z",
+      "ended": "2026-10-26T20:49:39.707Z",
+      "code": 0
+    },
+    {
+      "name": "integration",
+      "started": "2026-10-26T20:49:39.708Z",
+      "ended": "2026-10-26T20:51:34.116Z",
+      "code": 0
+    },
+    {
+      "name": "build",
+      "started": "2026-10-26T20:51:34.117Z",
+      "ended": "2026-10-26T20:52:39.797Z",
+      "code": 0
+    },
+    {
+      "name": "smoke",
+      "started": "2026-10-26T20:52:39.797Z",
+      "ended": "2026-10-26T20:53:02.979Z",
+      "code": 0
+    },
+    {
+      "name": "smokeDb",
+      "started": "2026-10-26T20:53:02.980Z",
+      "ended": "2026-10-26T20:53:21.548Z",
+      "code": 0
+    },
+    {
+      "name": "install",
+      "started": "2026-10-26T20:36:06.518Z",
+      "ended": "2026-10-26T20:36:09.691Z",
+      "code": 0
+    }
+  ],
+  "counts": {
+    "unit": [
+      16,
+      100
+    ],
+    "postgresql": [
+      144
+    ],
+    "target": [
+      23
+    ]
+  },
+  "generation": {
+    "stable": true,
+    "files": [
+      {
+        "path": "docs/api/openapi.json",
+        "sha256": "4cd2edb01b26f1975ccd24fd271f11e5c1c684dac56560194ad98d39c8dedce1"
+      },
+      {
+        "path": "packages/api-client/src/schema.d.ts",
+        "sha256": "0e330ae869d597bd84ac31e4640248ecefcc009404edf611c0c921b94a8540fd"
+      }
+    ]
+  },
+  "schemaDiff": {
+    "code": 0,
+    "empty": true
+  },
+  "secretScan": {
+    "scope": "Modified and new versionable files; selected token/key patterns and exact private recipe passwords only",
+    "files": 31,
+    "hits": 0,
+    "notAnExhaustiveSecretAudit": true
+  },
+  "notice": {
+    "mailDelta": 1,
+    "afterLogin": "CANCELLED",
+    "simulation": {
+      "changed": 0,
+      "mailDelta": 0,
+      "rows": 0
+    },
+    "first": {
+      "category": "INACTIVITY",
+      "sent": 1,
+      "uncertain": 0,
+      "cancelled": 0
+    },
+    "repeat": {
+      "category": "INACTIVITY",
+      "sent": 0,
+      "uncertain": 0,
+      "cancelled": 0
+    }
+  },
+  "restoration": {
+    "separateEmptyTargets": true,
+    "nonEmptyRefused": true,
+    "detected": 6,
+    "checked": 0,
+    "changes": 6,
+    "repeatChanges": 0,
+    "thirdPartyScore": 10,
+    "memberships": 1
+  },
+  "grants": {
+    "at": "2026-10-26T20:45:29.851Z",
+    "appCanReadAndCancelNotices": true,
+    "appCannotReadMaintenanceCaseTables": true,
+    "checkedOnDedicatedCluster": true
+  },
+  "sourceManifest": [
+    {
+      "path": "README.md",
+      "sha256": "a4850b5293ec8a67b0dfa69c0ee0ff0563ba94d69cec4cd5d9a60f055c263c1e"
+    },
+    {
+      "path": "backend/package.json",
+      "sha256": "c05da09567e4cbd4227aa8810c88ecfd8cb80a6f3b2a2a3bbbfff183a61929e9"
+    },
+    {
+      "path": "backend/prisma/schema.prisma",
+      "sha256": "5ca231df9975630f681b2afedca6d35c049dff08ff13ae0adee3fcfc4e24d768"
+    },
+    {
+      "path": "backend/src/modules/applications/applications.dto.ts",
+      "sha256": "5340d665ffb72a4685d3a9155c2d3e70861d57c0498162e15e19b1eeb2033fca"
+    },
+    {
+      "path": "backend/src/modules/auth/account-tokens.service.ts",
+      "sha256": "029c623b143baf201af011c25be546167adec3503adebdfa6cd774537bf43441"
+    },
+    {
+      "path": "backend/src/modules/auth/sessions.service.ts",
+      "sha256": "ab687ff6c970f2035e26b43e230e5508d5b10c4566fed6a7830cc40be5e5f9a5"
+    },
+    {
+      "path": "backend/test/teranga.integration.ts",
+      "sha256": "7a6b0e659897af9442e773eb9cdf404c865b2d39b0cd37257cad017ebffa1d13"
+    },
+    {
+      "path": "backend/tsconfig.json",
+      "sha256": "a696e570bdd30ed02dd94372311aac2f2365494090a9a36ba8b80f5aaa07fbae"
+    },
+    {
+      "path": "infra/postgres/grants.sql",
+      "sha256": "b69442e932a5bccadf1dadbb1c1eec77be0debfc408aa7b0c0f2695d3ddf809f"
+    },
+    {
+      "path": "package.json",
+      "sha256": "e76e50411ad2b764c5c15a30cc7f141ddda8ac3b4cdd0a50bf06b2148272199e"
+    },
+    {
+      "path": "packages/api-client/src/schema.d.ts",
+      "sha256": "0e330ae869d597bd84ac31e4640248ecefcc009404edf611c0c921b94a8540fd"
+    },
+    {
+      "path": "backend/prisma/migrations/20261026090000_data_retention/migration.sql",
+      "sha256": "7fc2aa1a5e3dce262351c2a9a8b963238fd33d7b2ffe3792dac6e1680cf64e19"
+    },
+    {
+      "path": "backend/src/cli/retention.ts",
+      "sha256": "849dc707ccd1d4f507bdeaacec5764c18adfd7d553615e5c6b539259038fa594"
+    },
+    {
+      "path": "backend/src/modules/retention/policy-values.json",
+      "sha256": "5c28d21300110884bd6ca7ab5de1141135090f684bf7c61f0d2af40d4720cecb"
+    },
+    {
+      "path": "backend/src/modules/retention/policy.ts",
+      "sha256": "b876333690df41ebc4b7a17747005a691b3457a7733ef1944468481ec0e645f8"
+    },
+    {
+      "path": "backend/src/modules/retention/retention.service.ts",
+      "sha256": "526f9d1755235eecf106ba727eff99e705c43582e9b6b0f4e35ed706e6a5e623"
+    },
+    {
+      "path": "backend/test/retention.integration.ts",
+      "sha256": "4c3993a305b450fa6c5b1433f1d4bf9b3df63358c001b337155d7e1b2eddbcb5"
+    },
+    {
+      "path": "backend/test/retention.test.ts",
+      "sha256": "a3463c147f91181b8fad3e5e34409d644ddaea04de7959f9ad08f6ea45d6caf7"
+    },
+    {
+      "path": "infra/logrotate/jokkodev",
+      "sha256": "62cad4b0b66c9326414c0aaf35e68a0cf0e85c786ee307093be21f8fb64e2f52"
+    },
+    {
+      "path": "infra/systemd/jokkodev-retention-notices.service",
+      "sha256": "633db90ec6beacaec1d7a1ab48cf2b46a818a6f7ccc1de40fad8ef71da6687eb"
+    },
+    {
+      "path": "infra/systemd/jokkodev-retention.service",
+      "sha256": "3a7ad41698df12f93c5150205fcc5b10a33cfc50d41d2aa5ff13350afed41cee"
+    },
+    {
+      "path": "infra/systemd/jokkodev-retention.timer",
+      "sha256": "9fef213e527db4a6e7929ffe9a3e8ef250110a2190315753baaf50122dc0f7db"
+    },
+    {
+      "path": "scripts/retention-backup-copies.mjs",
+      "sha256": "862ecb6d266ebee6601c5908f1f24be5a109202c5f2095bf97de4f376ba15a6e"
+    },
+    {
+      "path": "scripts/retention-fixture.mjs",
+      "sha256": "6dab5b65a0ee7a15e1d1e9f30bef4cf40045fff45767b4765c9d307eaa2c2faf"
+    },
+    {
+      "path": "tests/retention-backup-copies.test.mjs",
+      "sha256": "d2902c2d9b1e9ff7a713bf31fef3d2ac0fa1f16195e3ad28a0b7887c6fa48b0d"
+    }
+  ],
+  "historicalFailures": [
+    {
+      "name": "lint",
+      "started": "2026-10-26T20:11:24.877Z",
+      "ended": "2026-10-26T20:11:52.448Z",
+      "code": 1
+    },
+    {
+      "name": "unit",
+      "started": "2026-10-26T20:14:39.965Z",
+      "ended": "2026-10-26T20:15:24.739Z",
+      "code": 1
+    },
+    {
+      "name": "integration",
+      "started": "2026-10-26T20:18:08.904Z",
+      "ended": "2026-10-26T20:20:18.855Z",
+      "code": 1
+    },
+    {
+      "name": "target",
+      "started": "2026-10-26T20:36:48.739Z",
+      "ended": "2026-10-26T20:37:31.357Z",
+      "code": 1
+    }
+  ],
+  "finalState": {
+    "mainClean": true,
+    "indexEmpty": true,
+    "worktreeHead": "33a0d9f548f3345c42066530fa15649cf646dab2",
+    "publicInformationBranch": "feature/public-information",
+    "decisionCopyMatches": true,
+    "auditManifestEntries": 56,
+    "auditManifestMismatches": 0,
+    "smokePorts": [
+      {
+        "port": 33422,
+        "accepting": false,
+        "result": "ECONNREFUSED"
+      },
+      {
+        "port": 33423,
+        "accepting": false,
+        "result": "ECONNREFUSED"
+      }
+    ],
+    "dedicatedContainer": {
+      "name": "jokkodev-retention-fca785d8",
+      "state": "running",
+      "binding": "127.0.0.1:65027"
+    }
+  }
+}

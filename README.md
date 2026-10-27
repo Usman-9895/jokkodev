@@ -1,5 +1,7 @@
 # JokkoDev — socle local
 
+Conservation préparée (non activée) : [décision 007](docs/decisions/007-data-retention.md), [commandes, matrice et exploitation](docs/operations/data-retention.md), [recette](docs/operations/data-retention-verification.md). `pnpm retention` simule par défaut, avec destination explicitement confirmée ; aucun traitement ni email déclenché au démarrage.
+
 Plateforme panafricaine d’entraide et de collaboration, portée par DevTeranga pour la CADEV 2026. Cette livraison prépare le backend de comptes, contenus, projets, candidatures et modération, avec contrats générés. Les lots 10 à 14 raccordent comptes, sessions, profils, JokkoHelp, JokkoProjects, tableau de bord, candidatures et modération minimale aux endpoints réels. L’aptitude à la production reste non validée. Dépôt de référence : [Usman-9895/jokkodev](https://github.com/Usman-9895/jokkodev).
 
 ## Installation

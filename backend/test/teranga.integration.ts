@@ -175,11 +175,16 @@ describe('adaptation au socle actuel',()=>{
       await upgrade.query('UPDATE "Question" SET "acceptedAnswerId"=$2 WHERE id=$1',[q,a]);
       const deleted=(await upgrade.query(`INSERT INTO "Question"(id,"authorId",title,context,expected,actual,attempts,"deletedAt","updatedAt") VALUES(gen_random_uuid(),$1,'Question supprimée avant le registre','Contexte','Attendu','Obtenu','Essais',now(),now()) RETURNING id`,[owner])).rows[0].id;
       await upgrade.query(await readFile(join(dir,current,'migration.sql'),'utf8'));
+      // The current Prisma client requires the complete additive schema, not a database frozen at lot 19.
+      // Keep the pre-reputation fixture, then verify later migrations preserve its data too.
+      for(const name of migrations.filter(n=>n>current))await upgrade.query(await readFile(join(dir,name,'migration.sql'),'utf8'));
       prisma=createPrismaClient(url.href);const service=new ReputationService({prisma} as DatabaseService);
       assert.equal(await service.score(helper),0);assert.equal((await service.rebuild()).eventsWritten,1);assert.equal(await service.score(helper),P);assert.equal((await service.rebuild()).eventsWritten,0);
       assert.equal((await prisma.question.findUniqueOrThrow({where:{id:q}})).acceptedAnswerId,a);
       assert.ok((await prisma.question.findUniqueOrThrow({where:{id:deleted}})).deletedAt);
       assert.equal((await prisma.user.findUniqueOrThrow({where:{id:helper}})).avatarKey,'jd-'+'a'.repeat(32)+'.jpg');
+      const legacy=await prisma.user.findUniqueOrThrow({where:{id:helper}});
+      assert.equal(legacy.lastLoginAt,null);assert.ok(legacy.retentionObservedAt);
       assert.equal((await prisma.profile.findUniqueOrThrow({where:{userId:helper}})).collaborationContact,'https://example.test/private-upgrade');
     }finally{await prisma?.$disconnect();await upgrade.end();await sql.query(`DROP SCHEMA "${schema}" CASCADE`);}
   });

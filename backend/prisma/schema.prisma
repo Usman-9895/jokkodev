@@ -55,6 +55,11 @@ enum ModerationDecision {
 }
 
 model User {
+  /// Connexion réussie uniquement ; NULL pour les comptes antérieurs jusqu’à leur prochaine connexion.
+  lastLoginAt DateTime? @db.Timestamptz(3)
+  /// Début d’observation fiable, pas une dernière connexion historique inventée.
+  retentionObservedAt DateTime @default(now()) @db.Timestamptz(3)
+  inactivityNotices InactivityNotice[]
   reputation ReputationEvent[]
   avatarKey String? @unique @db.VarChar(40)
   id              String        @id @default(uuid(7)) @db.Uuid
@@ -83,6 +88,7 @@ model User {
   closedReports      Report[]           @relation("ReportCloser")
   moderationActions  ModerationAction[] @relation("ModerationActor")
   moderationsAgainst ModerationAction[] @relation("ModerationTargetUser")
+  @@index([createdAt], map: "User_retention_idx")
 }
 
 model Profile {
@@ -113,6 +119,7 @@ model Session {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([expiresAt], map: "Session_retention_idx")
 }
 
 model AccountToken {
@@ -127,6 +134,7 @@ model AccountToken {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, purpose])
+  @@index([expiresAt], map: "AccountToken_retention_idx")
 }
 
 model Technology {
@@ -152,6 +160,7 @@ model ProfileTechnology {
 }
 
 model Question {
+  retentionErasedAt DateTime? @db.Timestamptz(3)
   reputation ReputationEvent[]
   /// Suppression logique par l’auteur, distincte de la modération.
   deletedAt DateTime? @db.Timestamptz(3)
@@ -219,6 +228,7 @@ model Answer {
 }
 
 model Project {
+  retentionErasedAt DateTime? @db.Timestamptz(3)
   /// Suppression logique par le responsable ; relations conservées.
   deletedAt DateTime? @db.Timestamptz(3)
   id                String            @id @default(uuid(7)) @db.Uuid
@@ -266,6 +276,7 @@ model ProjectMember {
 }
 
 model Application {
+  messageErasedAt DateTime? @db.Timestamptz(3)
   id          String            @id @default(uuid(7)) @db.Uuid
   projectId   String            @db.Uuid
   applicantId String            @db.Uuid
@@ -309,9 +320,10 @@ model Report {
   @@index([questionId])
   @@index([answerId])
   @@index([projectId])
+  @@index([closedAt], map: "Report_retention_idx")
 }
 
-/// Historique append-only. Exactement une cible (CHECK SQL).
+/// Historique non modifiable via API. Conservation 007 : NO_ACTION échues ; sanctions en revue. Exactement une cible (CHECK SQL).
 model ModerationAction {
   id           String             @id @default(uuid(7)) @db.Uuid
   adminId      String             @db.Uuid
@@ -367,4 +379,44 @@ enum ReputationReason {
   QUESTION_HIDDEN
   QUESTION_DELETED
   RECONCILIATION
+}
+
+model InactivityNotice {
+  id String @id @default(uuid(7)) @db.Uuid
+  userId String @db.Uuid
+  basisAt DateTime @db.Timestamptz(3)
+  dueAt DateTime @db.Timestamptz(3)
+  state String @default("QUEUED") @db.VarChar(16)
+  sentAt DateTime? @db.Timestamptz(3)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  @@unique([userId, basisAt])
+}
+
+/// Exceptions nominatives opératoires : accès limité, jamais dans une réponse publique.
+model RetentionHold {
+  category String @db.VarChar(32)
+  entityId String @db.Uuid
+  reason String @db.VarChar(500)
+  owner String @db.VarChar(100)
+  reviewAt DateTime @db.Timestamptz(3)
+  untilAt DateTime @db.Timestamptz(3)
+  @@id([category, entityId])
+}
+
+model RetentionReview {
+  category String @db.VarChar(32)
+  entityId String @db.Uuid
+  reason String @db.VarChar(40)
+  reviewAt DateTime @db.Timestamptz(3)
+  @@id([category, entityId])
+}
+
+/// Registre minimal de réconciliation après restauration ; aucune copie de contenu effacé.
+model RetentionEvent {
+  id String @id @default(uuid(7)) @db.Uuid
+  category String @db.VarChar(32)
+  entityId String @db.Uuid
+  action String @db.VarChar(32)
+  at DateTime @db.Timestamptz(3)
+  @@index([at])
 }

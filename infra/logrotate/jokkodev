@@ -1,0 +1,16 @@
+# Example only; review paths, owner and rotation signal on the target before installation.
+# Only ordinary JokkoDev nginx logs; do not point at shared team/system logs.
+/var/log/nginx/jokkodev-access.log /var/log/nginx/jokkodev-error.log {
+ daily
+ rotate 30
+ maxage 30
+ missingok
+ notifempty
+ compress
+ delaycompress
+ create 0640 www-data adm
+ sharedscripts
+ postrotate
+  /usr/sbin/nginx -s reopen
+ endscript
+}
