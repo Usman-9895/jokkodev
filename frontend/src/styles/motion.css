@@ -1,6 +1,12 @@
-:root { --jd-motion-interaction: 180ms; --jd-motion-appearance: 420ms; }
-.jd-enter { animation: jd-appear var(--jd-motion-appearance) ease-out both; }
-.jd-reveal-once { animation: jd-reveal var(--jd-motion-appearance) ease-out; }
-@keyframes jd-appear { from { opacity: .6; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-@keyframes jd-reveal { from { opacity: .7; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .jd-enter, .jd-reveal-once { animation: none; } }
+:root { --jd-motion-interaction:180ms; --jd-motion-appearance:560ms; }
+html { scroll-behavior:smooth; scroll-padding-block-start:24px; }
+.jd-enter { animation:jd-appear var(--jd-motion-appearance) cubic-bezier(.22,1,.36,1) both; }
+.jd-reveal-pending { opacity:0; transform:translate3d(0,18px,0); }
+.jd-reveal-once { animation:jd-reveal var(--jd-motion-appearance) cubic-bezier(.22,1,.36,1) both; }
+.jd-reveal-pending:focus-within { opacity:1; transform:none; }
+@keyframes jd-appear { from { opacity:.6; transform:translateY(8px); } to { opacity:1; transform:none; } }
+@keyframes jd-reveal { from { opacity:0; transform:translate3d(0,18px,0); } to { opacity:1; transform:none; } }
+@media(prefers-reduced-motion:reduce) {
+ html { scroll-behavior:auto; }
+ .jd-enter,.jd-reveal-once,.jd-reveal-pending { animation:none; opacity:1; transform:none; }
+}
