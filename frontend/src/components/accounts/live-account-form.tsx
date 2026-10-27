@@ -43,7 +43,7 @@ function CredentialForm({screen}:{screen:Exclude<AccountScreen,'verify'>}) {
  <Button type="submit" loading={waiting} loadingLabel="Traitement en cours…">{copy.action}</Button>
  </fieldset></form>
  <div className="account-secondary">{screen==='login'?<>Pas encore de compte ? <Link href="/inscription">S’inscrire</Link></>:screen==='register'?<>Déjà un compte ? <Link href="/connexion">Se connecter</Link></>:<Link href="/connexion">← Retour à la connexion</Link>}</div>
- {screen==='register'&&<p className="account-legal">Consulte les <Link href="/regles">règles communautaires</Link> et la <Link href="/confidentialite">page de confidentialité</Link>. Les textes définitifs restent à valider.</p>}
+ {screen==='register'&&<p className="account-legal">Consulte les <Link href="/regles">règles communautaires</Link> et la <Link href="/confidentialite">page de confidentialité</Link>.</p>}
  </Card>;
 }
 function EmailVerification(){
