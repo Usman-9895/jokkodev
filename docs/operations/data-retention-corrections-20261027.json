@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-27",
+  "base": "33a0d9f548f3345c42066530fa15649cf646dab2",
+  "branch": "feature/data-retention",
+  "backendUnitPassed": 16,
+  "frontendClientTooling": {
+    "passed": 102,
+    "skipped": 1,
+    "total": 103
+  },
+  "linuxArchiveTestsPassed": 4,
+  "postgresqlIntegrationPassed": 147,
+  "lint": true,
+  "types": true,
+  "builds": true,
+  "generationUnchanged": true,
+  "smokeModesPassed": 2,
+  "vpsAccessed": false,
+  "jobsActivated": false,
+  "published": false,
+  "sha256": {
+    "scripts/retention-backup-copies.mjs": "7933fe4365bf439f1178f25f209ad18e216ed3a7a24c055de77539f8ed8a488f",
+    "tests/retention-backup-copies.test.mjs": "644f6516bb980dfeddb72a7c99d168ac2cf775cf1f132ae6fb7c9d7a1ae1ed85",
+    "backend/src/modules/retention/retention.service.ts": "55faaf7566a51456149663535962c836512564eaba15d374d1df007f1e3c3972",
+    "backend/test/retention.integration.ts": "8e0ab5fa75011f1437aa46bfda2eb61dc53cb31a5ce9ef44cb18a1951de40c6b",
+    "infra/systemd/jokkodev-retention.service": "f280873037c2cbbf301f9cf354cabedacc34cbecc739bb083e75e47e5706bc25",
+    "infra/systemd/jokkodev-retention-notices.service": "b901791a4878ca967d368cb9d14fe110d9a09da69d06166c9404238e9c72dd60"
+  }
+}

@@ -12,10 +12,11 @@ export class AccountTokensService {
   /** Émet un jeton à usage unique et invalide les jetons précédents de même usage : seul le dernier lien envoyé reste valable. */
   async issue(userId: string, purpose: AccountTokenPurpose, ttlMs: number): Promise<string> {
     const { token, hash } = newToken();
-    await this.database.prisma.$transaction([
-      this.database.prisma.accountToken.updateMany({ where: { userId, purpose, consumedAt: null }, data: { consumedAt: new Date() } }),
-      this.database.prisma.accountToken.create({ data: { tokenHash: hash, userId, purpose, expiresAt: new Date(Date.now() + ttlMs) } })
-    ]);
+    await this.database.prisma.$transaction(async tx=>{
+      await tx.$queryRaw`SELECT id FROM "User" WHERE id=${userId}::uuid FOR UPDATE`;
+      await tx.accountToken.updateMany({ where: { userId, purpose, consumedAt: null }, data: { consumedAt: new Date() } });
+      await tx.accountToken.create({ data: { tokenHash: hash, userId, purpose, expiresAt: new Date(Date.now() + ttlMs) } });
+    });
     return token;
   }
 
@@ -24,6 +25,8 @@ export class AccountTokensService {
     if (!isTokenFormat(token)) return undefined;
     const record = await db.accountToken.findUnique({ where: { tokenHash: hashToken(token) }, select: { id: true, userId: true, purpose: true } });
     if (!record || record.purpose !== purpose) return undefined;
+    const users=await db.$queryRaw<{id:string}[]>`SELECT id FROM "User" WHERE id=${record.userId}::uuid FOR UPDATE`;
+    if(!users.length)return undefined;
     const { count } = await db.accountToken.updateMany({ where: { id: record.id, consumedAt: null, expiresAt: { gt: new Date() } }, data: { consumedAt: new Date() } });
     return count === 1 ? record.userId : undefined;
   }

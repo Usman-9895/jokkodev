@@ -1,0 +1,10 @@
+[Unit]
+Description=JokkoDev retention schedule, disabled until independent review
+ConditionPathExists=/etc/jokkodev/retention.enabled
+
+[Timer]
+OnCalendar=*-*-* *:15:00 UTC
+Persistent=false
+Unit=jokkodev-retention.service
+
+# Deliberately no [Install] section. Do not enable in the initial deployment.

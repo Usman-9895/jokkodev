@@ -1,0 +1,18 @@
+[Unit]
+Description=JokkoDev inactivity notices, explicit operator invocation only
+ConditionPathExists=/etc/jokkodev/retention-notices.enabled
+After=network.target
+
+[Service]
+Type=oneshot
+User=jokkodev
+Group=jokkodev
+WorkingDirectory=/opt/jokkodev/current/backend
+EnvironmentFile=/etc/jokkodev/retention.env
+ExecStart=/usr/local/bin/node dist/src/cli/retention.js notify --confirm-database ${RETENTION_CONFIRM_DATABASE} --confirm-host ${RETENTION_CONFIRM_HOST} --batch 100
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+# No timer or [Install]: no email emitted automatically on application startup.

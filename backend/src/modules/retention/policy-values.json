@@ -1,0 +1,17 @@
+{
+ "unverifiedDays":30,
+ "inactiveMonths":24,
+ "noticeDays":30,
+ "deletedDays":30,
+ "applicationMonths":6,
+ "reportMonths":12,
+ "contactMonths":6,
+ "logDays":30,
+ "sessionDays":30,
+ "tokenDays":7,
+ "localBackupDays":7,
+ "offsiteBackupDays":30,
+ "reviewDays":30,
+ "batch":100,
+ "maxBatch":500
+}

@@ -1,0 +1,19 @@
+[Unit]
+Description=JokkoDev retention (operator activation only)
+ConditionPathExists=/etc/jokkodev/retention.enabled
+After=network.target
+
+[Service]
+Type=oneshot
+User=jokkodev
+Group=jokkodev
+WorkingDirectory=/opt/jokkodev/current/backend
+EnvironmentFile=/etc/jokkodev/retention.env
+# Explicit destination must be reviewed before creating retention.enabled.
+ExecStart=/usr/local/bin/node dist/src/cli/retention.js execute --confirm-database ${RETENTION_CONFIRM_DATABASE} --confirm-host ${RETENTION_CONFIRM_HOST} --categories ${RETENTION_CATEGORIES} --batch 100
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+# No [Install]: this file does not activate any schedule by itself.

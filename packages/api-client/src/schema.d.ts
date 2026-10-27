@@ -1209,7 +1209,7 @@ export interface components {
             id: string;
             /** @enum {string} */
             status: "PENDING" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
-            /** @description Privé : visible uniquement par le candidat et le responsable. */
+            /** @description Privé : candidat et responsable uniquement. Après 6 mois calendaires depuis la décision, le texte est remplacé par « Message effacé après le délai de conservation. » ; le statut et l’adhésion sont conservés. */
             message: string;
             applicant: components["schemas"]["PublicAuthorDto"];
             /** @description Compétences publiques du profil du candidat. */

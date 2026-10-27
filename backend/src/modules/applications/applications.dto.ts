@@ -22,7 +22,7 @@ export class ApplicationProjectDto {
 export class ApplicationDto {
   @ApiProperty({ format: 'uuid' }) id!: string;
   @ApiProperty({ enum: APPLICATION_STATUSES }) status!: ApplicationStatus;
-  @ApiProperty({ description: 'Privé : visible uniquement par le candidat et le responsable.' }) message!: string;
+  @ApiProperty({ description: 'Privé : candidat et responsable uniquement. Après 6 mois calendaires depuis la décision, le texte est remplacé par « Message effacé après le délai de conservation. » ; le statut et l’adhésion sont conservés.' }) message!: string;
   @ApiProperty({ type: PublicAuthorDto }) applicant!: PublicAuthorDto;
   @ApiProperty({ type: [TechnologyDto], description: 'Compétences publiques du profil du candidat.' }) applicantSkills!: TechnologyDto[];
   @ApiProperty({ type: ApplicationProjectDto }) project!: ApplicationProjectDto;
