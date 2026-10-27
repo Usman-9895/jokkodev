@@ -1,3 +1,3 @@
-export const metadata = {"title":"Contact | JokkoDev","description":"Orientation vers JokkoHelp et les règles. Coordonnées de contact à confirmer."};
+export const metadata = {"title": "Contact | JokkoDev", "description": "Contacte l’équipe DevTeranga à contact@jokkodev.com pour un retour sur JokkoDev ou une demande concernant tes données."};
 import {ContactPage} from '../../../components/information/pages';
 export default ContactPage;

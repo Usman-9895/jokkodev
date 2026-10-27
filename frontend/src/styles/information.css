@@ -32,3 +32,55 @@
 }
 
 @media(max-width:359px) { .privacy-comparison { grid-template-columns:1fr; } }
+
+/* Pages d’information finalisées : composants et palette existants conservés. */
+.information-section { margin-top:32px; scroll-margin-top:24px; }
+.information-prose { max-width:85ch; color:var(--color-muted); }
+.information-eyebrow { color:var(--color-petrol); font-size:13px; font-weight:700; margin-bottom:12px; }
+.about-hero { display:grid; grid-template-columns:minmax(0,1fr) 260px; gap:48px; align-items:center; padding-block:24px; }
+.about-hero h1 { max-width:22ch; }
+.about-hero .information-intro { max-width:62ch; margin-top:16px; }
+.about-brand { padding:32px 24px; border:1px solid var(--color-border); border-radius:var(--jd-radius-card); background:var(--color-surface); text-align:center; }
+.about-brand img { margin-inline:auto; width:140px; height:140px; }
+.about-brand > span { display:block; font-family:var(--font-source-serif); color:var(--color-night); font-size:30px; font-weight:700; margin-block:12px; }
+.about-brand p { color:var(--color-muted); font-size:14px; }
+.about-actions { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:24px; }
+.about-features { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-top:16px; }
+.about-features > .jd-card { padding:24px; display:flex; flex-direction:column; gap:16px; }
+.about-features h3 { margin:0; }.about-features p { color:var(--color-muted); }
+.about-features .jd-action-link { margin-top:auto; }
+.about-team { padding:24px; display:flex; align-items:flex-start; gap:24px; }.about-team p { margin-top:12px; color:var(--color-muted); }.about-team .jd-action-link { margin-top:16px; }
+.information-details { padding:24px; margin-top:16px; scroll-margin-top:24px; }
+.information-details > p { color:var(--color-muted); margin-top:12px; }
+.information-details p a,.contact-email-address a { color:var(--color-petrol); text-decoration:underline; }
+.information-details .jd-action-link { margin-top:16px; }
+.privacy-summary { display:flex; flex-wrap:wrap; gap:8px 24px; margin-block:24px; }
+.privacy-summary a { display:inline-flex; align-items:center; min-height:44px; text-decoration:underline; color:var(--color-petrol); }
+.privacy-card { scroll-margin-top:24px; }
+.conservation-list { margin-block:20px; }.conservation-list > div { padding-block:16px; border-top:1px solid var(--color-border); }
+.conservation-list dt { font-weight:700; color:var(--color-night); }.conservation-list dd { color:var(--color-muted); margin-top:8px; }
+.contact-email { display:flex; flex-direction:column; gap:12px; width:100%; margin-top:auto; }
+.contact-email-address { font-weight:600; overflow-wrap:anywhere; }
+.contact-cards .contact-email .jd-button { margin-top:0; }
+.contact-copy-status { min-height:1.5em; font-size:13px; }
+.contact-cards .contact-email p { margin:0; }
+@media(max-width:1023px) {
+  .about-hero { grid-template-columns:minmax(0,1fr) 210px; gap:24px; }
+  .about-brand { padding:24px 16px; }.about-brand img { width:112px; height:112px; }
+  .about-features { grid-template-columns:1fr; }
+  .contact-cards { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .contact-cards > .jd-card:last-child { grid-column:1/-1; }
+  .contact-email { max-width:360px; }
+}
+@media(max-width:767px) {
+  .about-hero { display:flex; flex-direction:column; align-items:stretch; padding-block:0 8px; gap:24px; }
+  .about-brand { display:none; }.about-hero h1 { max-width:none; }
+  .about-actions { align-items:stretch; flex-direction:column; margin-top:16px; }
+  .about-actions .jd-button { width:100%; white-space:normal; }
+  .information-section { margin-top:24px; }.about-features > .jd-card,.information-details { padding:16px; }
+  .about-team { padding:16px; gap:16px; }.about-team p { font-size:14px; }
+  .privacy-summary { gap:4px 16px; margin-block:16px; }.privacy-summary a { font-size:14px; }
+  .contact-cards { grid-template-columns:1fr; }
+  .contact-cards .contact-email { grid-column:1/-1; }
+  .information-details,.privacy-card,.conservation-list { font-size:14px; }
+}

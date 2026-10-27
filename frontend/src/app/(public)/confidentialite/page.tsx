@@ -1,3 +1,3 @@
-export const metadata = {"title":"Confidentialité — contenu à venir | JokkoDev","description":"Le contenu de confidentialité sera publié après validation."};
-import {PrivacyUnavailable} from '../../../components/information/pages';
-export default PrivacyUnavailable;
+export const metadata = {"title": "Confidentialité | JokkoDev", "description": "Données publiques et privées, sessions, conservation et contacts : comprendre le fonctionnement actuel de JokkoDev."};
+import {PrivacyPage} from '../../../components/information/pages';
+export default PrivacyPage;
