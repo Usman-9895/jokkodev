@@ -1,4 +1,5 @@
-export const metadata = {"title":"Accueil | JokkoDev","description":"Entraide et collaboration entre développeurs africains."};
+import {staticMetadata,websiteSchema} from '../../lib/seo/metadata';
+export const metadata=staticMetadata('/');
 import Link from 'next/link';
 import {LatestQuestions} from '../../components/jokkohelp/live-list';
 import { Container } from '../../components/layout/container';
@@ -7,6 +8,7 @@ import { Reveal } from '../../components/motion/reveal';
 import { ActionLink, Card, Heading, Icon } from '../../components/ui';
 export default function Home() {
   return <Container className="home-page">
+    <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(websiteSchema).replace(/</g,'\\u003c')}}/>
     <section className="home-hero" aria-labelledby="home-title"><div className="home-hero__text jd-enter"><Heading as="h1" size="display" id="home-title">Connectons les talents,<br className="hero-break" /> partageons les solutions.</Heading><p className="home-subtitle">L’espace d’entraide et de collaboration<br className="subtitle-break" /> des développeurs africains.</p><div className="home-actions"><Link className="jd-button jd-button--primary" href="/questions/poser">Poser une question <Icon name="arrow-right" /></Link><Link className="jd-button jd-button--secondary" href="/projets">Explorer les projets</Link></div></div><BrandIllustration /></section>
     <Reveal className="home-features"><Card tone="help" className="home-feature"><span className="home-feature__icon"><Icon name="code" /></span><div><Heading as="h2" size="card">JokkoHelp</Heading><p className="home-feature__subtitle">Débloque ton problème technique</p><p className="home-feature__body">Pose tes questions, obtiens des réponses claires<br className="feature-break" /> et apprends avec la communauté.</p><ActionLink href="/questions/poser">Poser une question</ActionLink></div></Card><Card tone="project" className="home-feature"><span className="home-feature__icon"><Icon name="users" /></span><div><Heading as="h2" size="card">JokkoProjects</Heading><p className="home-feature__subtitle">Construis avec d’autres développeurs</p><p className="home-feature__body">Trouve des collaborateurs, partage tes idées<br className="feature-break" /> et réalise des projets concrets.</p><ActionLink href="/projets">Explorer les projets</ActionLink></div></Card></Reveal>
     <Reveal className="home-questions"><section aria-labelledby="latest-title"><div className="home-questions__heading"><Heading id="latest-title">Dernières questions</Heading><ActionLink href="/questions"><span className="all-questions-desktop">Voir toutes les questions</span><span className="all-questions-mobile">Voir tout</span></ActionLink></div><LatestQuestions/></section></Reveal>

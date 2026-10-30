@@ -1,3 +1,5 @@
+import {privateRobots} from '../../lib/seo/metadata';
+export const metadata={robots:privateRobots};
 import type {ReactNode} from 'react';
 import {PublicHeader} from '../../components/layout/public-header';
 import {AccountFooter} from '../../components/accounts/frame';

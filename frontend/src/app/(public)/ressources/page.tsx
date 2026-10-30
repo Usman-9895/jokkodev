@@ -1,10 +1,11 @@
+import {staticMetadata} from '../../../lib/seo/metadata';
 import Link from 'next/link';
 import {Container} from '../../../components/layout/container';
 import {Card,Heading} from '../../../components/ui';
 import {Icon} from '../../../components/ui/icon';
 import {Reveal} from '../../../components/motion/reveal';
 import {resourceGuides,documentationResources} from '../../../lib/information/resources';
-export const metadata={title:'Ressources | JokkoDev',description:'Des repères pour poser une question, partager une solution, collaborer et retrouver les documentations officielles.'};
+export const metadata=staticMetadata('/ressources');
 export default function ResourcesPage(){return <Container className="information-page resources-page jd-enter">
  <header className="resources-hero"><p className="information-eyebrow">Apprendre · Partager · Construire</p><Heading as="h1" size="page">Des repères pour avancer ensemble.</Heading><p className="information-intro">Une question mieux posée, une solution mieux expliquée et les bonnes sources pour progresser.</p><nav className="resource-jump-links" aria-label="Sommaire des ressources"><a href="#bien-demarrer">Bien démarrer sur JokkoDev <Icon name="arrow-right"/></a><a href="#documentations">Documentations officielles <Icon name="arrow-right"/></a></nav></header>
  <section id="bien-demarrer" className="information-section" aria-labelledby="resource-guides-title"><Heading as="h2" id="resource-guides-title">Bien démarrer sur JokkoDev</Heading><div className="resource-guides">{resourceGuides.map(guide=><Reveal key={guide.id}><Card className="resource-guide"><span className="resource-symbol"><Icon name={guide.icon}/></span><Heading as="h3" size="card">{guide.title}</Heading><p>{guide.description}</p><ol>{guide.steps.map(step=><li key={step}>{step}</li>)}</ol><Link href={guide.href} className="jd-action-link">{guide.action}<Icon name="arrow-right"/></Link></Card></Reveal>)}</div></section>

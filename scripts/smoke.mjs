@@ -49,7 +49,7 @@ try {
   const frontend = spawn(process.execPath, ['server.mjs', '--port', String(frontendPort), '--hostname', '127.0.0.1'], { cwd: path.join(root, 'frontend'), env: { ...process.env, ...env }, stdio: 'ignore', windowsHide: true });
   children.push(frontend);
   await waitFor(`http://127.0.0.1:${frontendPort}`, frontend);
-  for (const [route, expected] of [['/', 'Accueil'], ['/connexion', 'Connexion'], ['/espace', 'Tableau de bord'], ['/admin', 'Administration']]) {
+  for (const [route, expected] of [['/', 'Entraide et projets entre développeurs africains'], ['/connexion', 'Connexion'], ['/espace', 'Tableau de bord'], ['/admin', 'Administration']]) {
     const response = await fetch(`http://127.0.0.1:${frontendPort}${route}`);
     assert.equal(response.status, 200);
     const html = await response.text();
@@ -61,6 +61,15 @@ try {
     console.log(`OK page ${route}`);
   }
   assert.equal((await fetch(`http://127.0.0.1:${frontendPort}/inconnue`)).status, 404);
+  const robots = await fetch(`http://127.0.0.1:${frontendPort}/robots.txt`);
+  assert.equal(robots.status, 200);
+  assert.ok((await robots.text()).includes('Sitemap: https://jokkodev.com/sitemap.xml'));
+  if (!smokeDatabase) {
+    const sitemap = await fetch(`http://127.0.0.1:${frontendPort}/sitemap.xml`);
+    assert.equal(sitemap.status, 503, 'Une panne API ne doit pas produire un faux sitemap vide');
+    assert.equal(sitemap.headers.get('retry-after'), '300');
+  }
+  console.log('OK robots et indisponibilité contrôlée du sitemap');
   for (const preview of ['comptes', 'design-system', 'espace', 'informations', 'jokkohelp', 'jokkohelp-contributions', 'jokkoprojects', 'moderation', 'signalements']) {
     assert.equal((await fetch(`http://127.0.0.1:${frontendPort}/dev/${preview}?state=success`)).status, 404, `Aperçu privé indisponible en production : ${preview}`);
   }

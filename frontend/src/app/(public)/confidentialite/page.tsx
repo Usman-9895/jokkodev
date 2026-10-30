@@ -1,3 +1,4 @@
-export const metadata = {"title": "Confidentialité | JokkoDev", "description": "Données publiques et privées, sessions, conservation et contacts : comprendre le fonctionnement actuel de JokkoDev."};
+import {staticMetadata} from '../../../lib/seo/metadata';
+export const metadata=staticMetadata('/confidentialite');
 import {PrivacyPage} from '../../../components/information/pages';
 export default PrivacyPage;
