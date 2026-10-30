@@ -1,3 +1,5 @@
+import {privateRobots} from '../../../lib/seo/metadata';
+export const metadata={robots:privateRobots};
 import {DeveloperSessionSpace} from '../../../components/accounts/developer-session-space';
 import type { ReactNode } from 'react';
 import {PublicHeader} from '../../../components/layout/public-header';

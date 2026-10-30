@@ -1,3 +1,4 @@
-export const metadata = {"title": "À propos | JokkoDev", "description": "JokkoDev, plateforme d’entraide et de collaboration des développeurs africains, portée par DevTeranga au Sénégal."};
+import {staticMetadata} from '../../../lib/seo/metadata';
+export const metadata=staticMetadata('/a-propos');
 import {AboutPage} from '../../../components/information/pages';
 export default AboutPage;

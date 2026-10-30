@@ -13,7 +13,7 @@ import {Avatar,LoadingIndicator} from '../ui';
 import {ProjectLoading,ProjectPerson} from './shared';
 import {ProjectDetail} from './detail';
 import {ProjectFailure,useProjectCriteria} from './live-list';
-export function LiveProjectDetail({id}:{id:string}){const criteria=useProjectCriteria(),s=useSearchParams(),membersPage=liveProjectCriteria({page:s.get('membersPage')??''}).page;const detail=useHelpResource<ProjectSchemas['ProjectDetailDto']>('/projects/'+encodeURIComponent(id));const members=useHelpResource<ProjectSchemas['MemberPageDto']>('/projects/'+encodeURIComponent(id)+'/members',{page:membersPage,pageSize:12});
+export function LiveProjectDetail({id,initial}:{id:string;initial?:ProjectSchemas['ProjectDetailDto']}){const criteria=useProjectCriteria(),s=useSearchParams(),membersPage=liveProjectCriteria({page:s.get('membersPage')??''}).page;const detail=useHelpResource<ProjectSchemas['ProjectDetailDto']>('/projects/'+encodeURIComponent(id),undefined,false,{initial});const members=useHelpResource<ProjectSchemas['MemberPageDto']>('/projects/'+encodeURIComponent(id)+'/members',{page:membersPage,pageSize:12});
  if(detail.error)return <Container className="projects-page"><ProjectFailure error={detail.error} retry={detail.retry} detail/></Container>;if(!detail.data)return <Container className="projects-page"><ProjectLoading/></Container>;
  const p=detail.data,view={...projectView(p),objective:p.objective};
  const membersHref=(page:number)=>{const url=new URL(projectDetailHref(id,criteria),'https://jokkodev.invalid');url.searchParams.set('membersPage',String(page));return url.pathname+url.search+'#membres';};

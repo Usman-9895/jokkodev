@@ -19,9 +19,9 @@ import {ReadLoading} from './shared';
 import {HelpFailure,HelpPages,useHelpCriteria} from './live-list';
 import {useHelpResource,invalidateHelp} from './live-resource';
 import {useDraftGuard} from './draft-guard';
-export function LiveQuestionDetail({id}:{id:string}){
+export function LiveQuestionDetail({id,initial}:{id:string;initial?:HelpSchemas['QuestionDetailDto']}){
  const criteria=useHelpCriteria(),search=useSearchParams(),router=useRouter();const {user,phase}=useSession();const pageNumber=Number(search.get('answersPage'));const page=Number.isSafeInteger(pageNumber)&&pageNumber>0&&pageNumber<=2147483647?pageNumber:1;
- const detail=useHelpResource<HelpSchemas['QuestionDetailDto']>('/questions/'+encodeURIComponent(id),undefined,false,{keep:true});const replies=useHelpResource<HelpSchemas['AnswerPageDto']>('/questions/'+encodeURIComponent(id)+'/answers',{page,pageSize:20},false,{keep:true});
+ const detail=useHelpResource<HelpSchemas['QuestionDetailDto']>('/questions/'+encodeURIComponent(id),undefined,false,{keep:true,initial});const replies=useHelpResource<HelpSchemas['AnswerPageDto']>('/questions/'+encodeURIComponent(id)+'/answers',{page,pageSize:20},false,{keep:true});
  const [announcement,setAnnouncement]=useState(''),[actionFailure,setActionFailure]=useState<ApiFailure|null>(null);const notice=useRef<HTMLDivElement>(null);
  const refresh=(text:string)=>{setActionFailure(null);setAnnouncement(text);invalidateHelp();requestAnimationFrame(()=>notice.current?.focus());};
  if(detail.error)return <Container className="help-detail"><HelpFailure error={detail.error} retry={detail.retry} detail/></Container>;
