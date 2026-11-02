@@ -47,3 +47,13 @@ test('credential limits count Unicode characters without truncating or imposing 
  assert.ok(validateCredentials('register',{...draft,password:'short',confirmation:'short'},true).password);
  assert.deepEqual(validateCredentials('register',{...draft,password:' '.repeat(12),confirmation:' '.repeat(12)},true),{});
 });
+
+test('session checks share one in-flight request; later checks remain fresh after success and outage',async()=>{
+ let calls=0,resolve;const client=new AccountClient('/api',async()=>{calls++;return new Promise(r=>{resolve=r;});});
+ const first=client.refresh(),second=client.refresh();assert.equal(first,second);assert.equal(calls,1);
+ resolve(response(user));await first;assert.equal(client.snapshot().phase,'authenticated');
+ const next=client.refresh();assert.equal(calls,2);resolve(response({code:'TEMPORARY'},503));await next;
+ assert.equal(client.snapshot().phase,'unavailable');assert.equal(client.snapshot().user,null);
+ const retry=client.refresh();assert.equal(calls,3);resolve(response({code:'UNAUTHORIZED'},401));await retry;
+ assert.equal(client.snapshot().phase,'guest');
+});

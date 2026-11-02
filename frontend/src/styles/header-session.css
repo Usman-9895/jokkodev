@@ -1,0 +1,35 @@
+/* One DOM region for desktop/mobile, with the same reserved geometry in each session state. */
+.public-header-navigation { display:flex; align-items:center; gap:24px; flex:1; min-width:0; }
+.public-menu-toggle { display:none; }
+.public-account { width:320px; min-width:320px; flex:none; }
+.session-actions { display:grid; grid-template-columns:minmax(0,1fr) 152px; gap:12px; align-items:center; width:100%; min-height:44px; }
+.session-actions > .jd-button { min-width:0; min-height:44px; width:100%; padding-inline:12px; }
+.session-actions .session-identity { min-width:0; }
+.session-actions .session-username { max-width:100px; }
+.session-actions .session-notice { grid-column:1 / -1; }
+.session-placeholder-identity { display:flex; align-items:center; gap:8px; height:44px; }
+.session-placeholder-avatar { display:block; width:44px; height:44px; flex:none; border-radius:50%; background:var(--color-border); }
+.session-placeholder-name { display:block; height:12px; width:92px; border-radius:6px; background:var(--color-border); }
+.session-placeholder-button { display:block; height:44px; border-radius:8px; background:var(--color-border); }
+@media(max-width:1199px) {
+ .public-menu-toggle { display:grid; place-items:center; width:44px; height:44px; margin-left:auto; flex:none; border:0; background:transparent; color:var(--color-night); border-radius:8px; cursor:pointer; }
+ .public-header-navigation { display:none; position:absolute; z-index:10; top:100%; left:calc(-1 * var(--jd-gutter)); right:calc(-1 * var(--jd-gutter)); padding:16px; background:var(--color-surface); border-bottom:1px solid var(--color-border); box-shadow:var(--jd-shadow-card); max-height:calc(100dvh - 80px); overflow-y:auto; }
+ .public-header-navigation[data-open="true"] { display:grid; gap:16px; }
+ .public-header-navigation .public-nav { display:flex; flex-direction:column; align-items:stretch; gap:8px; }
+ .public-header-navigation .public-nav a { padding:8px 16px; min-height:44px; border-radius:8px; }
+ .public-header-navigation .public-account { display:block; width:100%; min-width:0; margin:0; }
+ .session-actions { grid-template-columns:minmax(0,1fr); gap:12px; }
+ .session-actions .session-username { max-width:calc(100vw - 140px); }
+ .public-account .session-notice { text-align:left; }
+}
+
+/* Public navigation remains usable when JavaScript is unavailable. No private identity is emitted. */
+.public-header__row:has(.public-header-noscript) { flex-wrap:wrap; padding-block:12px; }
+.public-header:has(.public-header-noscript) .public-header-navigation,
+.public-header:has(.public-header-noscript) .public-menu-toggle { display:none; }
+.public-header-noscript { display:flex; flex-wrap:wrap; gap:8px 16px; }
+.public-header-noscript a { display:inline-flex; align-items:center; min-height:44px; font-size:14px; }
+@media(prefers-reduced-motion:no-preference) and (max-width:1199px) {
+ .public-header-navigation[data-open="true"] { animation:jd-header-reveal 160ms ease-out; }
+ @keyframes jd-header-reveal { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+}

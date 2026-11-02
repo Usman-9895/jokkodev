@@ -115,6 +115,5 @@
 
 /* Lot16: concise control, existing focus treatment and brand tokens. */
 .brand-animation-control {width:44px;left:calc(50% - 22px);text-decoration:none;display:inline-grid;place-items:center;min-width:44px;min-height:44px;padding:0;border:1px solid var(--color-border);border-radius:8px;background:var(--color-surface);color:var(--color-petrol);}
-@media(min-width:768px) and (max-width:1023px){.public-header__row:has(a[href="/admin/signalements"]) {flex-wrap:wrap;row-gap:8px;padding-block:8px;}}
 
 .public-menu nav a[aria-current="page"] {font-weight:600;color:var(--color-petrol);border-bottom:2px solid var(--color-turquoise);}
