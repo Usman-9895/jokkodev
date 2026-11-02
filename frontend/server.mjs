@@ -1,6 +1,8 @@
 import {createServer} from 'node:http';
 import {parseArgs} from 'node:util';
 import next from 'next';
+import {observeWebRequest} from './server/observability.mjs';
+import {createCspReporter} from './server/csp-report.mjs';
 import {apiOrigin,apiRelay,isApiPath} from './server/api-relay.mjs';
 
 const {values}=parseArgs({options:{dev:{type:'boolean',default:false},port:{type:'string',default:'3000'},hostname:{type:'string',default:'127.0.0.1'}}});
@@ -10,7 +12,10 @@ if(!Number.isInteger(port)||port<1||port>65535||!['127.0.0.1','::1'].includes(ho
 const app=next({dev:values.dev,hostname,port});
 await app.prepare(); // Next loads .env.local before the runtime upstream is read.
 const relay=apiRelay(apiOrigin()),handle=app.getRequestHandler();
+const reportCsp=createCspReporter();
 const server=createServer((request,response)=>{
+ observeWebRequest(request,response);
+ if(request.url?.split('?')[0]==='/security/csp-report'){void reportCsp(request,response);return;}
  if(isApiPath(request.url)){relay(request,response);return;}
  handle(request,response).catch(()=>{if(!response.headersSent)response.writeHead(500);response.end();});
 });
