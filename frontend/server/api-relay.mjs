@@ -1,6 +1,7 @@
 import http from 'node:http';
 import https from 'node:https';
 import {isIP} from 'node:net';
+import {isRequestId} from './observability.mjs';
 
 export function apiOrigin(value=process.env.API_INTERNAL_ORIGIN??'http://127.0.0.1:3001') {
  let url;try{url=new URL(value);}catch{throw Error('Invalid API_INTERNAL_ORIGIN');}
@@ -28,13 +29,16 @@ export function apiRelay(origin) {
   const address=request.socket.remoteAddress;
   if(!address||!isIP(address)){unavailable(response);return;}
   const headers=endToEnd(request.headers);
+  delete headers['x-request-id']; // Never promote a visitor-chosen correlation identifier.
   for(const key of Object.keys(headers))if(key==='forwarded'||key.startsWith('x-forwarded-')||['x-real-ip','x-client-ip','true-client-ip','cf-connecting-ip','fastly-client-ip','x-cluster-client-ip'].includes(key))delete headers[key];
   // Replace after Connection-nominated headers were removed; Host never selects the upstream.
   headers.host=target.host;
   headers['x-forwarded-for']=address;
   headers['x-forwarded-proto']=request.socket.encrypted?'https':'http';
   const upstream=(target.protocol==='https:'?https:http).request({protocol:target.protocol,hostname:target.hostname.replace(/^\[|\]$/g,''),port:target.port||undefined,method:request.method,path:request.url,headers},reply=>{
-   response.writeHead(reply.statusCode??502,endToEnd(reply.headers));
+   const responseHeaders=endToEnd(reply.headers);
+   if(!isRequestId(responseHeaders['x-request-id']))delete responseHeaders['x-request-id'];
+   response.writeHead(reply.statusCode??502,responseHeaders);
    reply.on('error',()=>response.destroy());
    reply.pipe(response);
   });
