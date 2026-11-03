@@ -4,7 +4,7 @@
 .developer-product-grid .help-live-mine {padding:24px;}
 .help-pagination > .help-page-slot {display:inline-flex;align-items:center;gap:4px;border:0;background:none;min-width:0;border-radius:0;}
 .help-page-slot > a,.help-page-slot > [aria-current] {display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;border:1px solid var(--color-border);border-radius:8px;}
-.help-page-slot > [aria-current] {background:var(--color-petrol);color:white;}
+.help-page-slot > [aria-current] {background:var(--jd-action);color:var(--jd-on-action);}
 .help-pagination {flex-wrap:wrap;}
 .contribution-reply .jd-field {min-width:0;}
 .contribution-code textarea {max-width:100%;}
@@ -24,7 +24,7 @@
 .contribution-question textarea { line-height:1.6; }
 .contribution-technologies > p { font-size:14px; font-weight:600; }
 .contribution-technologies > div { display:flex; flex-wrap:wrap; gap:8px; margin-block:8px 16px; }
-.contribution-technologies .jd-button { min-height:44px; font-size:12px; padding:8px; background:var(--color-petrol); color:white; }
+.contribution-technologies .jd-button { min-height:44px; font-size:12px; padding:8px; background:var(--jd-action); color:var(--jd-on-action); }
 .contribution-code textarea { font-family:var(--font-jetbrains-mono),monospace; font-size:12px; white-space:pre; overflow-x:auto; max-width:100%; }
 .contribution-actions { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-block:16px; }
 .contribution-dirty { font-size:12px; color:var(--color-muted); }
@@ -44,8 +44,8 @@
 .help-future-actions { display:flex; flex-wrap:wrap; gap:8px 24px; }
 .contribution-reply > .jd-message { margin-block:16px; font-size:12px; }
 .contribution-reply .contribution-dialog-trigger { margin-top:12px; }
-.contribution-dialog { margin:auto; padding:24px; border:1px solid var(--color-border); border-radius:12px; max-width:480px; width:calc(100% - 32px); background:white; color:var(--color-ink); }
-.contribution-dialog::backdrop { background:rgb(3 38 58 / .55); }
+.contribution-dialog { margin:auto; padding:24px; border:1px solid var(--color-border); border-radius:12px; max-width:480px; width:calc(100% - 32px); background:var(--color-surface); color:var(--color-ink); }
+.contribution-dialog::backdrop { background:var(--jd-backdrop); }
 .contribution-dialog > p { margin-top:16px; }
 .contribution-dialog > div { display:flex; flex-wrap:wrap; gap:12px; margin-top:24px; }
 .contribution-solution { display:flex; flex-direction:column; align-items:flex-end; gap:12px; margin-bottom:16px; }
@@ -53,9 +53,9 @@
 .contribution-preview-tools { padding-block:16px; font-size:12px; }
 .contribution-preview-tools summary { min-height:44px; align-content:center; color:var(--color-petrol); cursor:pointer; }
 .contribution-preview-tools nav { display:flex; flex-wrap:wrap; gap:8px; margin-block:8px; }
-.contribution-preview-tools a { display:inline-flex; align-items:center; min-height:44px; padding:8px; border:1px solid var(--color-border); border-radius:8px; color:var(--color-petrol); background:white; }
+.contribution-preview-tools a { display:inline-flex; align-items:center; min-height:44px; padding:8px; border:1px solid var(--color-border); border-radius:8px; color:var(--color-petrol); background:var(--color-surface); }
 .contribution-mine { max-width:1440px; margin:auto; display:grid; grid-template-columns:200px minmax(0,1fr); }
-.contribution-sidebar { display:grid; align-content:start; gap:8px; border-right:1px solid var(--color-border); background:white; padding:24px 16px; font-size:13px; }
+.contribution-sidebar { display:grid; align-content:start; gap:8px; border-right:1px solid var(--color-border); background:var(--color-surface); padding:24px 16px; font-size:13px; }
 .contribution-sidebar span { padding:12px; color:var(--color-muted); min-height:44px; }
 .contribution-sidebar [aria-current] { background:var(--jd-surface-info); color:var(--color-petrol); font-weight:600; border-radius:8px; }
 .contribution-mine > section { padding:32px; min-width:0; }
@@ -63,7 +63,7 @@
 .contribution-mine-heading h1 { font-size:40px; }
 .contribution-mine-heading p { color:var(--color-muted); }
 .contribution-mine > section > .jd-message { font-size:12px; }
-.contribution-tabs { display:flex; margin-block:24px; border:1px solid var(--color-border); border-radius:12px; background:white; }
+.contribution-tabs { display:flex; margin-block:24px; border:1px solid var(--color-border); border-radius:12px; background:var(--color-surface); }
 .contribution-tabs a { display:flex; justify-content:center; align-items:center; flex:1; min-height:44px; padding:16px; font-size:14px; }
 .contribution-tabs [aria-current] { border-bottom:2px solid var(--color-turquoise); color:var(--color-petrol); font-weight:600; }
 .contribution-mine-list { display:grid; gap:16px; }
@@ -86,8 +86,8 @@
 
 /* Lot 17: owner deletion, separate from moderation. */
 .owner-delete-button {color:var(--color-danger);border-color:var(--color-danger);}
-.owner-delete-confirm {background:var(--color-danger);border-color:var(--color-danger);color:var(--color-surface);}
+.owner-delete-confirm {background:var(--jd-danger-action);border-color:var(--color-danger);color:var(--jd-on-action);}
 .owner-delete-dialog {max-height:calc(100dvh - 32px);overflow:auto;overflow-wrap:anywhere;}
 
 .jd-button.owner-delete-button:hover:not(:disabled) {background:var(--jd-surface-error);}
-.jd-button.owner-delete-confirm:hover:not(:disabled) {background:var(--color-danger);filter:brightness(.9);}
+.jd-button.owner-delete-confirm:hover:not(:disabled) {background:var(--jd-danger-action);filter:brightness(.9);}

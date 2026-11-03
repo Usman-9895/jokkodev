@@ -11,8 +11,8 @@
 .jd-button { display: inline-flex; align-items: center; justify-content: center; gap: var(--jd-space-2); min-height: var(--jd-control-height); min-width: var(--jd-control-height); padding: 10px 20px; border: 1px solid transparent; border-radius: var(--jd-radius-button); font-size: var(--jd-text-small); font-weight: var(--jd-weight-semibold); line-height: var(--jd-leading-small); text-align: center; cursor: pointer; transition: background-color var(--jd-duration), border-color var(--jd-duration); }
 .jd-button svg, .jd-button .jd-spinner { flex: none; }
 .jd-button, .jd-action-link { max-width: 100%; overflow-wrap: anywhere; }
-.jd-button--primary { color: white; background: var(--color-petrol); }
-.jd-button--primary:hover:not(:disabled) { background: var(--color-night); }
+.jd-button--primary { color:var(--jd-on-action); background:var(--jd-action); }
+.jd-button--primary:hover:not(:disabled) { background: var(--jd-action-hover); }
 .jd-button--secondary { background: var(--color-surface); border-color: var(--jd-control-border); color: var(--color-petrol); }
 .jd-button--secondary:hover:not(:disabled), .jd-button--quiet:hover:not(:disabled) { background: var(--jd-surface-info); }
 .jd-button--quiet { color: var(--color-petrol); }
@@ -36,8 +36,8 @@
 .jd-control--textarea { resize: vertical; }
 .jd-control--select { cursor: pointer; }
 .jd-card { min-width: 0; padding: var(--jd-space-5); border: 1px solid var(--color-border); border-radius: var(--jd-radius-card); background: var(--color-surface); box-shadow: var(--jd-shadow-card); overflow-wrap: anywhere; }
-.jd-card--help { background: var(--jd-surface-help); border-color: color-mix(in srgb, var(--color-turquoise) 18%, white); }
-.jd-card--project { background: var(--jd-surface-project); border-color: color-mix(in srgb, var(--color-warning) 16%, white); }
+.jd-card--help { background: var(--jd-surface-help); border-color: color-mix(in srgb, var(--color-turquoise) 18%, var(--color-surface)); }
+.jd-card--project { background: var(--jd-surface-project); border-color: color-mix(in srgb, var(--color-warning) 16%, var(--color-surface)); }
 .jd-badge { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 4px 8px; border-radius: var(--jd-radius-badge); font-size: var(--jd-text-caption); font-weight: var(--jd-weight-regular); line-height: var(--jd-leading-small); overflow-wrap: anywhere; }
 .jd-badge svg { flex: none; width: 14px; height: 14px; }
 .jd-badge--technology { background: var(--color-background); color: var(--color-muted); border: 1px solid var(--color-border); }

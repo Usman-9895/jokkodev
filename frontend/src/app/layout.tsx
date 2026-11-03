@@ -15,5 +15,10 @@ export const metadata: Metadata = {
   ] },
 };
 export default function RootLayout({ children }: { children: ReactNode }) {
-  return <html lang="fr" className={`${inter.variable} ${sourceSerif.variable} ${jetbrainsMono.variable}`}><body><a href="#contenu" className="jd-skip-link">Aller au contenu</a><SessionProvider>{children}</SessionProvider></body></html>;
+  return <html lang="fr" suppressHydrationWarning className={`${inter.variable} ${sourceSerif.variable} ${jetbrainsMono.variable}`}><head>
+    <meta name="color-scheme" content="light"/>
+    {/* Same-origin blocking file resolves the theme before paint, retaining static HTML and CSP. */}
+    {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+    <script src="/theme-init.js"/>
+  </head><body><a href="#contenu" className="jd-skip-link">Aller au contenu</a><SessionProvider>{children}</SessionProvider></body></html>;
 }

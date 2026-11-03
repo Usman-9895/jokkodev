@@ -1,0 +1,37 @@
+/* These are the supplied logo variants, selected by CSS before hydration. */
+.jd-brand img.jd-brand__dark { display:none; }
+html[data-theme="dark"] .jd-brand img.jd-brand__light { display:none; }
+html[data-theme="dark"] .jd-brand img.jd-brand__dark { display:block; }
+
+/* Reference: light pill with sun on the right; dark pill with moon on the left. */
+.theme-selector { --theme-width:128px; --theme-thumb:36px; --theme-motion:600ms; --theme-fade:400ms; position:relative; display:grid; align-items:center; flex:none; width:var(--theme-width); min-height:44px; padding:3px; color:var(--jd-brand-night); background:var(--jd-switch-light); border:1px solid var(--jd-control-border); border-radius:999px; cursor:pointer; }
+.theme-selector__label { display:block; width:calc(100% - var(--theme-thumb)); padding-inline:5px; font-size:12px; font-weight:700; letter-spacing:.04em; line-height:1.2; text-align:center; text-transform:uppercase; transform:translateX(0); }
+.theme-selector__thumb { position:absolute; inset-inline-start:3px; top:50%; display:grid; place-items:center; width:var(--theme-thumb); height:var(--theme-thumb); border-radius:50%; color:var(--jd-brand-night); background:var(--jd-on-action); border:1px solid var(--jd-switch-thumb-border); transform:translate(calc(var(--theme-width) - var(--theme-thumb) - 8px),-50%); }
+.theme-selector__thumb svg { grid-area:1 / 1; width:26px; height:26px; }
+.theme-selector__sun { opacity:1; transform:rotate(0) scale(1); }
+.theme-selector__moon { opacity:0; transform:rotate(-20deg) scale(.8); }
+.theme-selector[data-mode="dark"] { background:var(--jd-switch-dark); color:var(--jd-on-action); }
+.theme-selector[data-mode="dark"] .theme-selector__thumb { transform:translate(0,-50%); }
+.theme-selector[data-mode="dark"] .theme-selector__label { transform:translateX(var(--theme-thumb)); }
+.theme-selector[data-mode="dark"] .theme-selector__sun { opacity:0; transform:rotate(20deg) scale(.8); }
+.theme-selector[data-mode="dark"] .theme-selector__moon { opacity:1; transform:rotate(0) scale(1); }
+.theme-selector:disabled { opacity:.55; cursor:default; }
+/* User-triggered only: restoring a stored theme must not animate at hydration. */
+@media(prefers-reduced-motion:no-preference) {
+ .theme-selector[data-animate="true"] .theme-selector__thumb,
+ .theme-selector[data-animate="true"] .theme-selector__label { transition:transform var(--theme-motion) ease-in-out; }
+ .theme-selector[data-animate="true"] .theme-selector__thumb svg { transition:opacity var(--theme-fade) ease-in-out,transform var(--theme-motion) ease-in-out; }
+}
+@media(min-width:1200px) {
+ .public-header__row,.public-header-navigation { gap:16px; }
+ .public-header-navigation .public-nav { gap:12px; flex-shrink:1; flex-wrap:wrap; row-gap:0; min-width:0; }
+}
+@media(max-width:1199px) {
+ .public-header-navigation > .theme-selector { justify-self:end; }
+ .public-header__row { gap:12px; }
+}
+/* Kept as a white plate for the approved raster asset, without recoloring it. */
+.brand-logo-card { background:var(--jd-logo-plate); border-color:var(--jd-logo-plate); }
+.account-original { background:var(--jd-logo-plate); }
+.jd-button--primary { border-color:var(--jd-action-border); }
+.jd-not-found__header { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }

@@ -6,6 +6,7 @@ import { primaryNavigation } from '../../lib/layout/navigation';
 import { HeaderSession } from '../accounts/header-session';
 import { Brand } from './brand';
 import { Container } from './container';
+import { ThemeSelector } from './theme-selector';
 
 export function PublicHeader() {
   const panel = useRef<HTMLDivElement>(null);
@@ -36,6 +37,7 @@ export function PublicHeader() {
     <div id="navigation-principale" ref={panel} className="public-header-navigation" data-open={open}>
       <nav className="public-nav" aria-label="Navigation principale"><PrimaryLinks close={() => close()} /></nav>
       <div className="public-account"><HeaderSession close={() => close(true)} /></div>
+      <ThemeSelector/>
     </div>
     <noscript><nav className="public-header-noscript" aria-label="Navigation sans JavaScript">{primaryNavigation(undefined, '').map(link => <Link key={link.href} href={link.href}>{link.label}</Link>)}<Link href="/connexion">Connexion</Link><Link href="/inscription">S’inscrire</Link></nav></noscript>
   </Container></header>;
