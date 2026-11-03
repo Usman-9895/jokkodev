@@ -42,8 +42,8 @@
 .help-tips li > span { display: grid; place-items: center; width: 36px; height: 36px; flex: none; border-radius: 50%; color: var(--color-petrol); background: var(--jd-surface-info); font-weight: 700; }
 .help-tips h3 { font-family: var(--font-source-serif); font-weight: 700; font-size: 15px; }
 .help-pagination { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-block: 16px; }
-.help-pagination a, .help-pagination > span { display: grid; place-items: center; min-width: 44px; min-height: 44px; border: 1px solid var(--color-border); border-radius: 8px; background: white; }
-.help-pagination [aria-current] { background: var(--color-petrol); color: white; border-color: var(--color-petrol); }
+.help-pagination a, .help-pagination > span { display: grid; place-items: center; min-width: 44px; min-height: 44px; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-surface); }
+.help-pagination [aria-current] { background:var(--jd-action); color:var(--jd-on-action); border-color: var(--color-petrol); }
 .help-pagination [aria-disabled] { color: var(--color-muted); opacity: .5; }
 .help-pagination a:hover { border-color: var(--color-petrol); color: var(--color-petrol); }
 .help-read-state { padding: 48px 24px; text-align: center; }
@@ -71,12 +71,12 @@
 .help-copy { display:inline-flex; flex-wrap:wrap; align-items:center; gap:8px; }
 .help-copy .jd-button { padding:8px; font-size:12px; }
 .help-copy-feedback { font-size:11px; overflow-wrap:anywhere; }
-.help-code pre { overflow-x: auto; white-space: pre; max-width: 100%; padding: 16px; font-size: 12px; line-height: 1.6; background: white; font-family: var(--font-jetbrains-mono),monospace; }
+.help-code pre { overflow-x: auto; white-space: pre; max-width: 100%; padding: 16px; font-size: 12px; line-height: 1.6; background: var(--color-surface); font-family: var(--font-jetbrains-mono),monospace; }
 .help-code pre:focus-visible { outline-offset: -3px; }
 .help-answers { margin-top: 24px; }
 .help-answers > h2 { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
 .help-answer { margin-bottom: 12px; }
-.help-answer--accepted { background: var(--jd-surface-success); border-color: color-mix(in srgb,var(--color-success) 24%,white); }
+.help-answer--accepted { background: var(--jd-surface-success); border-color: color-mix(in srgb,var(--color-success) 24%,var(--color-surface)); }
 .help-answer-head { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
 .help-answer-head .jd-badge { margin-left: auto; }
 .help-no-answers p, .help-future-actions p { margin-top: 12px; font-size: 14px; color: var(--color-muted); }

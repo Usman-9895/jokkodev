@@ -68,3 +68,15 @@ Cette route n’apparaît pas dans la navigation publique et renvoie 404 en prod
 Réutiliser Container, Brand, Heading, actions et cartes ; créer ensuite la composition précise de l’accueil avec ses retours à la ligne et variantes mobile, sans recopier le catalogue comme page publique. Valider l’accueil avec Ousmane avant généralisation aux autres écrans.
 
 Asset requis : illustration autonome approuvée de l’Afrique/réseau/logo, absente du skill. Choisir avec Serge les contrats des aperçus avant intégration ; tout contenu de démonstration futur doit rester isolé et autorisé par le lot. Ne pas inventer d’endpoints, de compteur, de statut de session ou de Teranga Points. Confidentialité et contact définitif restent différés.
+
+## Lot D — couleurs selon le thème
+
+Le [guide du thème et de sa recette](color-themes.md) complète ce catalogue historique. Deux modes : Clair (défaut) et Sombre, indépendants de la session et du système. La préférence seule est conservée dans localStorage. Le bouton natif en forme de pilule est placé après les actions du compte (« S’inscrire » pour un visiteur), avec nom accessible, mode visible, focus et cible prévue de 128 × 44 px. Soleil à droite en Clair, lune à gauche en Sombre : nouvelle référence fournie par Ousmane. L'option Système est retirée, y compris son suivi de préférence système.
+
+Les valeurs de marque originales sont isolées dans `--jd-brand-*`. Les tokens `--color-*` désignent des usages sémantiques : `light-dark()` choisit selon `color-scheme`. Texte, liens, fonds, champs, états, bordures et ombres s'adaptent ensemble. Les actions utilisent `--jd-action`, `--jd-action-hover`, `--jd-on-action` et `--jd-danger-action`, distincts des liens éclaircis du thème sombre. Les surfaces dérivées se mélangent avec `--color-surface`, pas du blanc fixe.
+
+Brand accepte `theme="auto"` par défaut, ou `light`/`dark` explicitement. Auto utilise les SVG validés sans modification ; la plaque de l'illustration raster reste blanche. Le nuancier local indique les valeurs clair / sombre. Pas d'animation globale de changement de thème ; seul le bouton anime sa pastille en 600 ms après activation, avec fondu des icônes de 400 ms, sauf en réduction des mouvements. Pas d'animation initiale à l'hydratation.
+
+`node scripts/check-theme-contrast.mjs` vérifie les paires sémantiques ; les mesures et captures au navigateur restent distinctes. L'initialisation externe préserve le rendu statique et les politiques du lot C, sans ajout d'inline ou de nonce. La validation visuelle Clair/Sombre d'Ousmane et les limites maintenues de la vérification sont détaillées dans le guide.
+
+La [recette visuelle complémentaire](color-themes-visual-review.md) couvre désormais les quatre largeurs, les interactions clavier et les 44 paires calculées par Chromium. Les deux échantillons de marque conservent intentionnellement leurs fonds clair et bleu nuit, avec leurs variantes explicites ; ils ne suivent pas le fond du catalogue. Les avertissements d'hydratation causés par l'injection Kaspersky dans les exemples de développement restent documentés.

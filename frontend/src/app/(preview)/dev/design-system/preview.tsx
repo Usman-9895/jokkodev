@@ -3,16 +3,17 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Brand } from '../../../../components/layout/brand';
+import {ThemeSelector} from '../../../../components/layout/theme-selector';
 import { Container } from '../../../../components/layout/container';
 import { ActionLink, Avatar, Button, Card, Heading, Icon, LoadingIndicator, Message, SelectField, Skeleton, StatusBadge, TechnologyBadge, TextArea, TextField } from '../../../../components/ui';
 import './preview.css';
 
 const colors = [
-  ['Bleu nuit', 'night', '#03263A'], ['Bleu pétrole', 'petrol', '#006B80'],
-  ['Turquoise', 'turquoise', '#009DA8'], ['Texte', 'ink', '#172B3A'],
-  ['Texte secondaire', 'muted', '#526674'], ['Fond', 'background', '#F4F7F8'],
-  ['Surface', 'surface', '#FFFFFF'], ['Bordure', 'border', '#D6E1E5'],
-  ['Succès', 'success', '#18734B'], ['Avertissement', 'warning', '#8A5600'], ['Erreur', 'danger', '#B42318'],
+  ['Titres', 'night', '#03263A / #E7F4FA'], ['Liens', 'petrol', '#006B80 / #6AD8E5'],
+  ['Turquoise', 'turquoise', '#009DA8 / #3BC4CC'], ['Texte', 'ink', '#172B3A / #DCE9EE'],
+  ['Texte secondaire', 'muted', '#526674 / #AEC2CC'], ['Fond', 'background', '#F4F7F8 / #071C29'],
+  ['Surface', 'surface', '#FFFFFF / #102B3B'], ['Bordure', 'border', '#D6E1E5 / #355365'],
+  ['Succès', 'success', '#18734B / #83DAB1'], ['Avertissement', 'warning', '#8A5600 / #F5CA7A'], ['Erreur', 'danger', '#B42318 / #FFA89B'],
 ] as const;
 
 export function DesignSystemPreview() {
@@ -21,12 +22,12 @@ export function DesignSystemPreview() {
   const [invalid, setInvalid] = useState(false);
 
   return <>
-    <header className="preview-header"><Container className="preview-header__content"><Brand /><span>Lot 1 · Composants communs</span><span className="preview-dev-label">Développement uniquement</span></Container></header>
+    <header className="preview-header"><Container className="preview-header__content"><Brand /><span>Composants communs</span><ThemeSelector/><span className="preview-dev-label">Développement uniquement</span></Container></header>
     <main id="contenu" tabIndex={-1} className="preview-main">
       <Container>
         <p className="preview-eyebrow">JokkoDev · Base visuelle</p>
         <Heading as="h1" size="page">Les fondations de l’interface.</Heading>
-        <p className="preview-intro">Un aperçu de démonstration pour relire les styles, les composants et leurs états. Aucune donnée n’est enregistrée, aucune API n’est appelée.</p>
+        <p className="preview-intro">Un aperçu de démonstration pour relire les styles, les composants et leurs états. Seule la préférence de thème est conservée localement ; aucune action métier n’est réalisée.</p>
         <nav aria-label="Sections de l’aperçu" className="preview-nav">{[['marque', 'Marque'], ['actions', 'Actions'], ['champs', 'Champs'], ['cartes', 'Cartes'], ['etats', 'États']].map(([id, title]) => <a key={id} href={`#${id}`}>{title}</a>)}</nav>
 
         <section id="marque" className="preview-section" aria-labelledby="marque-title">
@@ -34,7 +35,7 @@ export function DesignSystemPreview() {
           <div className="preview-grid">
             <Card className="preview-type-card"><p className="preview-label">Source Serif 4 · titre éditorial</p><Heading as="h3" size="display">Connectons les talents,<br />partageons les solutions.</Heading><p className="preview-type-body">L’espace d’entraide et de collaboration des développeurs africains.</p><p className="preview-label">Inter · interface, 400 / 600 / 700</p><p>Des textes lisibles, une <strong>hiérarchie claire</strong> et des actions faciles à repérer.</p><p className="preview-label">JetBrains Mono · code</p><pre className="preview-code"><code>{'const communaute = "JokkoDev";\n// Exemple typographique uniquement'}</code></pre></Card>
             <div className="preview-stack">
-              <Card><p className="preview-label">Sur fond clair</p><div className="preview-logos"><Brand /><Brand variant="icon" /><Image src="/brand/jokkodev-favicon.svg" alt="Favicon JokkoDev sur fond clair" width={32} height={32} /></div><p className="preview-caption">Signature 160 px · monogramme 48 px · favicon 32 px. Zone libre préservée.</p></Card>
+              <Card className="preview-light"><p className="preview-label">Sur fond clair</p><div className="preview-logos"><Brand theme="light" /><Brand variant="icon" theme="light" /><Image src="/brand/jokkodev-favicon.svg" alt="Favicon JokkoDev sur fond clair" width={32} height={32} /></div><p className="preview-caption">Signature 160 px · monogramme 48 px · favicon 32 px. Zone libre préservée.</p></Card>
               <Card className="preview-dark"><p className="preview-label">Sur fond bleu nuit</p><div className="preview-logos"><Brand theme="dark" /><Brand variant="icon" theme="dark" /><Image src="/brand/jokkodev-favicon-fond-sombre.svg" alt="Favicon JokkoDev sur fond sombre" width={32} height={32} /></div><p className="preview-caption">Variantes originales, sans recoloration ni modification du lettrage.</p></Card>
             </div>
           </div>

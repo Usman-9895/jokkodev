@@ -19,6 +19,33 @@
 }
 
 :root {
+  /* Brand originals stay fixed; semantic colors follow the resolved color scheme. */
+  color-scheme: light;
+  --jd-brand-night: #03263A;
+  --jd-brand-petrol: #006B80;
+  --jd-brand-turquoise: #009DA8;
+  --jd-logo-plate: #FFFFFF;
+  --color-night: light-dark(#03263A, #E7F4FA);
+  --color-petrol: light-dark(#006B80, #6AD8E5);
+  --color-turquoise: light-dark(#009DA8, #3BC4CC);
+  --color-ink: light-dark(#172B3A, #DCE9EE);
+  --color-muted: light-dark(#526674, #AEC2CC);
+  --color-background: light-dark(#F4F7F8, #071C29);
+  --color-surface: light-dark(#FFFFFF, #102B3B);
+  --color-border: light-dark(#D6E1E5, #355365);
+  --color-success: light-dark(#18734B, #83DAB1);
+  --color-warning: light-dark(#8A5600, #F5CA7A);
+  --color-danger: light-dark(#B42318, #FFA89B);
+  --jd-violet: light-dark(#6550A0, #C7B4FF);
+  --jd-action: #006B80;
+  --jd-action-hover: light-dark(#03263A, #00586C);
+  --jd-action-border: light-dark(#006B80, #6AD8E5);
+  --jd-on-action: #FFFFFF;
+  --jd-switch-light: #E9EEF1;
+  --jd-switch-dark: #172B3A;
+  --jd-switch-thumb-border: #A7B6BE;
+  --jd-danger-action: light-dark(#B42318, #A92C26);
+  --jd-backdrop: rgb(0 10 18 / 70%);
   --jd-space-1: 4px;
   --jd-space-2: 8px;
   --jd-space-3: 12px;
@@ -30,7 +57,10 @@
   --jd-radius-button: 8px;
   --jd-radius-card: 12px;
   --jd-radius-badge: 6px;
-  --jd-shadow-card: 0 2px 8px rgb(3 38 58 / 4%);
+  --jd-shadow-card: 0 2px 8px light-dark(rgb(3 38 58 / 4%), rgb(0 0 0 / 24%));
+  --jd-shadow-lift: 0 4px 16px light-dark(rgb(3 38 58 / 7%), rgb(0 0 0 / 32%));
+  --jd-shadow-brand: 0 8px 24px light-dark(rgb(3 38 58 / 16%), rgb(0 0 0 / 40%));
+  --jd-shadow-medallion: 0 2px 8px light-dark(rgb(3 38 58 / 8%), rgb(0 0 0 / 32%));
   --jd-text-display: clamp(2rem, 1.25rem + 3vw, 3.5rem);
   --jd-text-page: clamp(1.75rem, 1.25rem + 2vw, 2.5rem);
   --jd-text-section: clamp(1.375rem, 1.1rem + 1vw, 1.875rem);
@@ -51,14 +81,18 @@
   --jd-container: 72rem;
   --jd-gutter: 16px;
   --jd-duration: 160ms;
-  --jd-surface-help: color-mix(in srgb, var(--color-turquoise) 5%, white);
-  --jd-surface-project: color-mix(in srgb, var(--color-warning) 5%, white);
-  --jd-surface-info: color-mix(in srgb, var(--color-petrol) 7%, white);
-  --jd-surface-success: color-mix(in srgb, var(--color-success) 8%, white);
-  --jd-surface-warning: color-mix(in srgb, var(--color-warning) 8%, white);
-  --jd-surface-error: color-mix(in srgb, var(--color-danger) 7%, white);
+  --jd-surface-help: color-mix(in srgb, var(--color-turquoise) 5%, var(--color-surface));
+  --jd-surface-project: color-mix(in srgb, var(--color-warning) 5%, var(--color-surface));
+  --jd-surface-info: color-mix(in srgb, var(--color-petrol) 7%, var(--color-surface));
+  --jd-surface-success: color-mix(in srgb, var(--color-success) 8%, var(--color-surface));
+  --jd-surface-warning: color-mix(in srgb, var(--color-warning) 8%, var(--color-surface));
+  --jd-surface-error: color-mix(in srgb, var(--color-danger) 7%, var(--color-surface));
+  --jd-surface-violet: color-mix(in srgb, var(--jd-violet) 9%, var(--color-surface));
   --jd-control-border: var(--color-muted);
 }
+
+html[data-theme="light"] { color-scheme: light; }
+html[data-theme="dark"] { color-scheme: dark; }
 
 @media (min-width: 48rem) {
   :root { --jd-gutter: 32px; }

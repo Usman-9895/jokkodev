@@ -1,5 +1,11 @@
 # Bilan central d’intégration frontend — pour Serge
 
+## Lot D — thèmes Clair/Sombre, recette locale validée visuellement
+
+Base vérifiée `34866fafc22bdda8405eb588cdf12d71435d8bf3`, branche isolée `feature/frontend-color-themes`. Deux modes Clair (défaut)/Sombre, préférence locale seule, bouton pilule après les actions du compte, tokens sémantiques et variantes de marque existantes. L'option Système initiale est supprimée à la demande d'Ousmane. Initialisation externe avant le corps, sans modifier backend/contrat/dépendances, politiques CSP ou rendu statique. [Guide, recette, contrôles et limites](color-themes.md).
+
+Lint, TypeScript, builds et tests locaux réussis ; contraste calculé des tokens vérifié. La [recette navigateur complémentaire](color-themes-visual-review.md) couvre désormais 120 vues principales aux quatre largeurs avec Chromium installé, 44 paires de contraste calculées et les interactions du thème. Le défaut de fond du panneau de logos clair est corrigé et recontrôlé. Les avertissements d'hydratation dus à une injection Kaspersky dans les exemples de développement sont conservés et documentés ; recontrôle à prévoir sans cette injection. Docker indisponible, aucune base d'équipe utilisée ; les aperçus de rôle restent des démonstrations isolées, pas une recette authentifiée. Ousmane a validé visuellement Clair/Sombre uniquement et autorisé commit, push et PR normale vers develop. Aucun accès VPS, fusion, fusion automatique ou déploiement.
+
 État du lot 18 (validation fonctionnelle en attente) : socle backend #10–#18 et correctif #20 fusionnés, #19 exclue. Comptes, session, profils, JokkoHelp, JokkoProjects, candidatures, tableau de bord et modération minimale raccordés aux endpoints réels. Le frontend n’est pas déclaré prêt à la production. Sources contractuelles : [guide API](../api/frontend-integration.md), [sessions/CSRF](../decisions/003-sessions-csrf.md). Détails : [comptes/profils lot 10](auth-integration.md) et [JokkoHelp lot 11](jokkohelp-integration.md) et [JokkoProjects lot 12](jokkoprojects-integration.md) et [tableau de bord/candidatures lot 13](dashboard-applications-integration.md) et [modération lot 14](moderation-integration.md).
 
 ## Points d’intégration et références

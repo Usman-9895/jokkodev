@@ -42,7 +42,7 @@
 .project-form-fields .jd-field__help { font-size:12px; }
 .project-skills > p,.project-recruitment legend { font-size:14px; font-weight:600; }
 .project-skills > div { display:flex; flex-wrap:wrap; gap:8px; margin-block:12px; }
-.project-skills > div button { background:var(--color-petrol); color:white; padding:8px 12px; min-height:44px; }
+.project-skills > div button { background:var(--jd-action); color:var(--jd-on-action); padding:8px 12px; min-height:44px; }
 .project-recruitment { border:0; padding:0; min-width:0; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .project-recruitment legend { padding-bottom:12px; }
 .project-recruitment label { display:flex; align-items:start; gap:12px; padding:16px; border:1px solid var(--color-border); border-radius:8px; cursor:pointer; }
