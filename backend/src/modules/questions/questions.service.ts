@@ -11,6 +11,8 @@ import { technologySelect } from '../technologies/technologies.dto';
 import { TechnologiesService } from '../technologies/technologies.service';
 import { searchPage } from '../../common/http/search';
 import { publicAuthorSelect, toPublicAuthor } from '../users/projections';
+import type {PendingQuestionPublicationDto,QuestionPublicationResultDto} from './questions.dto';
+import {publicationHash,publicationTime,PUBLICATION_RECEIPT_MS} from './publication-policy';
 import { QUESTION_BODY_MAX, type AnswerDto, type AnswerWithQuestionDto, type CreateAnswerDto, type CreateQuestionDto, type OwnQuestionQueryDto, type OwnQuestionSummaryDto, type QuestionDetailDto, type QuestionListQueryDto, type QuestionSummaryDto, type UpdateAnswerDto, type UpdateQuestionDto } from './questions.dto';
 
 const HOUR = 60 * 60 * 1000;
@@ -69,6 +71,32 @@ export class QuestionsService {
       select: detailSelect
     });
     return this.toDetail(question, user);
+  }
+
+  async publishPending(user:AuthenticatedUser,input:PendingQuestionPublicationDto):Promise<QuestionPublicationResultDto>{
+    publicationTime(input.idempotencyKey);
+    const hash=publicationHash(input.question),action='CREATE_QUESTION';
+    return this.database.prisma.$transaction(async tx=>{
+      // Same account lock also serializes concurrent suspension/deletion decisions.
+      await tx.$queryRaw`SELECT id FROM "User" WHERE id=${user.id}::uuid FOR UPDATE`;
+      const active=await tx.user.findUnique({where:{id:user.id},select:{status:true}});
+      if(!active||active.status!=='ACTIVE')throw new ApiException(401,'UNAUTHORIZED','Compte indisponible.');
+      const at=publicationTime(input.idempotencyKey);
+      const previous=await tx.questionPublication.findUnique({where:{userId_action_key:{userId:user.id,action,key:input.idempotencyKey}}});
+      if(previous){
+        if(previous.payloadHash!==hash)throw new ApiException(409,'IDEMPOTENCY_CONTENT_CONFLICT','Cette clé correspond à un autre contenu. Reprends la copie initiale, sans changer sa clé.');
+        // No body snapshot: never resurface a subsequently hidden/deleted question.
+        return {questionId:previous.questionId,confirmedAt:previous.createdAt.toISOString()};
+      }
+      this.limiter.consume(`question:${user.id}`,10,HOUR);
+      const q=input.question;
+      const content={title:cleanText(q.title),context:cleanText(q.context),expected:cleanText(q.expected),actual:cleanText(q.actual),attempts:cleanText(q.attempts),...codeFields(undefined,q)};
+      assertBodyLength(content);
+      await this.technologies.assertExist(q.technologyIds,'technologyIds');
+      const question=await tx.question.create({data:{...content,authorId:user.id,technologies:{create:q.technologyIds.map(technologyId=>({technologyId}))}},select:{id:true}});
+      const receipt=await tx.questionPublication.create({data:{userId:user.id,action,key:input.idempotencyKey,payloadHash:hash,questionId:question.id,retainUntil:new Date(at+PUBLICATION_RECEIPT_MS)}});
+      return {questionId:receipt.questionId,confirmedAt:receipt.createdAt.toISOString()};
+    });
   }
 
   async update(user: AuthenticatedUser, id: string, input: UpdateQuestionDto): Promise<QuestionDetailDto> {

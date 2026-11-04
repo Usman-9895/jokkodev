@@ -28,7 +28,8 @@
     "test:smoke": "node scripts/smoke.mjs",
     "reputation:rebuild": "pnpm --filter @jokkodev/backend reputation:rebuild",
     "test:security-ip": "pnpm --filter @jokkodev/backend build && node scripts/security/ip-regression.mjs",
-    "retention": "pnpm --filter @jokkodev/backend retention"
+    "retention": "pnpm --filter @jokkodev/backend retention",
+    "publications:prune": "pnpm --filter @jokkodev/backend publications:prune"
   },
   "devDependencies": {
     "typescript": "6.0.3",

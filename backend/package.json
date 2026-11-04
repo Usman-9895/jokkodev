@@ -20,7 +20,8 @@
     "api:export": "pnpm build && node dist/src/export-openapi.js",
     "photos:cleanup": "pnpm build && node dist/src/cli/photos-cleanup.js",
     "reputation:rebuild": "pnpm build && node dist/src/cli/reputation.js",
-    "retention": "node dist/src/cli/retention.js"
+    "retention": "node dist/src/cli/retention.js",
+    "publications:prune": "pnpm build && node dist/src/cli/publications-prune.js"
   },
   "dependencies": {
     "@nestjs/common": "12.1.2",

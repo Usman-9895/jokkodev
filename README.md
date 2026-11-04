@@ -1,5 +1,7 @@
 # JokkoDev — socle local
 
+Lot F2 validé localement par Ousmane, publication en PR autorisée : [question en attente, reprise et aperçu](docs/frontend/question-pending-publication.md), [décision d'idempotence et migration additive](docs/decisions/010-question-pending-publication.md), [recette PostgreSQL et navigateur](docs/frontend/question-pending-publication-verification.md). Envoi toujours volontaire, copie locale sept jours, reçu serveur minimal éligible à purge après huit jours. Aucun déploiement de F2 effectué.
+
 Conservation préparée (non activée) : [décision 007](docs/decisions/007-data-retention.md), [commandes, matrice et exploitation](docs/operations/data-retention.md), [recette](docs/operations/data-retention-verification.md). `pnpm retention` simule par défaut, avec destination explicitement confirmée ; aucun traitement ni email déclenché au démarrage.
 
 Plateforme panafricaine d’entraide et de collaboration, portée par DevTeranga pour la CADEV 2026. Cette livraison prépare le backend de comptes, contenus, projets, candidatures et modération, avec contrats générés. Les lots 10 à 14 raccordent comptes, sessions, profils, JokkoHelp, JokkoProjects, tableau de bord, candidatures et modération minimale aux endpoints réels. L’aptitude à la production reste non validée. Dépôt de référence : [Usman-9895/jokkodev](https://github.com/Usman-9895/jokkodev).

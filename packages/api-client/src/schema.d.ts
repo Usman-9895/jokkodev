@@ -324,6 +324,22 @@ export interface paths {
         patch: operations["QuestionsController_update"];
         trace?: never;
     };
+    "/api/v1/questions/publications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["QuestionsController_publishPending"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/questions/{id}/answers": {
         parameters: {
             query?: never;
@@ -954,6 +970,24 @@ export interface components {
             acceptedAnswer?: components["schemas"]["AnswerDto"] | null;
             /** @description La session courante est l’auteur : modification et choix de la solution possibles. */
             viewerIsAuthor: boolean;
+        };
+        PendingQuestionPublicationDto: {
+            /** @description Clé jdq1.<timestamp UTC millisecondes>.<UUID v4>. Reprise sept jours ; ne jamais la régénérer pour une réponse perdue. */
+            idempotencyKey: string;
+            /** @description Copie exacte et figée de la question à publier. */
+            question: components["schemas"]["CreateQuestionDto"];
+        };
+        QuestionPublicationResultDto: {
+            /**
+             * Format: uuid
+             * @description Identifiant confirmé par le serveur, même lors d’une reprise de la même demande.
+             */
+            questionId: string;
+            /**
+             * Format: date-time
+             * @description Date de confirmation initiale ; inchangée lors d’une reprise.
+             */
+            confirmedAt: string;
         };
         UpdateQuestionDto: {
             title?: string;
@@ -2098,6 +2132,56 @@ export interface operations {
             };
             /** @description NOT_AUTHOR. */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    QuestionsController_publishPending: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PendingQuestionPublicationDto"];
+            };
+        };
+        responses: {
+            /** @description Publication atomique ou résultat initial retrouvé. Session et CSRF requis à chaque tentative. Conflit 409 si contenu différent, 410 après sept jours. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestionPublicationResultDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description IDEMPOTENCY_CONTENT_CONFLICT : clé déjà liée à un autre contenu. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description PUBLICATION_REQUEST_EXPIRED : reprise expirée après sept jours, vérifier Mes questions. */
+            410: {
                 headers: {
                     [name: string]: unknown;
                 };

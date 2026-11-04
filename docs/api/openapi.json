@@ -982,6 +982,72 @@
         ]
       }
     },
+    "/api/v1/questions/publications": {
+      "post": {
+        "operationId": "QuestionsController_publishPending",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PendingQuestionPublicationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Publication atomique ou résultat initial retrouvé. Session et CSRF requis à chaque tentative. Conflit 409 si contenu différent, 410 après sept jours.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionPublicationResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "IDEMPOTENCY_CONTENT_CONFLICT : clé déjà liée à un autre contenu.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "PUBLICATION_REQUEST_EXPIRED : reprise expirée après sept jours, vérifier Mes questions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      }
+    },
     "/api/v1/questions/{id}/answers": {
       "get": {
         "operationId": "QuestionsController_answers",
@@ -3590,6 +3656,48 @@
           "actual",
           "attempts",
           "viewerIsAuthor"
+        ]
+      },
+      "PendingQuestionPublicationDto": {
+        "type": "object",
+        "properties": {
+          "idempotencyKey": {
+            "type": "string",
+            "maxLength": 64,
+            "pattern": "^jdq1\\.([0-9]{13})\\.[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            "description": "Clé jdq1.<timestamp UTC millisecondes>.<UUID v4>. Reprise sept jours ; ne jamais la régénérer pour une réponse perdue."
+          },
+          "question": {
+            "description": "Copie exacte et figée de la question à publier.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateQuestionDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "idempotencyKey",
+          "question"
+        ]
+      },
+      "QuestionPublicationResultDto": {
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Identifiant confirmé par le serveur, même lors d’une reprise de la même demande."
+          },
+          "confirmedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date de confirmation initiale ; inchangée lors d’une reprise."
+          }
+        },
+        "required": [
+          "questionId",
+          "confirmedAt"
         ]
       },
       "UpdateQuestionDto": {
