@@ -1,0 +1,6 @@
+.question-local-draft{margin-bottom:24px;padding:20px;border:1px solid var(--color-border);border-radius:12px;background:var(--jd-surface-info);overflow-wrap:anywhere}
+.question-local-draft p{margin-block:12px;font-size:.875rem;line-height:1.6}
+.question-local-draft .contribution-actions{margin-block:12px;flex-wrap:wrap}
+.question-local-draft button{white-space:normal;max-width:100%;min-height:44px}
+.question-local-draft .contribution-dialog{background:var(--color-surface);color:var(--color-ink)}
+@media(max-width:767px){.question-local-draft{padding:16px}}

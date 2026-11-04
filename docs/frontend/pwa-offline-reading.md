@@ -16,6 +16,8 @@ Questions/détails, projets/détails, profils, comptes, formulaires, espaces per
 
 ## Stockage, identité et mises à jour
 
+Le [lot F1 préparé localement](question-local-drafts.md) utilise une base IndexedDB séparée pour les brouillons privés de question. Aucun de ces champs n'entre dans les caches publics décrits ici. Le worker de retrait du lot E supprime seulement son préfixe CacheStorage et ne constitue pas une procédure d'effacement de ces brouillons. Leur retrait demande une action distincte et ciblée.
+
 Cache réservé `jokkodev-public-reading-v1-<BUILD_ID>` ; métadonnée technique `jokkodev-public-reading-v1-active` contenant seulement la version active. 13 entrées de payload à liste fermée ; expiration 24 h, 3 Mio/entrée et 8 Mio/version. Au plus deux versions actives/candidates et une métadonnée, sans suppression des caches étrangers. Un quota peut empêcher l'installation ; la navigation reste utilisable en ligne. Les données sont une copie publique, commune aux comptes du navigateur ; aucun compte n'est identifié dans ces caches.
 
 Une copie expirée n'est pas servie. Sans réseau ni copie valide, réponse texte 503 ; après retour du réseau, renouvellement des documents publics sans action métier. Le navigateur peut effacer son stockage indépendamment de l'application. La lecture hors ligne ne remplace donc pas une sauvegarde.

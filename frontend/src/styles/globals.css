@@ -15,6 +15,7 @@
 @import "./header-session.css";
 @import "./themes.css";
 @import "./pwa.css";
+@import "./question-local-draft.css";
 
 /* Signalements : styles publics et administration minimale. */
 
