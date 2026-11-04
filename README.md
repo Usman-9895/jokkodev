@@ -110,6 +110,10 @@ Le lot 8 prépare le signalement des questions, réponses et projets et une admi
 
 Le lot 9 propose `/regles`, `/contact` et une attente publique sur `/confidentialite`. La structure de confidentialité à relire est réservée à `/dev/informations` (404 en production). Footer et métadonnées harmonisés, sans activation métier. Voir le [guide](docs/frontend/information-quality.md), l’[inventaire des routes](docs/frontend/routes.md), le [bilan d’intégration pour Serge](docs/frontend/integration-readiness.md) et le [rapport](docs/frontend/lot-9-verification.md).
 
+## PWA et lecture hors connexion (lot E)
+
+Le lot E prépare une PWA et une lecture hors connexion limitée aux trois guides publics, sans mise en cache des comptes, questions ou projets : [guide de recette et exploitation](docs/frontend/pwa-offline-reading.md), [vérifications locales et limites](docs/frontend/pwa-verification.md), [décision 009](docs/decisions/009-pwa-offline-reading.md). Fonctionnalité disponible dans un build de production ; worker désactivé en développement. Recette locale validée par Ousmane, publication en PR autorisée ; aucun déploiement effectué par ce lot.
+
 ## Smoke isolé
 
 `pnpm test:smoke` attend un build de production. Les ports sont configurables par `SMOKE_FRONTEND_PORT` et `SMOKE_BACKEND_PORT` ; le relais Node lit API_INTERNAL_ORIGIN au démarrage. Les ports occupés sont refusés. Le mode par défaut cible volontairement une base inaccessible sur 127.0.0.1:1, vérifie liveness 200/readiness 503, session absente, CSRF avant validation, cookies Secure/HttpOnly/SameSite et Swagger absent en production. Il utilise une configuration SMTP locale sans envoyer d’email ; `MAIL_TRANSPORT=file` reste réservé au développement/test et aux tests d’intégration.

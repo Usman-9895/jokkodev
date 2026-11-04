@@ -80,3 +80,7 @@ Brand accepte `theme="auto"` par défaut, ou `light`/`dark` explicitement. Auto 
 `node scripts/check-theme-contrast.mjs` vérifie les paires sémantiques ; les mesures et captures au navigateur restent distinctes. L'initialisation externe préserve le rendu statique et les politiques du lot C, sans ajout d'inline ou de nonce. La validation visuelle Clair/Sombre d'Ousmane et les limites maintenues de la vérification sont détaillées dans le guide.
 
 La [recette visuelle complémentaire](color-themes-visual-review.md) couvre désormais les quatre largeurs, les interactions clavier et les 44 paires calculées par Chromium. Les deux échantillons de marque conservent intentionnellement leurs fonds clair et bleu nuit, avec leurs variantes explicites ; ils ne suivent pas le fond du catalogue. Les avertissements d'hydratation causés par l'injection Kaspersky dans les exemples de développement restent documentés.
+
+## Lot E — commandes PWA et lecture autonome
+
+Le [lot E PWA](pwa-offline-reading.md) réutilise les mêmes tokens et logos dans les deux documents de lecture autonomes. Les commandes d'installation et de mise à jour utilisent des boutons natifs, des cibles de 44 px et un dialogue à annulation initialement focalisée ; aucune animation nouvelle. Les PNG d'installation sont des exports du monogramme validé, avec une zone sûre pour le maskable. Voir la [recette aux quatre largeurs](pwa-verification.md).
