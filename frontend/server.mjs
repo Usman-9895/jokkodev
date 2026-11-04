@@ -4,6 +4,8 @@ import next from 'next';
 import {observeWebRequest} from './server/observability.mjs';
 import {createCspReporter} from './server/csp-report.mjs';
 import {apiOrigin,apiRelay,isApiPath} from './server/api-relay.mjs';
+import {readFileSync} from 'node:fs';
+import {createPwaHandler} from './server/pwa.mjs';
 
 const {values}=parseArgs({options:{dev:{type:'boolean',default:false},port:{type:'string',default:'3000'},hostname:{type:'string',default:'127.0.0.1'}}});
 process.env.NODE_ENV??=values.dev?'development':'production';
@@ -13,10 +15,12 @@ const app=next({dev:values.dev,hostname,port});
 await app.prepare(); // Next loads .env.local before the runtime upstream is read.
 const relay=apiRelay(apiOrigin()),handle=app.getRequestHandler();
 const reportCsp=createCspReporter();
+const pwa=createPwaHandler({enabled:!values.dev,disabled:process.env.JOKKODEV_PWA_DISABLED==='1',version:values.dev?'development':readFileSync(new URL('./.next/BUILD_ID',import.meta.url),'utf8').trim()});
 const server=createServer((request,response)=>{
  observeWebRequest(request,response);
  if(request.url?.split('?')[0]==='/security/csp-report'){void reportCsp(request,response);return;}
  if(isApiPath(request.url)){relay(request,response);return;}
+ if(pwa(request,response))return;
  handle(request,response).catch(()=>{if(!response.headersSent)response.writeHead(500);response.end();});
 });
 server.headersTimeout=15_000;
