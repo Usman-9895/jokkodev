@@ -1,5 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsArray, IsIn, IsOptional, IsString, IsUUID, Matches, MaxLength, MinLength } from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsArray, IsIn, IsOptional, IsString, IsUUID, Matches, MaxLength, MinLength, ValidateNested } from 'class-validator';
+import {Type} from 'class-transformer';
+import {PUBLICATION_KEY_PATTERN} from './publication-policy';
+import {IsDefined,IsObject} from 'class-validator';
 import { PageQueryDto } from '../../common/http/pagination';
 import { HasText, OptionalButNotNull } from '../../common/http/validators';
 import { TechnologyDto } from '../technologies/technologies.dto';
@@ -72,6 +75,18 @@ export class CreateQuestionDto {
   @ApiPropertyOptional({ nullable: true, type: String, maxLength: CODE_MAX }) @IsOptional() @IsString() @MaxLength(CODE_MAX) code?: string | null;
   @ApiPropertyOptional(codeLanguageDoc) @IsOptional() @IsString() @Matches(CODE_LANGUAGE_PATTERN) codeLanguage?: string | null;
   @ApiProperty({ type: [String], minItems: 1, maxItems: 5 }) @IsArray() @ArrayMinSize(1) @ArrayMaxSize(5) @ArrayUnique() @IsUUID('all', { each: true }) technologyIds!: string[];
+}
+
+export class PendingQuestionPublicationDto {
+  @ApiProperty({maxLength:64,pattern:PUBLICATION_KEY_PATTERN.source,description:'Clé jdq1.<timestamp UTC millisecondes>.<UUID v4>. Reprise sept jours ; ne jamais la régénérer pour une réponse perdue.'})
+  @IsString() @MaxLength(64) @Matches(PUBLICATION_KEY_PATTERN) idempotencyKey!:string;
+  @ApiProperty({type:CreateQuestionDto,description:'Copie exacte et figée de la question à publier.'})
+  @IsDefined() @IsObject() @ValidateNested() @Type(()=>CreateQuestionDto) question!:CreateQuestionDto;
+}
+
+export class QuestionPublicationResultDto {
+  @ApiProperty({format:'uuid',description:'Identifiant confirmé par le serveur, même lors d’une reprise de la même demande.'}) questionId!:string;
+  @ApiProperty({format:'date-time',description:'Date de confirmation initiale ; inchangée lors d’une reprise.'}) confirmedAt!:string;
 }
 
 export class UpdateQuestionDto {

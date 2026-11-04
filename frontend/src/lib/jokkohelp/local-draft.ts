@@ -3,6 +3,7 @@ import type {QuestionDraft} from './api';
 export const DRAFT_TTL = 7 * 24 * 60 * 60 * 1000;
 export const DRAFT_MAX_BYTES = 256 * 1024;
 export const DRAFT_DATABASE = 'jokkodev-question-drafts-v1';
+export const PENDING_DATABASE = 'jokkodev-question-pending-v1';
 export type LocalQuestionDraft = {
  schema:1; ownerId:string; version:string; createdAt:number; savedAt:number; expiresAt:number;
  fields:QuestionDraft; uncertain:boolean;
@@ -27,13 +28,15 @@ export function validateLocalDraft(value:unknown,ownerId:string,now:number):Loca
 }
 /** No content is read until the caller grants access to this verified owner.
  * Each operation uses a read/write transaction: version checks and deletion are atomic across tabs. */
-export async function draftTransaction<T>(ownerId:string,permit:()=>boolean,work:(current:unknown,store:IDBObjectStore)=>T):Promise<T>{
+export async function localQuestionTransaction<T>(storeName:'drafts'|'pending',ownerId:string,permit:()=>boolean,work:(current:unknown,store:IDBObjectStore)=>T):Promise<T>{
  const guard=()=>{if(!ownerId||ownerId.length>128||!permit())throw new DraftStorageError('identity');};guard();
  return new Promise<T>((resolve,reject)=>{
   let request:IDBOpenDBRequest,finished=false;
   const fail=(e:unknown)=>{if(!finished){finished=true;reject(e instanceof DraftStorageError?e:new DraftStorageError('unavailable'));}};
-  try{request=indexedDB.open(DRAFT_DATABASE,2);}catch(e){fail(e);return;}
+  // Keep F1's database version unchanged: older tabs and rollback can still save drafts.
+  try{request=indexedDB.open(storeName==='pending'?PENDING_DATABASE:DRAFT_DATABASE,storeName==='pending'?1:2);}catch(e){fail(e);return;}
   request.onupgradeneeded=()=>{
+   if(storeName==='pending'){request.result.createObjectStore('pending',{keyPath:'ownerId'});return;}
    const store=request.result.objectStoreNames.contains('drafts')?request.transaction!.objectStore('drafts'):request.result.createObjectStore('drafts',{keyPath:'ownerId'});
    if(!store.indexNames.contains('expiresAt'))store.createIndex('expiresAt','expiresAt');
   };
@@ -41,7 +44,7 @@ export async function draftTransaction<T>(ownerId:string,permit:()=>boolean,work
   request.onsuccess=()=>{
    const db=request.result;if(finished){db.close();return;}
    let tx:IDBTransaction,result:T;
-   try{guard();tx=db.transaction('drafts','readwrite');const store=tx.objectStore('drafts'),read=store.get(ownerId);
+   try{guard();tx=db.transaction(storeName,'readwrite');const store=tx.objectStore(storeName),read=store.get(ownerId);
     tx.oncomplete=()=>{db.close();try{guard();if(!finished){finished=true;resolve(result);}}catch(e){fail(e);}};
     tx.onabort=tx.onerror=()=>{db.close();fail(tx.error);};
     read.onsuccess=()=>{try{guard();result=work(read.result,store);}catch(e){fail(e);tx.abort();}};
@@ -49,6 +52,7 @@ export async function draftTransaction<T>(ownerId:string,permit:()=>boolean,work
   };
  });
 }
+export function draftTransaction<T>(ownerId:string,permit:()=>boolean,work:(current:unknown,store:IDBObjectStore)=>T):Promise<T>{return localQuestionTransaction('drafts',ownerId,permit,work);}
 export function readLocalDraft(ownerId:string,permit:()=>boolean,now=Date.now()){
  return draftTransaction(ownerId,permit,(value,store)=>{
   // Key-only expiry index: never read another account's fields while cleaning.

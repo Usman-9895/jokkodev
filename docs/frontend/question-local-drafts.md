@@ -1,5 +1,7 @@
 # Lot F1 — brouillon local de question
 
+Ce guide décrit le périmètre F1 historique. Le [lot F2](question-pending-publication.md) ajoute une attente volontaire et une API idempotente distinctes, sans changer la base F1 version 2 ni son parcours de brouillon. Les exclusions F2 ci-dessous décrivent F1 seul ; la recette actualisée est dans le rapport F2.
+
 État : recette fonctionnelle et visuelle validée par Ousmane ; publication en PR autorisée. Branche `feature/question-local-drafts`, base origin/develop vérifiée `193881df53418664a689f8e91d6b6d14c6d4ad50`. Worktree `D:\DEV\JokkoDev\.cache\question-drafts\worktree`. Commit, push et PR autorisés après validation ; aucun accès au VPS, fusion ou déploiement.
 
 ## Périmètre et durée

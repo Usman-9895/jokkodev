@@ -55,6 +55,7 @@ enum ModerationDecision {
 }
 
 model User {
+  questionPublications QuestionPublication[]
   /// Connexion réussie uniquement ; NULL pour les comptes antérieurs jusqu’à leur prochaine connexion.
   lastLoginAt DateTime? @db.Timestamptz(3)
   /// Début d’observation fiable, pas une dernière connexion historique inventée.
@@ -160,6 +161,7 @@ model ProfileTechnology {
 }
 
 model Question {
+  publication QuestionPublication?
   retentionErasedAt DateTime? @db.Timestamptz(3)
   reputation ReputationEvent[]
   /// Suppression logique par l’auteur, distincte de la modération.
@@ -191,6 +193,21 @@ model Question {
   @@unique([acceptedAnswerId, id])
   @@index([visibility, createdAt(sort: Desc), id(sort: Desc)])
   @@index([authorId, createdAt(sort: Desc)])
+}
+
+/// Minimal idempotency receipt, never a second copy of the question text.
+model QuestionPublication {
+  userId String @db.Uuid
+  action String @db.VarChar(32)
+  key String @db.VarChar(64)
+  payloadHash String @db.Char(64)
+  questionId String @unique @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  retainUntil DateTime @db.Timestamptz(3)
+  user User @relation(fields:[userId],references:[id],onDelete:Restrict)
+  question Question @relation(fields:[questionId],references:[id],onDelete:Restrict)
+  @@id([userId,action,key])
+  @@index([retainUntil])
 }
 
 model QuestionTechnology {

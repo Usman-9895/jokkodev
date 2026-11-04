@@ -62,6 +62,8 @@ Identifiants UUIDv7 générés par l'application (ordonnés dans le temps, opaqu
 
 ## Politique de suppression
 
+F2 ajoute `QuestionPublication` : clé primaire `(userId, action, key)`, empreinte SHA-256, question unique, dates de confirmation et de conservation. Publication et reçu partagent la même transaction ; références RESTRICT vers compte et question. Aucune copie du texte dans le reçu. Les suppressions logiques restent inchangées ; une suppression physique doit respecter les reçus encore nécessaires. Reprise sept jours, purge minimale préparée à huit jours, sans timer activé. Voir la [décision 010](../decisions/010-question-pending-publication.md).
+
 Aucune cascade sur les contenus publiés : supprimer un compte, une question, une réponse ou un projet référencé est refusé (`RESTRICT`). La modération masque (`visibility = HIDDEN`) et conserve l'historique. Les cascades se limitent aux données qui n'ont pas d'existence propre : profil, sessions et jetons d'un compte, liaisons de technologies d'un contenu. La suppression de compte reste une décision produit ouverte.
 
 ## Contraintes hors Prisma

@@ -7,6 +7,8 @@ import { AnswerId, QuestionId, UserId } from '../../common/http/id.pipe';
 import { PageOf, PageQueryDto, type Page } from '../../common/http/pagination';
 import { AcceptAnswerDto, AnswerDto, AnswerWithQuestionDto, CreateAnswerDto, CreateQuestionDto, OwnQuestionQueryDto, OwnQuestionSummaryDto, QuestionDetailDto, QuestionListQueryDto, QuestionSummaryDto, UpdateAnswerDto, UpdateQuestionDto } from './questions.dto';
 import { QuestionsService } from './questions.service';
+import {PendingQuestionPublicationDto,QuestionPublicationResultDto} from './questions.dto';
+import {ApiConflictResponse,ApiGoneResponse} from '@nestjs/swagger';
 
 @ApiTags('questions')
 @Controller('questions')
@@ -35,6 +37,16 @@ export class QuestionsController {
   @ApiNotFoundResponse({ type: ApiErrorDto, description: 'QUESTION_NOT_FOUND : inexistante, masquée ou supprimée.' })
   detail(@Param('id', QuestionId) id: string, @CurrentUser() viewer?: AuthenticatedUser): Promise<QuestionDetailDto> {
     return this.questions.detail(id, viewer);
+  }
+
+  @Post('publications')
+  @ApiCookieAuth()
+  @ApiConflictResponse({type:ApiErrorDto,description:'IDEMPOTENCY_CONTENT_CONFLICT : clé déjà liée à un autre contenu.'})
+  @ApiGoneResponse({type:ApiErrorDto,description:'PUBLICATION_REQUEST_EXPIRED : reprise expirée après sept jours, vérifier Mes questions.'})
+  @ApiCreatedResponse({type:QuestionPublicationResultDto,description:'Publication atomique ou résultat initial retrouvé. Session et CSRF requis à chaque tentative. Conflit 409 si contenu différent, 410 après sept jours.'})
+  @ApiBadRequestResponse({type:ApiErrorDto})
+  publishPending(@CurrentUser() user:AuthenticatedUser,@Body() input:PendingQuestionPublicationDto):Promise<QuestionPublicationResultDto>{
+    return this.questions.publishPending(user,input);
   }
 
   @Delete(':id')

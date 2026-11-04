@@ -3,4 +3,9 @@
 .question-local-draft .contribution-actions{margin-block:12px;flex-wrap:wrap}
 .question-local-draft button{white-space:normal;max-width:100%;min-height:44px}
 .question-local-draft .contribution-dialog{background:var(--color-surface);color:var(--color-ink)}
+.question-pending-copy{margin-block:16px;padding:12px;border:1px solid var(--color-border);border-radius:8px;background:var(--color-surface)}
+.question-pending-copy summary{cursor:pointer;min-height:44px;align-content:center;font-weight:600}
+.question-pending-copy dt{margin-top:12px;font-weight:600}
+.question-pending-copy dd{margin:4px 0 0;white-space:pre-wrap}
+.question-pending-copy pre{max-width:100%;overflow:auto;padding:12px;background:var(--color-background);color:var(--color-ink);border-radius:8px}
 @media(max-width:767px){.question-local-draft{padding:16px}}
