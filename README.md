@@ -110,6 +110,10 @@ Le lot 8 prépare le signalement des questions, réponses et projets et une admi
 
 Le lot 9 propose `/regles`, `/contact` et une attente publique sur `/confidentialite`. La structure de confidentialité à relire est réservée à `/dev/informations` (404 en production). Footer et métadonnées harmonisés, sans activation métier. Voir le [guide](docs/frontend/information-quality.md), l’[inventaire des routes](docs/frontend/routes.md), le [bilan d’intégration pour Serge](docs/frontend/integration-readiness.md) et le [rapport](docs/frontend/lot-9-verification.md).
 
+## Brouillon local de question (lot F1)
+
+Le [lot F1](docs/frontend/question-local-drafts.md) ajoute localement un brouillon explicite de création de question par compte/profil navigateur, conservé sept jours et limité à 256 Kio. Reprise après vérification de session, sans file d'envoi ni cache privé dans la PWA. Voir la [recette et ses limites](docs/frontend/question-local-drafts-verification.md) ; recette validée par Ousmane ; publication en PR autorisée, fusion et déploiement réservés à une étape distincte.
+
 ## PWA et lecture hors connexion (lot E)
 
 Le lot E prépare une PWA et une lecture hors connexion limitée aux trois guides publics, sans mise en cache des comptes, questions ou projets : [guide de recette et exploitation](docs/frontend/pwa-offline-reading.md), [vérifications locales et limites](docs/frontend/pwa-verification.md), [décision 009](docs/decisions/009-pwa-offline-reading.md). Fonctionnalité disponible dans un build de production ; worker désactivé en développement. Recette locale validée par Ousmane, publication en PR autorisée ; aucun déploiement effectué par ce lot.

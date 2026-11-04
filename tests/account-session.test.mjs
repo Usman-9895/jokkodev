@@ -5,6 +5,29 @@ import {profileDraft,profilePayload,validateProfile,countryLabel} from '../front
 import {createHttpClient} from '../packages/api-client/src/http.ts';
 const user={id:'owner',username:'owner_test',email:'owner@example.test',role:'MEMBER',emailVerified:false};
 const response=(value,status=200)=>Response.json(value,{status});
+
+test('private mutation is not sent if identity changes during CSRF acquisition',async()=>{
+ let release,mutations=0;const client=new AccountClient('/api',async url=>{
+  if(url.endsWith('/auth/me'))return response(user);
+  if(url.endsWith('/csrf'))return new Promise(r=>release=r);
+  mutations++;return response({id:'must-not-be-created'});
+ });await client.refresh();const sending=client.mutate('/questions',{title:'fictional'},'POST',true);
+ await client.reverify();release(response({csrfToken:'fixture'}));
+ await assert.rejects(sending,e=>e.kind==='aborted');assert.equal(mutations,0);
+});
+
+test('offline draft owner capability survives network failure but never exposes private identity',async()=>{
+ let mode='ok';const client=new AccountClient('/api',async()=>{if(mode==='network')throw Error('offline');return mode==='expired'?response({code:'UNAUTHORIZED'},401):response(user)});
+ await client.refresh();const epoch=client.snapshot().identityEpoch;
+ mode='network';await client.refresh();assert.equal(client.snapshot().phase,'unavailable');assert.equal(client.snapshot().user,null);assert.equal(client.snapshot().draftOwnerId,user.id);assert.equal(client.snapshot().identityEpoch,epoch);
+ mode='ok';await client.refresh();assert.equal(client.snapshot().identityEpoch,epoch);
+ mode='expired';await client.refresh();assert.equal(client.snapshot().draftOwnerId,null);assert.ok(client.snapshot().identityEpoch>epoch);
+});
+test('cross-tab invalidation immediately removes editor capability and rejects an old lookup',async()=>{
+ let release;let mode='ok';const client=new AccountClient('/api',async()=>mode==='ok'?response(user):mode==='slow'?new Promise(r=>release=r):response({code:'UNAUTHORIZED'},401));await client.refresh();
+ mode='slow';const old=client.refresh();const fresh=client.reverify();assert.equal(client.snapshot().draftOwnerId,null);assert.equal(client.snapshot().user,null);
+ mode='expired';release(response(user));await old;await fresh;assert.equal(client.snapshot().phase,'guest');assert.equal(client.snapshot().draftOwnerId,null);
+});
 test('empty accepted email response succeeds; malformed accepted JSON remains a protocol error',async()=>{
  assert.equal(await createHttpClient('/api',async()=>new Response(null,{status:202}))('/auth/forgot-password'),undefined);
  await assert.rejects(createHttpClient('/api',async()=>new Response('invalid',{status:202}))('/test'),e=>e.kind==='protocol');

@@ -81,6 +81,10 @@ Brand accepte `theme="auto"` par défaut, ou `light`/`dark` explicitement. Auto 
 
 La [recette visuelle complémentaire](color-themes-visual-review.md) couvre désormais les quatre largeurs, les interactions clavier et les 44 paires calculées par Chromium. Les deux échantillons de marque conservent intentionnellement leurs fonds clair et bleu nuit, avec leurs variantes explicites ; ils ne suivent pas le fond du catalogue. Les avertissements d'hydratation causés par l'injection Kaspersky dans les exemples de développement restent documentés.
 
+## Lot F1 — brouillon local
+
+Le [lot F1](question-local-drafts.md) ajoute une zone de brouillon local dans la carte du formulaire de création de question. Elle utilise les surfaces sémantiques Clair/Sombre, les boutons et le dialogue natif existants, sans animation nouvelle. Le [rapport de recette](question-local-drafts-verification.md) distingue stockage local, validation et publication réellement confirmée.
+
 ## Lot E — commandes PWA et lecture autonome
 
 Le [lot E PWA](pwa-offline-reading.md) réutilise les mêmes tokens et logos dans les deux documents de lecture autonomes. Les commandes d'installation et de mise à jour utilisent des boutons natifs, des cibles de 44 px et un dialogue à annulation initialement focalisée ; aucune animation nouvelle. Les PNG d'installation sont des exports du monogramme validé, avec une zone sûre pour le maskable. Voir la [recette aux quatre largeurs](pwa-verification.md).

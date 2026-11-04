@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import {createContext,useContext,useEffect,useState,useSyncExternalStore} from 'react';
 import type {ReactNode} from 'react';
 import Link from 'next/link';
@@ -9,6 +9,16 @@ import {Button,Card,Heading,LoadingIndicator,Message} from '../ui';
 const Context=createContext<AccountClient|null>(null);
 export function SessionProvider({children}:{children:ReactNode}) {
  const [client]=useState(()=>new AccountClient());
+ useEffect(()=>{
+  const key='jokkodev.session-change';
+  let channel:BroadcastChannel|undefined;
+  try{channel=new BroadcastChannel(key);}catch{/* Storage-event fallback below. */}
+  const receive=()=>{void client.reverify();};
+  const storage=(event:StorageEvent)=>{if(event.key===key&&event.newValue)receive();};
+  if(channel)channel.onmessage=receive;window.addEventListener('storage',storage);
+  client.onSessionChange=()=>{try{if(channel)channel.postMessage('reverify');else{localStorage.setItem(key,crypto.randomUUID());localStorage.removeItem(key);}}catch{/* Focus/polling remains available; never persist identity. */}};
+  return()=>{client.onSessionChange=undefined;channel?.close();window.removeEventListener('storage',storage);};
+ },[client]);
  useEffect(()=>{void client.refresh();const check=()=>{if(document.visibilityState==='visible')void client.refresh();};window.addEventListener('focus',check);document.addEventListener('visibilitychange',check);const timer=window.setInterval(check,60_000);return()=>{window.removeEventListener('focus',check);document.removeEventListener('visibilitychange',check);window.clearInterval(timer);};},[client]);
  return <Context.Provider value={client}>{children}</Context.Provider>;
 }
