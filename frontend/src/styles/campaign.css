@@ -1,0 +1,25 @@
+.campaign-page {padding-block:48px;overflow-wrap:anywhere;}
+.campaign-hero {display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:48px;align-items:center;}
+.campaign-hero h1 {max-width:20ch;}
+.campaign-hero .information-intro {max-width:62ch;margin-top:20px;}
+.campaign-actions {margin-top:24px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px;}
+.campaign-brand {padding:24px;text-align:center;border:1px solid var(--color-border);border-radius:12px;background:var(--color-surface);}
+.campaign-brand .jd-brand {width:112px;height:112px;margin:0 auto 24px;}
+.campaign-brand p {font-size:20px;line-height:1.6;color:var(--color-night);}
+.campaign-share__buttons {display:flex;flex-wrap:wrap;gap:8px;}
+.campaign-status {font-size:14px;max-width:34ch;min-height:1.5em;color:var(--color-muted);margin-top:8px;}
+.campaign-manual {display:grid;gap:8px;font-size:14px;max-width:100%;}
+.campaign-manual input {width:100%;min-width:0;padding:12px;border:1px solid var(--color-border);border-radius:8px;background:var(--color-surface);color:var(--color-text);}
+.campaign-products {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:32px;}
+.campaign-products .jd-card {padding:24px;display:flex;flex-direction:column;gap:16px;}
+.campaign-products .jd-card p {color:var(--color-muted);}
+.campaign-products .jd-action-link {margin-top:auto;}
+.campaign-offline {padding:32px;margin-top:32px;border-radius:12px;border:1px solid var(--color-border);background:var(--color-surface);}
+.campaign-offline ol {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;list-style:decimal;padding-left:24px;margin-block:24px;}
+.campaign-offline li {padding-left:4px;}
+.campaign-offline strong {display:block;margin-bottom:8px;}
+.campaign-offline p:not(.information-eyebrow) {color:var(--color-muted);max-width:85ch;margin-top:12px;}
+.campaign-offline .jd-action-link {margin-top:16px;}
+.campaign-note {margin-top:32px;color:var(--color-muted);font-size:14px;}
+.campaign-note a {margin-top:12px;}
+@media(max-width:767px){.campaign-page{padding-block:24px;}.campaign-hero{display:block;}.campaign-brand{display:none;}.campaign-products{grid-template-columns:1fr;gap:16px;margin-top:24px;}.campaign-offline{padding:20px;margin-top:24px;}.campaign-offline ol{grid-template-columns:1fr;gap:20px;}.campaign-actions{display:block;}.campaign-actions>.jd-button{width:100%;margin-bottom:12px;}.campaign-share__buttons{flex-direction:column;}.campaign-products .jd-card{padding:20px;}}

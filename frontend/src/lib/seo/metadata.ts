@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 export const SITE_ORIGIN='https://jokkodev.com';
 export const SITE_DESCRIPTION='Rejoins JokkoDev : pose tes questions techniques, partage des solutions et trouve des collaborateurs pour construire des projets avec des développeurs africains.';
 export const publicPages=[
+ {path:'/cadev',title:'JokkoDev — S’entraider, puis construire ensemble | CADEV 2026',description:'Découvre JokkoHelp, JokkoProjects et les guides JokkoDev accessibles hors connexion.'},
  {path:'/',title:'JokkoDev — Entraide et projets entre développeurs africains',description:SITE_DESCRIPTION},
  {path:'/questions',title:'JokkoHelp — Questions et entraide entre développeurs | JokkoDev',description:'Pose tes questions de programmation, découvre les réponses de la communauté et partage des solutions techniques sur JokkoHelp.'},
  {path:'/projets',title:'JokkoProjects — Projets collaboratifs entre développeurs | JokkoDev',description:'Découvre des projets, les compétences recherchées et les possibilités de collaboration entre développeurs sur JokkoProjects.'},
