@@ -17,7 +17,7 @@ test('website identity names the actual brand without invented ratings or search
 test('sitemap follows actual REST page limits and never exposes private URLs',async()=>{
  const {buildSitemap}=await import('../frontend/src/lib/seo/sitemap.ts');const calls=[];
  const result=await buildSitemap(async path=>{calls.push(path);const url=new URL(path,'http://fixture');const page=Number(url.searchParams.get('page'));assert.equal(url.searchParams.get('pageSize'),'50');return {kind:'ok',data:{data:page===1?Array.from({length:50},(_,i)=>({id:'11111111-1111-4111-8111-'+String(i).padStart(12,'0'),updatedAt:'2026-10-30T00:00:00Z'})):[{id:'22222222-2222-4222-8222-222222222222',updatedAt:'2026-10-30T00:00:00Z'}],meta:{total:51,page,pageSize:50}}};});
- assert.equal(calls.length,4);assert.equal((result.match(/<loc>/g)||[]).length,110);assert.ok(!/espace|admin|profils|connexion/.test(result));assert.ok(result.includes('<lastmod>2026-10-30T00:00:00.000Z</lastmod>'));
+ assert.equal(calls.length,4);assert.equal((result.match(/<loc>/g)||[]).length,publicPages.length+102);assert.ok(result.includes('<loc>https://jokkodev.com/cadev</loc>'));assert.ok(!/espace|admin|profils|connexion/.test(result));assert.ok(result.includes('<lastmod>2026-10-30T00:00:00.000Z</lastmod>'));
 });
 test('sitemap fails closed on missing API, corrupt pagination, empty partial page and time budget',async()=>{
  const {buildSitemap}=await import('../frontend/src/lib/seo/sitemap.ts');
