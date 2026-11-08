@@ -29,6 +29,7 @@
     "reputation:rebuild": "pnpm --filter @jokkodev/backend reputation:rebuild",
     "test:security-ip": "pnpm --filter @jokkodev/backend build && node scripts/security/ip-regression.mjs",
     "retention": "pnpm --filter @jokkodev/backend retention",
+    "notifications": "pnpm --filter @jokkodev/backend notifications",
     "publications:prune": "pnpm --filter @jokkodev/backend publications:prune"
   },
   "devDependencies": {

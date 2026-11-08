@@ -1,0 +1,18 @@
+[Unit]
+Description=JokkoDev bounded transactional email event retention
+After=postgresql.service
+
+[Service]
+Type=oneshot
+User=jokkodev
+Group=jokkodev
+WorkingDirectory=/opt/jokkodev/notifications/backend
+Environment=NODE_ENV=production
+EnvironmentFile=/etc/jokkodev/notifications.env
+ExecStart=/usr/local/bin/node dist/src/cli/notifications.js prune --confirm-database jokkodev --confirm-host 127.0.0.1:5432 --batch 1000 --execute
+TimeoutStartSec=2min
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true

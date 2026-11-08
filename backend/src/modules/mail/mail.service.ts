@@ -5,7 +5,7 @@ import { createTransport, type Transporter } from 'nodemailer';
 import { ENVIRONMENT } from '../../config/config.module';
 import type { Environment } from '../../config/environment';
 
-export interface MailMessage { to: string; subject: string; text: string }
+export interface MailMessage { to: string; subject: string; text: string; messageId?:string }
 
 // En développement et en test, les messages sont écrits en JSON dans MAIL_FILE_DIR (ignoré par Git) au lieu d'être envoyés.
 // Les liens de compte contiennent des jetons : ni l'adresse ni le contenu ne sont journalisés.
@@ -16,7 +16,7 @@ export class MailService {
   constructor(@Inject(ENVIRONMENT) private readonly env: Environment) {
     const smtp = env.mail.smtp;
     this.transporter = env.mail.transport === 'smtp' && smtp
-      ? createTransport({ host: smtp.host, port: smtp.port, secure: smtp.secure, requireTLS: !smtp.secure, auth: smtp.user ? { user: smtp.user, pass: smtp.password } : undefined })
+      ? createTransport({ host: smtp.host, port: smtp.port, secure: smtp.secure, requireTLS: !smtp.secure, connectionTimeout:10000,greetingTimeout:10000,socketTimeout:30000, auth: smtp.user ? { user: smtp.user, pass: smtp.password } : undefined })
       : createTransport({ jsonTransport: true });
   }
 

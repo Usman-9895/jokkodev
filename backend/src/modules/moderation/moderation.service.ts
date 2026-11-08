@@ -1,5 +1,6 @@
 import { photoUrl } from '../users/projections';
 import { Injectable } from '@nestjs/common';
+import {NotificationRecorder} from '../mail/notifications';
 import { ReputationService } from '../reputation/reputation.service';
 import { DatabaseService } from '../../database/database.service';
 import type { Prisma } from '../../generated/prisma/client';
@@ -33,7 +34,7 @@ const targetColumn = { QUESTION: 'questionId', ANSWER: 'answerId', PROJECT: 'pro
 
 @Injectable()
 export class ModerationService {
-  constructor(private readonly database: DatabaseService, private readonly limiter: RateLimiter, private readonly reputation: ReputationService) {}
+  constructor(private readonly database: DatabaseService, private readonly limiter: RateLimiter, private readonly reputation: ReputationService, private readonly notifications:NotificationRecorder) {}
 
   /** Le déclarant vient de la session ; la cible doit exister et être publique. Le signalement ne change pas la visibilité. */
   async report(user: AuthenticatedUser, input: CreateReportDto): Promise<CreatedReportDto> {
@@ -142,7 +143,9 @@ export class ModerationService {
       if(!user)throw targetNotFound();
       if(user.status!=='SUSPENDED')throw new ApiException(409,'ACCOUNT_NOT_SUSPENDED','Ce compte n’est plus suspendu. Relis son état.');
       await tx.user.update({where:{id:userId},data:{status:'ACTIVE'}});
-      return (await tx.moderationAction.create({data:{adminId:admin.id,targetUserId:userId,decision:'REACTIVATE_ACCOUNT',reason:cleanText(input.reason)},select:{id:true}})).id;
+      const action=await tx.moderationAction.create({data:{adminId:admin.id,targetUserId:userId,decision:'REACTIVATE_ACCOUNT',reason:cleanText(input.reason)},select:{id:true}});
+      await this.notifications.record(tx,{decisionKey:'reactivation:'+action.id,kind:'ACCOUNT_REACTIVATED',userId});
+      return action.id;
     });
     return toAction(await this.database.prisma.moderationAction.findUniqueOrThrow({where:{id},select:actionSelect}));
   }

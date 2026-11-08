@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import {NotificationRecorder} from '../mail/notifications';
 import { DatabaseService } from '../../database/database.service';
 import type { Prisma } from '../../generated/prisma/client';
 import type { AuthenticatedUser } from '../../common/auth/auth-context';
@@ -25,7 +26,7 @@ const conflict = (code: string, message: string) => new ApiException(409, code, 
 
 @Injectable()
 export class ApplicationsService {
-  constructor(private readonly database: DatabaseService, private readonly limiter: RateLimiter) {}
+  constructor(private readonly database: DatabaseService, private readonly limiter: RateLimiter, private readonly notifications:NotificationRecorder) {}
 
   /**
    * Le projet est relu sous verrou partagé : une fermeture concurrente du recrutement (UPDATE) attend la fin de la
@@ -104,7 +105,11 @@ export class ApplicationsService {
         if (current?.status === input.status) return;
         throw invalidTransition();
       }
-      if (input.status === 'ACCEPTED') await tx.projectMember.createMany({ data: [{ projectId: row.projectId, userId: row.applicantId }], skipDuplicates: true });
+      if (input.status === 'ACCEPTED') {
+        await tx.projectMember.createMany({ data: [{ projectId: row.projectId, userId: row.applicantId }], skipDuplicates: true });
+        const project=await tx.project.findUniqueOrThrow({where:{id:row.projectId},select:{title:true}});
+        await this.notifications.record(tx,{decisionKey:'application:'+id,kind:'APPLICATION_ACCEPTED',userId:row.applicantId,projectId:row.projectId,projectTitle:project.title});
+      }
     });
     return this.get(user, id);
   }
