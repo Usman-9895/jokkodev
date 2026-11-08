@@ -21,6 +21,7 @@
     "photos:cleanup": "pnpm build && node dist/src/cli/photos-cleanup.js",
     "reputation:rebuild": "pnpm build && node dist/src/cli/reputation.js",
     "retention": "node dist/src/cli/retention.js",
+    "notifications": "node dist/src/cli/notifications.js",
     "publications:prune": "pnpm build && node dist/src/cli/publications-prune.js"
   },
   "dependencies": {

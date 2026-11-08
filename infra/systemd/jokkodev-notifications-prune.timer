@@ -1,0 +1,10 @@
+[Unit]
+Description=JokkoDev transactional event retention, opt-in schedule
+
+[Timer]
+OnBootSec=5min
+OnUnitInactiveSec=1h
+Unit=jokkodev-notifications-prune.service
+
+[Install]
+WantedBy=timers.target

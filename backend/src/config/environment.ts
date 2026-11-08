@@ -16,6 +16,7 @@ export interface Environment {
   trustProxy: false | string[];
   mail: MailEnvironment;
   avatarDir?: string;
+  notificationEventsEnabled?: boolean;
 }
 
 // Secret de développement unique par processus : les jetons CSRF émis deviennent invalides au redémarrage, ce qui est acceptable hors production.
@@ -60,6 +61,7 @@ export function validateEnvironment(env: NodeJS.ProcessEnv): Environment {
     smtp = { host: env.SMTP_HOST ?? '', port: smtpPort, secure: smtpPort === 465, user: env.SMTP_USER || undefined, password: env.SMTP_PASSWORD || undefined };
   }
 
+  if(env.NOTIFICATION_EVENTS_ENABLED!==undefined&&!['0','1'].includes(env.NOTIFICATION_EVENTS_ENABLED))errors.push('NOTIFICATION_EVENTS_ENABLED');
   const avatarDir = env.AVATAR_STORAGE_DIR || undefined;
   if (avatarDir && !path.isAbsolute(avatarDir)) errors.push('AVATAR_STORAGE_DIR');
   if (production && avatarDir) {
@@ -71,7 +73,7 @@ export function validateEnvironment(env: NodeJS.ProcessEnv): Environment {
   return {
     nodeEnv: nodeEnv as Environment['nodeEnv'], host, port, databaseUrl, corsOrigins, appOrigin,
     sessionCookieSecure: rawSecure === 'true', csrfSecret, trustProxy: trustProxy as Environment['trustProxy'],
-    avatarDir,
+    avatarDir, notificationEventsEnabled:env.NOTIFICATION_EVENTS_ENABLED==='1',
     mail: { transport, from, fileDir: env.MAIL_FILE_DIR || '.cache/mail', smtp }
   };
 }
