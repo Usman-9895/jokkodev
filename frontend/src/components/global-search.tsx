@@ -1,0 +1,20 @@
+'use client';
+import Link from 'next/link';
+import {useSearchParams} from 'next/navigation';
+import {Container} from './layout/container';
+import {Button,Heading} from './ui';
+import {useHelpResource} from './jokkohelp/live-resource';
+import {QuestionCard,ReadLoading} from './jokkohelp/shared';
+import {ProjectCard} from './jokkoprojects/shared';
+import {helpCriteria,questionQuery,questionView,type HelpSchemas} from '../lib/jokkohelp/api';
+import {liveProjectCriteria,projectQuery,projectView,type ProjectSchemas} from '../lib/jokkoprojects/api';
+import {listHref} from '../lib/jokkohelp/query';
+import {projectListHref} from '../lib/jokkoprojects/query';
+
+export function GlobalSearch(){const params=useSearchParams(),q=(params.get('q')??'').trim(),technology=(params.get('technology')??'').trim();return <Container className="global-search"><Heading as="h1" size="page">Rechercher dans JokkoDev</Heading><p>Des questions pour avancer, des projets pour construire ensemble.</p><form action="/recherche" role="search" className="global-search-form" key={q+'|'+technology}><div><label htmlFor="global-q">Mots-clés</label><input id="global-q" name="q" type="search" maxLength={200} defaultValue={q}/></div><div><label htmlFor="global-technology">Technologie (facultatif)</label><input id="global-technology" name="technology" maxLength={50} defaultValue={technology} aria-describedby="technology-help"/></div><Button type="submit">Rechercher</Button></form><p id="technology-help">Utilise le nom exact ou le slug d’une technologie, par exemple React ou react. Une seule technologie à la fois.</p>{q.length>200||technology.length>50?<p role="alert">Utilise au plus 200 caractères pour les mots-clés et 50 pour la technologie.</p>:q||technology?<SearchResults key={q+'|'+technology} q={q} technology={technology}/>:<p>Saisis des mots-clés ou une technologie pour découvrir les contenus publics.</p>}</Container>;}
+function SearchResults({q,technology}:{q:string;technology:string}){
+ const questionsCriteria=helpCriteria({q,technology}),projectsCriteria=liveProjectCriteria({q,technology});
+ const questions=useHelpResource<HelpSchemas['QuestionSummaryPageDto']>('/questions',questionQuery(questionsCriteria),false,{keep:false});
+ const projects=useHelpResource<ProjectSchemas['ProjectSummaryPageDto']>('/projects',{...projectQuery(projectsCriteria),pageSize:3},false,{keep:false});
+ return <div className="global-search-groups"><section aria-labelledby="search-questions"><Heading as="h2" id="search-questions">Questions · JokkoHelp</Heading>{questions.error?<div role="status"><p>La recherche de questions est indisponible. Les projets restent consultables si leur service répond.</p><Button onClick={questions.retry}>Réessayer les questions</Button></div>:!questions.data?<ReadLoading/>:<><p role="status">{questions.data.meta.total} question(s) trouvée(s) · 3 résultats au maximum</p><div className="help-question-list">{questions.data.data.map(item=><QuestionCard key={item.id} question={questionView(item)} criteria={questionsCriteria}/>)}</div>{!questions.data.data.length&&<p>Aucune question ne correspond à cette recherche.</p>}<Link className="jd-action-link" href={listHref(questionsCriteria)}>Voir toutes les questions correspondantes →</Link></>}</section><section aria-labelledby="search-projects"><Heading as="h2" id="search-projects">Projets · JokkoProjects</Heading>{projects.error?<div role="status"><p>La recherche de projets est indisponible. Les questions restent consultables si leur service répond.</p><Button onClick={projects.retry}>Réessayer les projets</Button></div>:!projects.data?<ReadLoading/>:<><p role="status">{projects.data.meta.total} projet(s) trouvé(s) · 3 résultats au maximum</p><div className="global-project-list">{projects.data.data.map(item=><ProjectCard key={item.id} project={projectView(item)} criteria={projectsCriteria}/>)}</div>{!projects.data.data.length&&<p>Aucun projet ne correspond à cette recherche.</p>}<Link className="jd-action-link" href={projectListHref(projectsCriteria)}>Voir tous les projets correspondants →</Link></>}</section></div>;
+}

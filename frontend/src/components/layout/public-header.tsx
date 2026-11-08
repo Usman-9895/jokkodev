@@ -40,5 +40,10 @@ export function PublicHeader() {
       <ThemeSelector/>
     </div>
     <noscript><nav className="public-header-noscript" aria-label="Navigation sans JavaScript">{primaryNavigation(undefined, '').map(link => <Link key={link.href} href={link.href}>{link.label}</Link>)}<Link href="/connexion">Connexion</Link><Link href="/inscription">S’inscrire</Link></nav></noscript>
+    <div className="header-search-row"><form action="/recherche" role="search" aria-label="Recherche globale" className="header-search">
+      <label htmlFor="header-search-q" className="jd-sr-only">Rechercher des questions et projets</label>
+      <input id="header-search-q" name="q" type="search" maxLength={200} placeholder="Rechercher…"/>
+      <button type="submit" aria-label="Lancer la recherche"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></button>
+    </form></div>
   </Container></header>;
 }
