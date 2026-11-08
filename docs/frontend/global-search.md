@@ -1,0 +1,46 @@
+# Recherche globale — recette locale
+
+Branche `feature/global-search`, worktree `.cache/global-search/worktree`, base `origin/develop` revérifiée avant publication : `a55741e09080baf97df3d15856411976a275c3c9`. Recette validée par l’équipe ; commit, push et PR vers develop autorisés. Fusion et déploiement restent des étapes distinctes.
+
+## Parcours livré
+
+Champ de recherche dans l’en-tête public, visible directement sur ordinateur et mobile. Ajustement demandé après première recette : forme pilule, ombre légère et bouton loupe circulaire, couleurs de marque Clair/Sombre ; le champ remplace le lien initial. Soumission GET par Entrée ou par la loupe vers `/recherche?q=...`. Le formulaire détaillé sur cette page conserve la technologie facultative, les labels permanents et la validation des limites existantes (200 caractères pour les mots-clés, 50 pour la technologie). URL conservée lors de l’actualisation et du retour navigateur. Sans critères : invitation à rechercher, sans charger toutes les listes.
+
+Deux groupes indépendants : Questions · JokkoHelp et Projets · JokkoProjects. Au plus trois résultats par groupe, total retourné par chaque API et liens vers les listes existantes conservant les critères. Cartes, conversions de données, critères et gestion de ressource du socle réutilisés. Chargement, absence de résultat, indisponibilité de chaque service et nouvelle tentative explicite. Aucun échec ne masque les résultats disponibles de l’autre service. Aucun endpoint personnel utilisé.
+
+Les recherches s’appuient sur les GET publics existants `/api/v1/questions` et `/api/v1/projects`. Le filtre technologie accepte **une seule valeur**, nom exact ou slug sans distinction de casse : `React` et `react` fonctionnent, `rea` ne correspond pas. Les mots-clés recherchent tous les mots, sans distinction de casse/accents, dans les champs propres à chaque contenu, le pseudonyme et les technologies. Voir `backend/src/common/http/search.ts` et les tests `backend/test/search-validation.integration.ts`.
+
+La restriction serveur `visibility = VISIBLE` et `deletedAt IS NULL` reste appliquée avant comptage/pagination, dans la transaction de recherche existante. Pas de changement du backend, du contrat, du client généré ou du schéma : aucune génération API ni migration nouvelle nécessaire. Aucune dépendance ajoutée. Aucun contenu privé, candidature ou contact recherché. Les recherches ne sont pas conservées par le code ajouté ; leur URL fait partie de l’historique du navigateur.
+
+La route porte `robots: noindex, follow`. CSP, service worker, périmètre public de lecture hors connexion et stockage F1/F2 inchangés. La recherche nécessite le réseau ; elle n’est pas ajoutée aux pages interceptées ou aux copies PWA.
+
+## Vérifications observées
+
+- Installation pnpm 10.34.6 figée réussie, verrou inchangé. Premier essai offline impossible à cause de paquets absents du store ; installation normale ensuite. Génération Prisma avec destination fictive inaccessible, sans utilisation d’une base réelle.
+- Lint, TypeScript et build de production réussis. La route `/recherche` apparaît dans le build. `pnpm test` réussi : résultats détaillés hors Git dans `.cache/global-search/test.log` (19 tests backend, puis 149 tests Node réussis sur 150, un saut Windows).
+- **14 contrôles HTTP sur PostgreSQL local isolé réussis** : pour les deux endpoints, mot-clé commun, absence de résultat, technologie par nom et slug, rejet d’un nom partiel, exclusion des contenus masqués et supprimés. Le harnais crée un schéma temporaire dédié dans la base de test locale déjà disponible sur 127.0.0.1:5470 ; il applique les migrations existantes et crée des comptes/contenus exclusivement fictifs. Il ne modifie pas le schéma de recette de réactivation. L’API utilise le backend compilé de la recette de réactivation, identique aux sources backend du SHA de base, aucune modification backend dans ce lot.
+- **24 assertions Chromium ordinateur réussies**, zéro exception JavaScript : état initial, résultats mixtes, un seul type, aucun résultat, actualisation, Retour, liens filtrés, technologie, ordre clavier du formulaire et navigation vers la recherche depuis le menu mobile. Panne des projets puis des questions simulée par interception HTTP 503, avec résultats réels de l’autre API conservés. Les parcours normaux utilisent l’API et PostgreSQL réels locaux, sans fixture HTTP.
+- Huit captures Clair/Sombre à **1440, 768, 390 et 320 px**, aucun débordement horizontal détecté. Captures ordinateur Clair et mobile 320 Sombre effectivement examinées. Référence Questions ordinateur/mobile examinée ; composants et tokens existants réutilisés. Aucune maquette spécifique de recherche globale n’a été prétendue disponible ou validée.
+
+Preuves locales hors commit : `.cache/global-search/api-results.json`, `verification/results.json`, huit captures `verification/{largeur}-{theme}.png`, `verification/partial.png`, logs de compilation et tests. Les comptes fictifs, configuration de base, emails de test et captures ne font pas partie de la livraison Git.
+
+## Aperçu et recette de relecture
+
+Ouvrir **http://127.0.0.1:3560/recherche**. Serveur Next de production local sur 3560, relié à une API de test locale sur port libre, identifiée dans `.cache/global-search/preview-api.json`. Pas besoin de compte.
+
+1. Dans le champ arrondi de l’en-tête, saisir `Teranga`, puis Entrée ou la loupe : une question et un projet publics. Les exemples intitulés « masque » ou « supprime » ne doivent jamais apparaître.
+2. Actualiser, puis rechercher `zebre` : une question seulement. Utiliser Retour : retrouver `Teranga` dans l’URL et les deux groupes.
+3. Rechercher `introuvablexyz` : aucun résultat dans les deux groupes. Rechercher `Teranga` avec technologie `React`, puis `react`, puis `rea` : les deux premiers trouvent les exemples, le dernier aucun.
+4. Ouvrir Voir toutes les questions / tous les projets correspondants : vérifier les critères dans la liste et son URL. Revenir avec Retour.
+5. À 320/390 px, utiliser le champ directement visible sous le logo ; essayer Tab, Maj+Tab et Entrée dans le formulaire. Vérifier également le menu et Échap. Comparer Clair et Sombre, et les largeurs 768/1440 px.
+6. La panne partielle reproductible est dans le harnais `.cache/global-search/browser.cjs`, qui intercepte seulement un GET public et conserve le service réel de l’autre groupe. Les captures et résultats documentent cet essai ; aucun interrupteur de panne n’est ajouté au produit. Un mode réseau entièrement hors ligne peut montrer les deux erreurs de service si la page est déjà ouverte ; aucune promesse de recherche hors connexion.
+
+Pour relancer l’aperçu après arrêt : depuis la racine du dépôt, exécuter `node .cache/global-search/fixtures.cjs`, attendre son message API prête puis lancer `node .cache/global-search/start-preview.cjs`. Le harnais de données crée un nouveau schéma dédié ; conserver son processus pendant la recette. Ctrl+C sur ce processus ferme son API et supprime uniquement son schéma temporaire. Le frontend est démarré détaché, son PID est enregistré dans `preview-pid.json` ; vérifier le processus avant de l’arrêter. Ne pas réutiliser ces données ou secrets locaux en production.
+
+Limites : Chromium sur ordinateur seulement ; aucun appareil physique, Safari/Firefox ou lecteur d’écran réellement testé. Le comportement avec un administrateur connecté dans l’en-tête reste à compléter ; la recette présentée est publique et anonyme. Les pannes sont des 503 contrôlés localement, pas une panne provoquée sur un service déployé. Les résultats GitHub d’un autre lot ne constituent pas des contrôles de ce worktree. Publication après validation séparée.
+
+## Ajustement visuel du champ d’en-tête
+
+Après la référence fournie par l’utilisateur, nouveau lint, TypeScript et build frontend réussis. Première invocation directe de pnpm pour TypeScript interrompue car son exécution récursive ne trouvait pas pnpm dans le PATH ; relance avec `npm exec --package=pnpm@10.34.6` réussie. **23 assertions Chromium ciblées réussies**, zéro exception : champ visible sans débordement aux quatre largeurs dans les deux thèmes, soumission Entrée/loupe avec requête dans l’URL et résultats réels, Tab vers la loupe, contour de focus visible, ouverture du menu mobile et fermeture par Échap. Huit nouvelles captures dans `.cache/global-search/verification/pill/`, ordinateur Clair et mobile Sombre examinés. La recette initiale de recherche reste applicable ; son ancien contrôle du lien de menu est remplacé par ces contrôles du champ visible. Aucune modification des endpoints ou règles de recherche. Aperçu redémarré sur le build final.
+
+Avant publication, les **24 assertions du parcours complet ont été rejouées et réussies sur ce build final**, en adaptant uniquement le harnais de navigation à la loupe qui remplace le lien. Zéro exception JavaScript ; mêmes scénarios de recherche, Retour, filtres et panne partielle. Preuves hors Git : `.cache/global-search/verification/publication/results.json` et captures associées. Aucun changement du code applicatif depuis le build et la recette du champ arrondi ; contrôles de compilation réutilisés. Seule cette documentation a été actualisée après recette.
