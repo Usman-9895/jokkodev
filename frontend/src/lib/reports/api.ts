@@ -8,7 +8,7 @@ export type Decision=ReportSchemas['ResolveReportDto']['decision'];
 /** A proxy 502 cannot prove whether the server committed the write before its response was lost. */
 export function reportReceiptUncertain(error:unknown){return error instanceof HttpError&&(['network','protocol'].includes(error.kind)||error.status===502&&!!error.details&&typeof error.details==='object'&&'code' in error.details&&error.details.code==='API_UNAVAILABLE');}
 export const decisions=['NO_ACTION','HIDE_CONTENT','SUSPEND_ACCOUNT'] as const;
-export const decisionLabels:Record<Decision,string>={NO_ACTION:'Clôturer sans sanction',HIDE_CONTENT:'Masquer le contenu',SUSPEND_ACCOUNT:'Suspendre le compte auteur'};
+export const decisionLabels:Record<ReportSchemas['ModerationActionDto']['decision'],string>={REACTIVATE_ACCOUNT:'Réactiver le compte',NO_ACTION:'Clôturer sans sanction',HIDE_CONTENT:'Masquer le contenu',SUSPEND_ACCOUNT:'Suspendre le compte auteur'};
 export const reportTypes={question:'QUESTION',answer:'ANSWER',project:'PROJECT'} as const;
 export const typeLabels={QUESTION:'Question',ANSWER:'Réponse',PROJECT:'Projet'};
 export const decisionEffects:Record<Decision,string>={NO_ACTION:'Le signalement sera clôturé sans modifier le contenu ni le compte.',HIDE_CONTENT:'Le contenu ne sera plus accessible publiquement. Une question masquée rend aussi ses réponses indisponibles. Masquer une réponse acceptée retire la solution. Le signalement sera clôturé.',SUSPEND_ACCOUNT:'Le compte auteur ou responsable sera suspendu et ses sessions révoquées. Ses contenus ne seront pas masqués automatiquement. Le signalement sera clôturé.'};

@@ -2424,6 +2424,139 @@
         ]
       }
     },
+    "/api/v1/admin/suspended-accounts": {
+      "get": {
+        "operationId": "AdminController_suspended",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tous les comptes suspendus, sans coordonnées privées.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminUserPageDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Réservé au rôle ADMIN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/accounts/{id}/reactivate": {
+      "post": {
+        "operationId": "AdminController_reactivate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReactivateAccountDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Compte réactivé et décision historisée atomiquement. Les sessions révoquées restent invalides.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationActionDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Réservé au rôle ADMIN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "ACCOUNT_NOT_SUSPENDED.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/admin/reports": {
       "get": {
         "operationId": "AdminController_reports",
@@ -4665,6 +4798,103 @@
           "role"
         ]
       },
+      "AdminUserPageDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminUserDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "ReactivateAccountDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "ModerationTargetRefDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "QUESTION",
+              "ANSWER",
+              "PROJECT",
+              "USER"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ]
+      },
+      "ModerationActionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "NO_ACTION",
+              "HIDE_CONTENT",
+              "SUSPEND_ACCOUNT",
+              "REACTIVATE_ACCOUNT"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "admin": {
+            "$ref": "#/components/schemas/AdminUserDto"
+          },
+          "reportId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "target": {
+            "$ref": "#/components/schemas/ModerationTargetRefDto"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "decision",
+          "reason",
+          "admin",
+          "target",
+          "createdAt"
+        ]
+      },
       "ReportTargetDto": {
         "type": "object",
         "properties": {
@@ -4803,71 +5033,6 @@
         "required": [
           "data",
           "meta"
-        ]
-      },
-      "ModerationTargetRefDto": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "QUESTION",
-              "ANSWER",
-              "PROJECT",
-              "USER"
-            ]
-          },
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          }
-        },
-        "required": [
-          "type",
-          "id"
-        ]
-      },
-      "ModerationActionDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "decision": {
-            "type": "string",
-            "enum": [
-              "NO_ACTION",
-              "HIDE_CONTENT",
-              "SUSPEND_ACCOUNT"
-            ]
-          },
-          "reason": {
-            "type": "string"
-          },
-          "admin": {
-            "$ref": "#/components/schemas/AdminUserDto"
-          },
-          "reportId": {
-            "type": "string",
-            "nullable": true,
-            "format": "uuid"
-          },
-          "target": {
-            "$ref": "#/components/schemas/ModerationTargetRefDto"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "required": [
-          "id",
-          "decision",
-          "reason",
-          "admin",
-          "target",
-          "createdAt"
         ]
       },
       "ReportDetailDto": {
