@@ -49,6 +49,7 @@ enum ReportStatus {
 }
 
 enum ModerationDecision {
+  REACTIVATE_ACCOUNT
   NO_ACTION
   HIDE_CONTENT
   SUSPEND_ACCOUNT

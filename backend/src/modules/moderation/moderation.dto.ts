@@ -8,6 +8,7 @@ export const REASON_MAX = 1_000;
 export const CONTENT_TYPES = ['QUESTION', 'ANSWER', 'PROJECT'] as const;
 export type ContentType = (typeof CONTENT_TYPES)[number];
 export const DECISIONS = ['NO_ACTION', 'HIDE_CONTENT', 'SUSPEND_ACCOUNT'] as const;
+export const ACTION_DECISIONS = [...DECISIONS, 'REACTIVATE_ACCOUNT'] as const;
 export type Decision = (typeof DECISIONS)[number];
 
 export class AdminUserDto {
@@ -46,9 +47,13 @@ export class ModerationTargetRefDto {
   @ApiProperty({ format: 'uuid' }) id!: string;
 }
 
+export class ReactivateAccountDto {
+  @ApiProperty({ minLength: REASON_MIN, maxLength: REASON_MAX }) @IsString() @HasText() @MinLength(REASON_MIN) @MaxLength(REASON_MAX) reason!: string;
+}
+
 export class ModerationActionDto {
   @ApiProperty({ format: 'uuid' }) id!: string;
-  @ApiProperty({ enum: DECISIONS }) decision!: Decision;
+  @ApiProperty({ enum: ACTION_DECISIONS }) decision!: (typeof ACTION_DECISIONS)[number];
   @ApiProperty() reason!: string;
   @ApiProperty({ type: AdminUserDto }) admin!: AdminUserDto;
   @ApiPropertyOptional({ nullable: true, type: String, format: 'uuid' }) reportId!: string | null;

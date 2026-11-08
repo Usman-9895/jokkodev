@@ -3,9 +3,9 @@ import { ApiConflictResponse, ApiCookieAuth, ApiCreatedResponse, ApiForbiddenRes
 import type { AuthenticatedUser } from '../../common/auth/auth-context';
 import { CurrentUser, Roles } from '../../common/auth/decorators';
 import { ApiErrorDto } from '../../common/filters/api-error.filter';
-import { ReportId } from '../../common/http/id.pipe';
+import { ReportId, UserId } from '../../common/http/id.pipe';
 import { PageOf, PageQueryDto, type Page } from '../../common/http/pagination';
-import { CreatedReportDto, CreateReportDto, DirectActionDto, ModerationActionDto, ReportDetailDto, ReportDto, ReportQueryDto, ResolveReportDto } from './moderation.dto';
+import { AdminUserDto, ReactivateAccountDto, CreatedReportDto, CreateReportDto, DirectActionDto, ModerationActionDto, ReportDetailDto, ReportDto, ReportQueryDto, ResolveReportDto } from './moderation.dto';
 import { ModerationService } from './moderation.service';
 
 @ApiTags('reports')
@@ -32,6 +32,17 @@ export class ReportsController {
 @Controller('admin')
 export class AdminController {
   constructor(private readonly moderation: ModerationService) {}
+
+  @Get('suspended-accounts')
+  @ApiOkResponse({ type: PageOf(AdminUserDto), description: 'Tous les comptes suspendus, sans coordonnées privées.' })
+  suspended(@Query() query: PageQueryDto): Promise<Page<AdminUserDto>> { return this.moderation.suspended(query); }
+
+  @Post('accounts/:id/reactivate')
+  @HttpCode(200)
+  @ApiOkResponse({ type: ModerationActionDto, description: 'Compte réactivé et décision historisée atomiquement. Les sessions révoquées restent invalides.' })
+  @ApiConflictResponse({ type: ApiErrorDto, description: 'ACCOUNT_NOT_SUSPENDED.' })
+  @ApiNotFoundResponse({ type: ApiErrorDto })
+  reactivate(@CurrentUser() admin: AuthenticatedUser, @Param('id', UserId) id: string, @Body() input: ReactivateAccountDto): Promise<ModerationActionDto> { return this.moderation.reactivate(admin, id, input); }
 
   @Get('reports')
   @ApiOkResponse({ type: PageOf(ReportDto), description: 'Plus récents d’abord, filtrables par état.' })

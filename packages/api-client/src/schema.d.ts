@@ -596,6 +596,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/suspended-accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AdminController_suspended"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/accounts/{id}/reactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminController_reactivate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/reports": {
         parameters: {
             query?: never;
@@ -1299,6 +1331,32 @@ export interface components {
             /** @enum {string} */
             role: "MEMBER" | "ADMIN";
         };
+        AdminUserPageDto: {
+            data: components["schemas"]["AdminUserDto"][];
+            meta: components["schemas"]["PageMetaDto"];
+        };
+        ReactivateAccountDto: {
+            reason: string;
+        };
+        ModerationTargetRefDto: {
+            /** @enum {string} */
+            type: "QUESTION" | "ANSWER" | "PROJECT" | "USER";
+            /** Format: uuid */
+            id: string;
+        };
+        ModerationActionDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            decision: "NO_ACTION" | "HIDE_CONTENT" | "SUSPEND_ACCOUNT" | "REACTIVATE_ACCOUNT";
+            reason: string;
+            admin: components["schemas"]["AdminUserDto"];
+            /** Format: uuid */
+            reportId?: string | null;
+            target: components["schemas"]["ModerationTargetRefDto"];
+            /** Format: date-time */
+            createdAt: string;
+        };
         ReportTargetDto: {
             /**
              * Format: date-time
@@ -1343,25 +1401,6 @@ export interface components {
         ReportPageDto: {
             data: components["schemas"]["ReportDto"][];
             meta: components["schemas"]["PageMetaDto"];
-        };
-        ModerationTargetRefDto: {
-            /** @enum {string} */
-            type: "QUESTION" | "ANSWER" | "PROJECT" | "USER";
-            /** Format: uuid */
-            id: string;
-        };
-        ModerationActionDto: {
-            /** Format: uuid */
-            id: string;
-            /** @enum {string} */
-            decision: "NO_ACTION" | "HIDE_CONTENT" | "SUSPEND_ACCOUNT";
-            reason: string;
-            admin: components["schemas"]["AdminUserDto"];
-            /** Format: uuid */
-            reportId?: string | null;
-            target: components["schemas"]["ModerationTargetRefDto"];
-            /** Format: date-time */
-            createdAt: string;
         };
         ReportDetailDto: {
             /** Format: uuid */
@@ -2974,6 +3013,90 @@ export interface operations {
                 };
             };
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AdminController_suspended: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tous les comptes suspendus, sans coordonnées privées. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserPageDto"];
+                };
+            };
+            /** @description Réservé au rôle ADMIN. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+        };
+    };
+    AdminController_reactivate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReactivateAccountDto"];
+            };
+        };
+        responses: {
+            /** @description Compte réactivé et décision historisée atomiquement. Les sessions révoquées restent invalides. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationActionDto"];
+                };
+            };
+            /** @description Réservé au rôle ADMIN. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiErrorDto"];
+                };
+            };
+            /** @description ACCOUNT_NOT_SUSPENDED. */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

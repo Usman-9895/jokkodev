@@ -104,3 +104,6 @@
 .moderation-feedback>.jd-message {margin-block:12px;}
 
 .admin-header nav a[aria-current="page"] {font-weight:600;color:var(--color-petrol);border-bottom:2px solid var(--color-turquoise);}
+.reactivation-account {padding:24px;margin-block:16px;overflow-wrap:anywhere;}
+.reactivation-account p {margin-block:12px;color:var(--color-muted);}
+.reactivation-account .jd-button {white-space:normal;}

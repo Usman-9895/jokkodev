@@ -126,6 +126,27 @@ export class ModerationService {
     return toAction(await this.database.prisma.moderationAction.findUniqueOrThrow({ where: { id }, select: actionSelect }));
   }
 
+  async suspended(query: PageQueryDto) {
+    const {page,pageSize,skip,take}=pageWindow(query);
+    const [total,rows]=await this.database.prisma.$transaction([
+      this.database.prisma.user.count({where:{status:'SUSPENDED'}}),
+      this.database.prisma.user.findMany({where:{status:'SUSPENDED'},orderBy:[{username:'asc'},{id:'asc'}],skip,take,select:userSelect})
+    ]);
+    return {data:rows.map(adminIdentity),meta:{page,pageSize,total}};
+  }
+
+  async reactivate(admin: AuthenticatedUser, userId: string, input: {reason:string}): Promise<ModerationActionDto> {
+    if(admin.role!=='ADMIN')throw new ApiException(403,'FORBIDDEN','Réservé à l’administration.');
+    const id=await this.database.prisma.$transaction(async tx=>{
+      const [user]=await tx.$queryRaw<{status:string}[]>`SELECT status::text AS status FROM "User" WHERE id=${userId}::uuid FOR UPDATE`;
+      if(!user)throw targetNotFound();
+      if(user.status!=='SUSPENDED')throw new ApiException(409,'ACCOUNT_NOT_SUSPENDED','Ce compte n’est plus suspendu. Relis son état.');
+      await tx.user.update({where:{id:userId},data:{status:'ACTIVE'}});
+      return (await tx.moderationAction.create({data:{adminId:admin.id,targetUserId:userId,decision:'REACTIVATE_ACCOUNT',reason:cleanText(input.reason)},select:{id:true}})).id;
+    });
+    return toAction(await this.database.prisma.moderationAction.findUniqueOrThrow({where:{id},select:actionSelect}));
+  }
+
   async actions(query: PageQueryDto): Promise<Page<ModerationActionDto>> {
     const { page, pageSize, skip, take } = pageWindow(query);
     const [total, rows] = await this.database.prisma.$transaction([
@@ -167,6 +188,7 @@ export class ModerationService {
 
   /** Suspension : statut relu à chaque requête et sessions révoquées, l'effet est immédiat. Ses contenus restent visibles. */
   private async suspend(tx: Tx, userId: string, tolerateSuspended: boolean): Promise<void> {
+    await tx.$queryRaw`SELECT id FROM "User" WHERE id = ${userId}::uuid FOR UPDATE`;
     const user = await tx.user.findUnique({ where: { id: userId }, select: { role: true, status: true } });
     if (!user) throw targetNotFound();
     if (user.role === 'ADMIN') throw new ApiException(409, 'CANNOT_SUSPEND_ADMIN', 'Un administrateur ne peut pas être suspendu par cette procédure.');
@@ -211,7 +233,7 @@ function toReport(row: ReportRow): ReportDto {
   else if (row.project) target = { type: 'PROJECT', id: row.project.id, title: row.project.title, excerpt: excerptOf(row.project.objective, 500), visibility: row.project.visibility, deletedAt: row.project.deletedAt?.toISOString() ?? null, author: adminIdentity(row.project.owner), questionId: null };
   else throw new Error('Signalement sans cible.');
   return {
-    id: row.id, status: row.status, reason: row.reason, reporter: adminIdentity(row.reporter), target, decision: row.decision, closedBy: row.closedBy ? adminIdentity(row.closedBy) : null,
+    id: row.id, status: row.status, reason: row.reason, reporter: adminIdentity(row.reporter), target, decision: row.decision as Decision | null, closedBy: row.closedBy ? adminIdentity(row.closedBy) : null,
     closedAt: row.closedAt?.toISOString() ?? null, createdAt: row.createdAt.toISOString()
   };
 }
