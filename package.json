@@ -6,6 +6,7 @@
     "node": ">=24.15.0 <25"
   },
   "scripts": {
+    "google:prune": "pnpm --filter @jokkodev/backend google:prune",
     "dev": "pnpm --parallel --filter @jokkodev/frontend --filter @jokkodev/backend dev",
     "dev:frontend": "pnpm --filter @jokkodev/frontend dev",
     "dev:backend": "pnpm --filter @jokkodev/backend dev",

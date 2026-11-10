@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "google:prune": "node dist/src/cli/google-prune.js",
     "dev": "pnpm build && concurrently --kill-others \"tsc --watch --preserveWatchOutput\" \"node --watch dist/src/main.js\"",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/src/main.js",
@@ -40,6 +41,7 @@
     "helmet": "8.3.0",
     "jpeg-js": "0.4.4",
     "nodemailer": "10.1.2",
+    "openid-client": "6.8.8",
     "pg": "8.23.1",
     "pngjs": "7.0.0",
     "reflect-metadata": "0.2.2",

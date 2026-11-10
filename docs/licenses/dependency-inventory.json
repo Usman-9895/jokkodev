@@ -2135,6 +2135,13 @@
     "flags": []
   },
   {
+    "name": "jose",
+    "version": "6.2.17",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/jose/6.2.17",
+    "flags": []
+  },
+  {
     "name": "jpeg-js",
     "version": "0.4.4",
     "license": "BSD-3-Clause",
@@ -2439,6 +2446,13 @@
     "flags": []
   },
   {
+    "name": "oauth4webapi",
+    "version": "3.8.8",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/oauth4webapi/3.8.8",
+    "flags": []
+  },
+  {
     "name": "object-assign",
     "version": "4.1.1",
     "license": "MIT",
@@ -2478,6 +2492,13 @@
     "version": "7.13.0",
     "license": "MIT",
     "source": "https://registry.npmjs.org/openapi-typescript/7.13.0",
+    "flags": []
+  },
+  {
+    "name": "openid-client",
+    "version": "6.8.8",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/openid-client/6.8.8",
     "flags": []
   },
   {

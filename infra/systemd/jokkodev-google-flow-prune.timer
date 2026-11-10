@@ -1,0 +1,10 @@
+[Unit]
+Description=JokkoDev expired Google login flow cleanup schedule
+
+[Timer]
+OnBootSec=5min
+OnUnitInactiveSec=5min
+Unit=jokkodev-google-flow-prune.service
+
+[Install]
+WantedBy=timers.target
