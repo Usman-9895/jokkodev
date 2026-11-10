@@ -10,12 +10,15 @@ import { createCsrf } from './csrf';
 import { PasswordService } from './passwords.service';
 import { SessionGuard } from './session.guard';
 import { SessionsService } from './sessions.service';
+import {GoogleController} from './google.controller';
+import {GoogleService} from './google.service';
+import {GoogleOidc} from './google.oidc';
 
 @Global()
 @Module({
-  controllers: [AuthController],
+  controllers: [AuthController,GoogleController],
   providers: [
-    AuthService, PasswordService, SessionsService, AccountTokensService,
+    AuthService, PasswordService, SessionsService, AccountTokensService,GoogleService,GoogleOidc,
     { provide: CSRF, inject: [ENVIRONMENT], useFactory: (env: Environment) => createCsrf(env) },
     { provide: APP_GUARD, useClass: SessionGuard }
   ],

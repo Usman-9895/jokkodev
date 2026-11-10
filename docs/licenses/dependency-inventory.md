@@ -1,6 +1,6 @@
 # Inventaire des dépendances installées
 
-Généré par pnpm licenses list --json, puis enrichi avec les manifests et notices des paquets installés. Plateforme : win32/x64. 467 entrées directes/transitives, production et développement. Relancer pnpm licenses:inventory après installation ou changement du lockfile.
+Généré par pnpm licenses list --json, puis enrichi avec les manifests et notices des paquets installés. Plateforme : win32/x64. 470 entrées directes/transitives, production et développement. Relancer pnpm licenses:inventory après installation ou changement du lockfile.
 
 Ce contrôle ne certifie pas la conformité complète. Les dépendances natives d’une autre plateforme et bibliothèques embarquées nécessitent une revue complémentaire. Voir open-questions.md et third-party-notices.txt.
 
@@ -301,6 +301,7 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | isexe | 2.0.0 | Transitive | ISC | [npm](https://registry.npmjs.org/isexe/2.0.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | iterare | 1.2.1 | Transitive | ISC | [npm](https://registry.npmjs.org/iterare/1.2.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | jiti | 2.7.0 | Transitive | MIT | [npm](https://registry.npmjs.org/jiti/2.7.0) | Notice à conserver ; déclaration non auditée juridiquement |
+| jose | 6.2.17 | Transitive | MIT | [npm](https://registry.npmjs.org/jose/6.2.17) | Notice à conserver ; déclaration non auditée juridiquement |
 | jpeg-js | 0.4.4 | Directe | BSD-3-Clause | [npm](https://registry.npmjs.org/jpeg-js/0.4.4) | Notice à conserver ; déclaration non auditée juridiquement |
 | js-levenshtein | 1.1.6 | Transitive | MIT | [npm](https://registry.npmjs.org/js-levenshtein/1.1.6) | Notice à conserver ; déclaration non auditée juridiquement |
 | js-tokens | 4.0.0 | Transitive | MIT | [npm](https://registry.npmjs.org/js-tokens/4.0.0) | Notice à conserver ; déclaration non auditée juridiquement |
@@ -343,12 +344,14 @@ Ce contrôle ne certifie pas la conformité complète. Les dépendances natives 
 | node-addon-api | 8.9.2 | Transitive | MIT | [npm](https://registry.npmjs.org/node-addon-api/8.9.2) | Notice à conserver ; déclaration non auditée juridiquement |
 | node-gyp-build | 4.8.4 | Transitive | MIT | [npm](https://registry.npmjs.org/node-gyp-build/4.8.4) | Notice à conserver ; déclaration non auditée juridiquement |
 | nodemailer | 10.1.2 | Directe | MIT-0 | [npm](https://registry.npmjs.org/nodemailer/10.1.2) | Notice à conserver ; déclaration non auditée juridiquement |
+| oauth4webapi | 3.8.8 | Transitive | MIT | [npm](https://registry.npmjs.org/oauth4webapi/3.8.8) | Notice à conserver ; déclaration non auditée juridiquement |
 | object-assign | 4.1.1 | Transitive | MIT | [npm](https://registry.npmjs.org/object-assign/4.1.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | object-inspect | 1.13.4 | Transitive | MIT | [npm](https://registry.npmjs.org/object-inspect/1.13.4) | Notice à conserver ; déclaration non auditée juridiquement |
 | ohash | 2.0.12 | Transitive | MIT | [npm](https://registry.npmjs.org/ohash/2.0.12) | Notice à conserver ; déclaration non auditée juridiquement |
 | on-finished | 2.4.1 | Transitive | MIT | [npm](https://registry.npmjs.org/on-finished/2.4.1) | Notice à conserver ; déclaration non auditée juridiquement |
 | once | 1.4.0 | Transitive | ISC | [npm](https://registry.npmjs.org/once/1.4.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | openapi-typescript | 7.13.0 | Directe | MIT | [npm](https://registry.npmjs.org/openapi-typescript/7.13.0) | Notice à conserver ; déclaration non auditée juridiquement |
+| openid-client | 6.8.8 | Directe | MIT | [npm](https://registry.npmjs.org/openid-client/6.8.8) | Notice à conserver ; déclaration non auditée juridiquement |
 | optionator | 0.9.4 | Transitive | MIT | [npm](https://registry.npmjs.org/optionator/0.9.4) | Notice à conserver ; déclaration non auditée juridiquement |
 | p-limit | 3.1.0 | Transitive | MIT | [npm](https://registry.npmjs.org/p-limit/3.1.0) | Notice à conserver ; déclaration non auditée juridiquement |
 | p-locate | 5.0.0 | Transitive | MIT | [npm](https://registry.npmjs.org/p-locate/5.0.0) | Notice à conserver ; déclaration non auditée juridiquement |

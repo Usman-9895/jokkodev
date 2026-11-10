@@ -122,6 +122,10 @@ Le [lot F1](docs/frontend/question-local-drafts.md) ajoute localement un brouill
 
 Le lot E prépare une PWA et une lecture hors connexion limitée aux trois guides publics, sans mise en cache des comptes, questions ou projets : [guide de recette et exploitation](docs/frontend/pwa-offline-reading.md), [vérifications locales et limites](docs/frontend/pwa-verification.md), [décision 009](docs/decisions/009-pwa-offline-reading.md). Fonctionnalité disponible dans un build de production ; worker désactivé en développement. Recette locale validée par Ousmane, publication en PR autorisée ; aucun déploiement effectué par ce lot.
 
+## Connexion Google (lot local)
+
+Connexion externe facultative : le lot local « Continuer avec Google » est décrit dans le [guide Google](docs/operations/google-auth.md), la [décision 011](docs/decisions/011-google-auth.md) et son [rapport de recette](docs/frontend/google-auth-verification.md). Activation désactivée par défaut ; client Google et secrets côté serveur uniquement. La recette avec fournisseur simulé ne vaut pas connexion Google réelle. Migration et mise en production restent séparées.
+
 ## Smoke isolé
 
 `pnpm test:smoke` attend un build de production. Les ports sont configurables par `SMOKE_FRONTEND_PORT` et `SMOKE_BACKEND_PORT` ; le relais Node lit API_INTERNAL_ORIGIN au démarrage. Les ports occupés sont refusés. Le mode par défaut cible volontairement une base inaccessible sur 127.0.0.1:1, vérifie liveness 200/readiness 503, session absente, CSRF avant validation, cookies Secure/HttpOnly/SameSite et Swagger absent en production. Il utilise une configuration SMTP locale sans envoyer d’email ; `MAIL_TRANSPORT=file` reste réservé au développement/test et aux tests d’intégration.

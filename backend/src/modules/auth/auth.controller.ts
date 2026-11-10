@@ -6,7 +6,9 @@ import type { Environment } from '../../config/environment';
 import { ApiErrorDto } from '../../common/filters/api-error.filter';
 import { CurrentUser, Public } from '../../common/auth/decorators';
 import type { AuthenticatedUser } from '../../common/auth/auth-context';
-import { cookieNames, SESSION_ABSOLUTE_MS, type CookieNames } from './auth.constants';
+import { cookieNames, type CookieNames } from './auth.constants';
+import {openSession} from './session-cookies';
+import {GoogleService,googleCookieName} from './google.service';
 import { AuthService, toCurrentUser } from './auth.service';
 import { CSRF } from './auth.tokens';
 import type { Csrf } from './csrf';
@@ -18,7 +20,7 @@ export class AuthController {
   private readonly names: CookieNames;
   private readonly cookie: CookieOptions;
 
-  constructor(private readonly auth: AuthService, @Inject(CSRF) private readonly csrf: Csrf, @Inject(ENVIRONMENT) env: Environment) {
+  constructor(private readonly auth: AuthService, @Inject(CSRF) private readonly csrf: Csrf, @Inject(ENVIRONMENT) private readonly env: Environment,private readonly google:GoogleService) {
     this.names = cookieNames(env.sessionCookieSecure);
     this.cookie = { httpOnly: true, secure: env.sessionCookieSecure, sameSite: 'lax', path: '/' };
   }
@@ -60,6 +62,8 @@ export class AuthController {
   @ApiNoContentResponse({ description: 'Session révoquée côté serveur et cookies effacés, même si la session avait déjà expiré.' })
   async logout(@Req() request: Request, @Res({ passthrough: true }) response: Response): Promise<void> {
     await this.auth.logout(request.auth?.sessionId);
+    await this.google.cancel(request.cookies?.[googleCookieName(this.env.sessionCookieSecure)]);
+    response.clearCookie(googleCookieName(this.env.sessionCookieSecure),this.cookie);
     response.clearCookie(this.names.session, this.cookie);
     response.clearCookie(this.names.csrf, this.cookie);
   }
@@ -110,10 +114,6 @@ export class AuthController {
 
   /** Pose le cookie de la nouvelle session et renvoie un jeton CSRF lié à celle-ci. */
   private openSession(sessionToken: string, request: Request, response: Response): string {
-    response.cookie(this.names.session, sessionToken, { ...this.cookie, maxAge: SESSION_ABSOLUTE_MS });
-    response.clearCookie(this.names.preSession, this.cookie);
-    request.cookies = { ...request.cookies, [this.names.session]: sessionToken };
-    delete request.cookies[this.names.preSession];
-    return this.csrf.issue(request, response, { renew: true });
+    return openSession(sessionToken,request,response,this.env,this.csrf);
   }
 }

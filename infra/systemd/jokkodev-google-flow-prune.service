@@ -1,0 +1,17 @@
+[Unit]
+Description=JokkoDev expired Google login flow cleanup
+After=postgresql.service
+
+[Service]
+Type=oneshot
+User=jokkodev
+Group=jokkodev
+WorkingDirectory=/opt/jokkodev/google/backend
+EnvironmentFile=/etc/jokkodev/google-flow-prune.env
+ExecStart=/usr/local/bin/node dist/src/cli/google-prune.js --confirm-database jokkodev --confirm-host 127.0.0.1:5432 --batch 1000 --execute
+TimeoutStartSec=2min
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true

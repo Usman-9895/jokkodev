@@ -113,6 +113,12 @@ export class AccountClient {
     this.forgetCsrf(); this.csrfToken = result.csrfToken; this.publish('authenticated', result.user, true);this.onSessionChange?.();
     return result.user;
   }
+  async finishGoogle(kind:'register'|'link',input:Schemas['GoogleRegisterDto']|Schemas['GoogleLinkDto']){
+    const result=await this.mutate<Schemas['AuthResultDto']>('/auth/google/'+kind,input,'POST',kind==='link');
+    if(!result?.user||!result.csrfToken)throw new HttpError('protocol','Réponse de connexion incomplète.');
+    this.forgetCsrf();this.csrfToken=result.csrfToken;this.publish('authenticated',result.user,true);this.onSessionChange?.();
+    return result.user;
+  }
   async logout() {
     this.publish('loading', null, true); // Hide and unmount private views before waiting for the network.
     this.onSessionChange?.();

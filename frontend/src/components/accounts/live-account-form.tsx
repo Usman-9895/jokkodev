@@ -10,6 +10,7 @@ import {validateCredentials} from '../../lib/accounts/validation';
 import {useSession} from './session-provider';
 import {PasswordField} from './password-field';
 import {Button,Card,Heading,Message,TextField,Icon} from '../ui';
+import {GoogleSignIn} from './google-sign-in';
 export function FailureMessage({failure}:{failure:ApiFailure}) {return <Message tone="error" role="alert" title={failure.message}>{failure.retryAfterSeconds!==undefined&&<p>Réessaie après {failure.retryAfterSeconds} secondes, selon le serveur.</p>}</Message>;}
 export function LiveAccountForm({screen}:{screen:AccountScreen}) {return screen==='verify'?<EmailVerification/>:<CredentialForm screen={screen}/>;}
 function CredentialForm({screen}:{screen:Exclude<AccountScreen,'verify'>}) {
@@ -33,6 +34,7 @@ function CredentialForm({screen}:{screen:Exclude<AccountScreen,'verify'>}) {
  if(screen==='reset'&&(!/^[A-Za-z0-9_-]{43}$/.test(token)||failure?.code==='TOKEN_INVALID'))return <Card className="account-card account-result"><Heading as="h1">Ce lien n’est plus utilisable</Heading><p>{failure?.code==='TOKEN_INVALID'?'Ce lien est invalide, expiré ou déjà utilisé.':'Le lien est absent ou incorrect. Demande un nouveau lien.'}</p><Link className="jd-button jd-button--primary" href="/mot-de-passe-oublie">Demander un nouveau lien</Link></Card>;
  if(success)return <Card className="account-card account-result"><span className="account-result-icon is-success" aria-hidden="true"><Icon name="check"/></span><Heading as="h1">{screen==='forgot'?'Consulte ta messagerie':'Ton mot de passe est renouvelé'}</Heading><Message tone="success" role="status" title={screen==='forgot'?'Demande prise en compte':'Modification confirmée'}>{screen==='forgot'?'Si un compte correspond à cette adresse, tu recevras un lien de réinitialisation.':'Toutes les sessions de ce compte ont été révoquées. Reconnecte-toi avec le nouveau mot de passe.'}</Message><Link className="account-back" href="/connexion">Retour à la connexion</Link></Card>;
  return <Card className="account-card"><Heading as="h1" size="page">{screen==='login'?<>Heureux de te<br className="account-mobile-break"/> retrouver</>:copy.title}</Heading><p className="account-subtitle">{copy.subtitle}</p>
+ {(screen==='login'||screen==='register')&&<GoogleSignIn/>}
  {(failure||Object.keys(errors).length>0)&&<div ref={summary} tabIndex={-1} className="account-error-summary">{failure&&<FailureMessage failure={failure}/ >}{Object.keys(errors).length>0&&<div role="alert"><strong>Vérifie les champs indiqués.</strong><ul>{Object.entries(errors).map(([field,message])=><li key={field}><a href={'#account-'+field}>{message}</a></li>)}</ul></div>}</div>}
  <form noValidate onSubmit={event=>{event.preventDefault();void submit(event.currentTarget);}}><fieldset disabled={waiting}>
  {screen==='register'&&<TextField id="account-pseudonym" name="pseudonym" autoComplete="username" label="Pseudonyme" required maxLength={30} error={errors.pseudonym} help="3 à 30 lettres sans accent, chiffres ou tirets bas."/>}

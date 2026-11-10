@@ -1,4 +1,5 @@
 import { photoUrl } from '../users/projections';
+import type {Prisma} from '../../generated/prisma/client';
 import { Inject, Injectable } from '@nestjs/common';
 import { ENVIRONMENT } from '../../config/config.module';
 import type { Environment } from '../../config/environment';
@@ -36,7 +37,7 @@ export class AuthService {
     private readonly mail: MailService
   ) {}
 
-  async register(input: RegisterDto, ip: string): Promise<{ user: AuthenticatedUser; sessionToken: string }> {
+  async register(input: RegisterDto, ip: string, attach?:(tx:Prisma.TransactionClient,userId:string)=>Promise<void>): Promise<{ user: AuthenticatedUser; sessionToken: string }> {
     this.limiter.consume(`register:ip:${ip}`, 20, HOUR);
     const email = normalizeEmail(input.email);
     const key = usernameKey(input.username);
@@ -45,6 +46,7 @@ export class AuthService {
     try {
       const { user, sessionToken } = await this.database.prisma.$transaction(async tx => {
         const user = await tx.user.create({ data: { email, username: input.username, usernameKey: key, passwordHash, profile: { create: {} } }, select: userSelect });
+        await attach?.(tx,user.id);
         return { user, sessionToken: await this.sessions.create(user.id, tx) };
       });
       await this.sendVerification(user);

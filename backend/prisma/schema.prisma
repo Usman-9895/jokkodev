@@ -56,6 +56,7 @@ enum ModerationDecision {
 }
 
 model User {
+  googleIdentity GoogleIdentity?
   questionPublications QuestionPublication[]
   /// Connexion réussie uniquement ; NULL pour les comptes antérieurs jusqu’à leur prochaine connexion.
   lastLoginAt DateTime? @db.Timestamptz(3)
@@ -92,6 +93,28 @@ model User {
   moderationsAgainst ModerationAction[] @relation("ModerationTargetUser")
   emailNotifications EmailNotification[]
   @@index([createdAt], map: "User_retention_idx")
+}
+
+/// Stable Google sub only; no Google access/refresh/ID token is retained.
+model GoogleIdentity {
+  id String @id @default(uuid(7)) @db.Uuid
+  sub String @unique @db.VarChar(255)
+  userId String @unique @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+}
+
+/// Browser-bound capability, ten minutes. Payload encrypted with a domain-separated server key.
+model GoogleFlow {
+  id String @id @default(uuid(7)) @db.Uuid
+  browserHash Bytes @unique
+  stateHash Bytes? @unique
+  stage String @db.VarChar(16)
+  payload String
+  sessionId String? @db.Uuid
+  expiresAt DateTime @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  @@index([expiresAt])
 }
 
 model EmailNotification {

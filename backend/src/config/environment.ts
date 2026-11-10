@@ -17,6 +17,7 @@ export interface Environment {
   mail: MailEnvironment;
   avatarDir?: string;
   notificationEventsEnabled?: boolean;
+  google?: {clientId:string;clientSecret:string;redirectUri:string};
 }
 
 // Secret de développement unique par processus : les jetons CSRF émis deviennent invalides au redémarrage, ce qui est acceptable hors production.
@@ -69,12 +70,20 @@ export function validateEnvironment(env: NodeJS.ProcessEnv): Environment {
     const relative=path.relative(releaseRoot,path.resolve(avatarDir));
     if (!relative || !relative.startsWith('..'+path.sep) && relative!=='..' && !path.isAbsolute(relative)) errors.push('AVATAR_STORAGE_DIR');
   }
+  let google:Environment['google'];
+  if(env.GOOGLE_AUTH_ENABLED!==undefined&&!['0','1'].includes(env.GOOGLE_AUTH_ENABLED))errors.push('GOOGLE_AUTH_ENABLED');
+  if(env.GOOGLE_AUTH_ENABLED==='1'){
+    if(!env.GOOGLE_CLIENT_ID?.endsWith('.apps.googleusercontent.com')||/\s/.test(env.GOOGLE_CLIENT_ID))errors.push('GOOGLE_CLIENT_ID');
+    if(!env.GOOGLE_CLIENT_SECRET||/[\r\n]/.test(env.GOOGLE_CLIENT_SECRET))errors.push('GOOGLE_CLIENT_SECRET');
+    if(env.GOOGLE_REDIRECT_URI!==appOrigin+'/api/v1/auth/google/callback')errors.push('GOOGLE_REDIRECT_URI');
+    google={clientId:env.GOOGLE_CLIENT_ID??'',clientSecret:env.GOOGLE_CLIENT_SECRET??'',redirectUri:env.GOOGLE_REDIRECT_URI??''};
+  }
   if (errors.length) throw new Error(`Configuration invalide : ${[...new Set(errors)].join(', ')}.`);
   return {
     nodeEnv: nodeEnv as Environment['nodeEnv'], host, port, databaseUrl, corsOrigins, appOrigin,
     sessionCookieSecure: rawSecure === 'true', csrfSecret, trustProxy: trustProxy as Environment['trustProxy'],
     avatarDir, notificationEventsEnabled:env.NOTIFICATION_EVENTS_ENABLED==='1',
-    mail: { transport, from, fileDir: env.MAIL_FILE_DIR || '.cache/mail', smtp }
+    mail: { transport, from, fileDir: env.MAIL_FILE_DIR || '.cache/mail', smtp },google
   };
 }
 
