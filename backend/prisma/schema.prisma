@@ -57,6 +57,7 @@ enum ModerationDecision {
 
 model User {
   googleIdentity GoogleIdentity?
+  githubIdentity GitHubIdentity?
   questionPublications QuestionPublication[]
   /// Connexion réussie uniquement ; NULL pour les comptes antérieurs jusqu’à leur prochaine connexion.
   lastLoginAt DateTime? @db.Timestamptz(3)
@@ -481,4 +482,24 @@ model RetentionEvent {
   action String @db.VarChar(32)
   at DateTime @db.Timestamptz(3)
   @@index([at])
+}
+
+model GitHubIdentity {
+  id String @id @default(uuid(7)) @db.Uuid
+  sub String @unique @db.VarChar(255)
+  userId String @unique @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+}
+
+model GitHubFlow {
+  id String @id @default(uuid(7)) @db.Uuid
+  browserHash Bytes @unique
+  stateHash Bytes? @unique
+  stage String @db.VarChar(16)
+  payload String
+  sessionId String? @db.Uuid
+  expiresAt DateTime @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  @@index([expiresAt])
 }

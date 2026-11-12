@@ -114,7 +114,10 @@ export class AccountClient {
     return result.user;
   }
   async finishGoogle(kind:'register'|'link',input:Schemas['GoogleRegisterDto']|Schemas['GoogleLinkDto']){
-    const result=await this.mutate<Schemas['AuthResultDto']>('/auth/google/'+kind,input,'POST',kind==='link');
+    return this.finishExternal('google',kind,input);
+  }
+  async finishExternal(provider:'google'|'github',kind:'register'|'link',input:Schemas['GoogleRegisterDto']|Schemas['GoogleLinkDto']){
+    const result=await this.mutate<Schemas['AuthResultDto']>('/auth/'+provider+'/'+kind,input,'POST',kind==='link');
     if(!result?.user||!result.csrfToken)throw new HttpError('protocol','Réponse de connexion incomplète.');
     this.forgetCsrf();this.csrfToken=result.csrfToken;this.publish('authenticated',result.user,true);this.onSessionChange?.();
     return result.user;

@@ -10,6 +10,8 @@ Plateforme panafricaine d’entraide et de collaboration, portée par DevTeranga
 
 ## Installation
 
+Connexion externe GitHub préparée en local : [guide de configuration et recette](docs/operations/github-auth.md), [résultats vérifiés et limites](docs/frontend/github-auth-verification.md). Activation indépendante désactivée par défaut ; GitHub testé avec un fournisseur simulé, sans accès aux dépôts.
+
 Prérequis : Node.js **24.15.0 ou correctif ultérieur de la branche 24**, pnpm **10.34.6**. PostgreSQL **17.11** est la cible locale recommandée ; aucune base n’est requise pour la liveness ou l’export OpenAPI. Docker n’est pas obligatoire.
 
 Depuis la racine :
