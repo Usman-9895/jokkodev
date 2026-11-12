@@ -13,12 +13,15 @@ import { SessionsService } from './sessions.service';
 import {GoogleController} from './google.controller';
 import {GoogleService} from './google.service';
 import {GoogleOidc} from './google.oidc';
+import {GitHubService} from './github.service';
+import {GitHubController} from './github.controller';
+import {GitHubOAuth} from './github.oauth';
 
 @Global()
 @Module({
-  controllers: [AuthController,GoogleController],
+  controllers: [AuthController,GoogleController,GitHubController],
   providers: [
-    AuthService, PasswordService, SessionsService, AccountTokensService,GoogleService,GoogleOidc,
+    AuthService, PasswordService, SessionsService, AccountTokensService,GoogleService,GoogleOidc,GitHubService,GitHubOAuth,
     { provide: CSRF, inject: [ENVIRONMENT], useFactory: (env: Environment) => createCsrf(env) },
     { provide: APP_GUARD, useClass: SessionGuard }
   ],

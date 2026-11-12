@@ -9,6 +9,7 @@ import type { AuthenticatedUser } from '../../common/auth/auth-context';
 import { cookieNames, type CookieNames } from './auth.constants';
 import {openSession} from './session-cookies';
 import {GoogleService,googleCookieName} from './google.service';
+import {GitHubService,githubCookieName} from './github.service';
 import { AuthService, toCurrentUser } from './auth.service';
 import { CSRF } from './auth.tokens';
 import type { Csrf } from './csrf';
@@ -20,7 +21,7 @@ export class AuthController {
   private readonly names: CookieNames;
   private readonly cookie: CookieOptions;
 
-  constructor(private readonly auth: AuthService, @Inject(CSRF) private readonly csrf: Csrf, @Inject(ENVIRONMENT) private readonly env: Environment,private readonly google:GoogleService) {
+  constructor(private readonly auth: AuthService, @Inject(CSRF) private readonly csrf: Csrf, @Inject(ENVIRONMENT) private readonly env: Environment,private readonly google:GoogleService,private readonly github:GitHubService) {
     this.names = cookieNames(env.sessionCookieSecure);
     this.cookie = { httpOnly: true, secure: env.sessionCookieSecure, sameSite: 'lax', path: '/' };
   }
@@ -63,6 +64,8 @@ export class AuthController {
   async logout(@Req() request: Request, @Res({ passthrough: true }) response: Response): Promise<void> {
     await this.auth.logout(request.auth?.sessionId);
     await this.google.cancel(request.cookies?.[googleCookieName(this.env.sessionCookieSecure)]);
+    await this.github.cancel(request.cookies?.[githubCookieName(this.env.sessionCookieSecure)]);
+    response.clearCookie(githubCookieName(this.env.sessionCookieSecure),this.cookie);
     response.clearCookie(googleCookieName(this.env.sessionCookieSecure),this.cookie);
     response.clearCookie(this.names.session, this.cookie);
     response.clearCookie(this.names.csrf, this.cookie);

@@ -31,7 +31,8 @@
     "test:security-ip": "pnpm --filter @jokkodev/backend build && node scripts/security/ip-regression.mjs",
     "retention": "pnpm --filter @jokkodev/backend retention",
     "notifications": "pnpm --filter @jokkodev/backend notifications",
-    "publications:prune": "pnpm --filter @jokkodev/backend publications:prune"
+    "publications:prune": "pnpm --filter @jokkodev/backend publications:prune",
+    "github:prune": "pnpm --filter @jokkodev/backend github:prune"
   },
   "devDependencies": {
     "typescript": "6.0.3",

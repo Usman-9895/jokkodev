@@ -14,16 +14,24 @@
 .account-card { width:100%; max-width:520px; padding:40px; box-shadow:none; }
 .account-card > h1 { font-size:38px; line-height:1.12; margin-bottom:8px; }
 .account-subtitle { color:var(--color-muted); margin-bottom:24px; }
-.account-google { margin-bottom:24px; }
+.account-google { margin-bottom:24px; display:grid; gap:12px; }
 @font-face { font-family:'JokkoDev Google Sans'; src:url('/fonts/google-sans-500.ttf') format('truetype'); font-style:normal; font-weight:500; font-display:swap; }
-.google-sign-in { width:100%; min-height:44px; display:flex; align-items:center; justify-content:center; gap:12px; padding:10px 12px; border:1px solid #747775; border-radius:8px; background:#fff; color:#1f1f1f; font:500 14px/20px 'JokkoDev Google Sans',var(--font-inter); cursor:pointer; }
-.google-sign-in:disabled { opacity:.7; cursor:wait; }
+.external-sign-in-row { display:flex; align-items:stretch; gap:12px; min-width:0; }
+.google-sign-in,.github-sign-in { flex:1 1 0; min-width:0; min-height:48px; display:flex; align-items:center; justify-content:center; gap:8px; padding:10px 12px; border:1px solid #d6d6d6; border-radius:10px; background:#fff; color:#444; box-shadow:0 1px 2px rgb(0 0 0 / 6%); cursor:pointer; }
+.google-sign-in { font:500 14px/20px 'JokkoDev Google Sans',var(--font-inter); }
+.github-sign-in { font:500 14px/20px var(--font-inter),sans-serif; }
+.google-sign-in:disabled,.github-sign-in:disabled { opacity:.7; cursor:wait; }
+.external-sign-in-legal.account-legal { margin:0; }
+.github-sign-in__mark { flex:none; width:20px; height:20px; }
+.github-sign-in__dark { display:none; }
+[data-theme='dark'] .github-sign-in__light { display:none; }
+[data-theme='dark'] .github-sign-in__dark { display:block; }
 .google-sign-in__mark { position:relative; overflow:hidden; flex:none; width:20px; height:20px; background:#fff; }
 .google-sign-in__mark img { position:absolute; left:-10px; top:-10px; width:40px; height:40px; max-width:none; }
 .account-google__divider { display:flex; align-items:center; gap:12px; color:var(--color-muted); font-size:12px; }
 .account-google__divider::before,.account-google__divider::after { content:''; flex:1; height:1px; background:var(--color-border); }
 .account-google__email { margin-bottom:20px; overflow-wrap:anywhere; font-size:14px; }
-[data-theme='dark'] .google-sign-in { background:#131314; border-color:#8e918f; color:#e3e3e3; }
+[data-theme='dark'] .google-sign-in,[data-theme='dark'] .github-sign-in { background:#131314; border-color:#8e918f; color:#e3e3e3; }
 .account-card > .jd-message { font-size:12px; margin-bottom:24px; }
 .account-card form fieldset,.account-fields { border:0; min-width:0; padding:0; display:grid; gap:20px; }
 .account-card .jd-field__label { font-size:14px; }

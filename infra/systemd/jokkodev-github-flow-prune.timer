@@ -1,0 +1,10 @@
+[Unit]
+Description=JokkoDev expired GitHub login flow cleanup schedule
+
+[Timer]
+OnBootSec=5min
+OnUnitInactiveSec=5min
+Unit=jokkodev-github-flow-prune.service
+
+[Install]
+WantedBy=timers.target

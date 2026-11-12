@@ -23,7 +23,8 @@
     "reputation:rebuild": "pnpm build && node dist/src/cli/reputation.js",
     "retention": "node dist/src/cli/retention.js",
     "notifications": "node dist/src/cli/notifications.js",
-    "publications:prune": "pnpm build && node dist/src/cli/publications-prune.js"
+    "publications:prune": "pnpm build && node dist/src/cli/publications-prune.js",
+    "github:prune": "node dist/src/cli/github-prune.js"
   },
   "dependencies": {
     "@nestjs/common": "12.1.2",
