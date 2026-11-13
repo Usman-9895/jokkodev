@@ -16,6 +16,7 @@ export interface Environment {
   trustProxy: false | string[];
   mail: MailEnvironment;
   avatarDir?: string;
+  questionImageDir?: string;
   notificationEventsEnabled?: boolean;
   google?: {clientId:string;clientSecret:string;redirectUri:string};
   github?: {clientId:string;clientSecret:string;redirectUri:string};
@@ -72,6 +73,13 @@ export function validateEnvironment(env: NodeJS.ProcessEnv): Environment {
     const relative=path.relative(releaseRoot,path.resolve(avatarDir));
     if (!relative || !relative.startsWith('..'+path.sep) && relative!=='..' && !path.isAbsolute(relative)) errors.push('AVATAR_STORAGE_DIR');
   }
+  const questionImageDir = env.QUESTION_IMAGE_STORAGE_DIR || undefined;
+  if (questionImageDir && (!path.isAbsolute(questionImageDir) || path.resolve(questionImageDir) === path.parse(path.resolve(questionImageDir)).root || avatarDir && path.resolve(avatarDir) === path.resolve(questionImageDir))) errors.push('QUESTION_IMAGE_STORAGE_DIR');
+  if (production && questionImageDir) {
+    const releaseRoot = path.basename(process.cwd()) === 'backend' ? path.dirname(process.cwd()) : process.cwd();
+    const relative = path.relative(releaseRoot, path.resolve(questionImageDir));
+    if (!relative || !relative.startsWith('..'+path.sep) && relative !== '..' && !path.isAbsolute(relative)) errors.push('QUESTION_IMAGE_STORAGE_DIR');
+  }
   let google:Environment['google'];
   if(env.GOOGLE_AUTH_ENABLED!==undefined&&!['0','1'].includes(env.GOOGLE_AUTH_ENABLED))errors.push('GOOGLE_AUTH_ENABLED');
   if(env.GOOGLE_AUTH_ENABLED==='1'){
@@ -93,7 +101,7 @@ export function validateEnvironment(env: NodeJS.ProcessEnv): Environment {
   return {
     nodeEnv: nodeEnv as Environment['nodeEnv'], host, port, databaseUrl, corsOrigins, appOrigin,
     sessionCookieSecure: rawSecure === 'true', csrfSecret, trustProxy: trustProxy as Environment['trustProxy'],
-    avatarDir, notificationEventsEnabled:env.NOTIFICATION_EVENTS_ENABLED==='1',
+    avatarDir, questionImageDir, notificationEventsEnabled:env.NOTIFICATION_EVENTS_ENABLED==='1',
     mail: { transport, from, fileDir: env.MAIL_FILE_DIR || '.cache/mail', smtp },google,github,githubDiagnosticsEnabled:env.GITHUB_AUTH_DIAGNOSTICS_ENABLED==='1'
   };
 }

@@ -19,9 +19,9 @@ PrivateTmp=true
 ProtectSystem=strict
 # Stockage des seuls avatars normalisés, indépendant de /opt/jokkodev/current.
 # Faire correspondre AVATAR_STORAGE_DIR dans api.env ; à valider sur l'environnement cible.
-StateDirectory=jokkodev/avatars
+StateDirectory=jokkodev/avatars jokkodev/question-images
 StateDirectoryMode=0700
-ReadWritePaths=/var/lib/jokkodev/avatars
+ReadWritePaths=/var/lib/jokkodev/avatars /var/lib/jokkodev/question-images
 ProtectHome=true
 ProtectKernelTunables=true
 ProtectControlGroups=true

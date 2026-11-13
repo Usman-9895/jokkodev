@@ -49,6 +49,8 @@ psql "$MIGRATION_DATABASE_URL" -v ON_ERROR_STOP=1 -f infra/postgres/grants.sql
 
 ## 4. Sauvegarde et restauration
 
+Les fichiers des avatars et captures JokkoHelp complètent le dump PostgreSQL : voir [procédure images, frontière sans écriture et restauration isolée](question-images.md#sauvegarde-et-restauration). Le script `infra/scripts/backup-files.sh` prépare une archive chiffrée des deux dossiers privés avec empreinte, sans rotation supplémentaire. Adapter l’unité réelle et vérifier les droits sur les nouveaux fichiers 0600 avant toute planification ; aucune installation de ce lot local n’a été effectuée.
+
 - Quotidienne à 02:30 UTC (`jokkodev-backup.timer`) et avant chaque migration. Format `pg_dump` personnalisé, chiffré AES-256 avec la clé `BACKUP_KEY_FILE`, empreinte SHA-256, rétention locale de 7 jours. La clé est conservée aussi hors du serveur : sans elle, aucune restauration.
 - Copie hors serveur obligatoire via `BACKUP_COPY_COMMAND` (stockage objet Datacloud ou autre, à confirmer).
 - Restauration (base vide dédiée, jamais la production en service) :

@@ -77,6 +77,10 @@ Les CHECK et les index uniques partiels sont écrits en SQL à la fin de la migr
 Tri stable `createdAt DESC, id DESC` pour les questions et projets publics (index préfixés par `visibility`), files de signalements par `status`, candidatures reçues par `(projectId, status, createdAt)` et suivies par `(applicantId, createdAt)`. Toutes les clés étrangères utilisées en filtre sont indexées. La recherche textuelle MVP reste une requête paramétrée sur titre et contenu ; un index plein texte sera ajouté seulement après mesure.
 
 Lot18 : migration additive `20261022050000_profile_photo_contact`, clé photo nullable unique sur User et réglages facultatifs de contact privé sur Profile, partage false par défaut. Les fichiers JPEG normalisés sont hors base dans un stockage durable dédié ; les sauvegardes doivent couvrir DB et fichiers de façon cohérente. Le contact n’est exposé dans aucune projection publique ; accès selon les participations réelles à un projet visible non supprimé. Voir [décision005](../decisions/005-profile-photo-collaboration-contact.md).
+## Captures des questions JokkoHelp
+
+Captures JokkoHelp : migration additive `20261114090000_question_images`, table `QuestionImage` liée au propriétaire et facultativement à une question. Trois positions uniques 0–2, références restrictives, préparation privée à échéance fixe, fichiers JPEG normalisés hors base. Le retrait public suit la question et chaque lecture API, sans URL statique. Voir [décision 013](../decisions/013-question-images.md) et [sauvegarde/nettoyage](../operations/question-images.md).
+
 ## Registre Teranga Points — lot 19
 
 Migration additive `20261022160000_teranga_points` : `ReputationEvent`, `ReputationReason`, références restrictives vers utilisateur/question/réponse, unicité réponse/séquence, delta non nul et motifs cohérents. Aucun changement des migrations partagées, de `deletedAt`, des photos ou contacts. Un trigger refuse UPDATE/DELETE/TRUNCATE. La somme par bénéficiaire est le score, sans compteur redondant. Voir [décision 004](../decisions/004-teranga-points.md) pour l’ordre de verrouillage et la reconstruction append-only.

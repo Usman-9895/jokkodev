@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "question-images:cleanup": "pnpm build && node dist/src/cli/question-images-cleanup.js",
     "google:prune": "node dist/src/cli/google-prune.js",
     "dev": "pnpm build && concurrently --kill-others \"tsc --watch --preserveWatchOutput\" \"node --watch dist/src/main.js\"",
     "build": "tsc -p tsconfig.json",

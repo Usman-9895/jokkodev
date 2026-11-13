@@ -7,6 +7,7 @@ import { PageQueryDto } from '../../common/http/pagination';
 import { HasText, OptionalButNotNull } from '../../common/http/validators';
 import { TechnologyDto } from '../technologies/technologies.dto';
 import { PublicAuthorDto } from '../users/projections';
+import {QuestionImageDto} from './question-images.dto';
 
 export const TITLE_MIN = 10;
 export const TITLE_MAX = 150;
@@ -49,6 +50,7 @@ export class OwnQuestionSummaryDto extends QuestionSummaryDto {
 }
 
 export class QuestionDetailDto extends QuestionSummaryDto {
+  @ApiProperty({type:[QuestionImageDto],maxItems:3}) images!:QuestionImageDto[];
   @ApiProperty() context!: string;
   @ApiProperty() expected!: string;
   @ApiProperty() actual!: string;
@@ -67,6 +69,8 @@ export class QuestionListQueryDto extends PageQueryDto {
 }
 
 export class CreateQuestionDto {
+  @ApiPropertyOptional({type:[String],maxItems:3,description:'Captures privées préparées par la session, liées atomiquement à la publication. Absence : aucune capture.'})
+  @OptionalButNotNull() @IsArray() @ArrayMaxSize(3) @ArrayUnique() @IsUUID('all',{each:true}) imageIds?:string[];
   @ApiProperty({ minLength: TITLE_MIN, maxLength: TITLE_MAX }) @IsString() @HasText() @MinLength(TITLE_MIN) @MaxLength(TITLE_MAX) title!: string;
   @ApiProperty({ description: 'Contexte du problème.' }) @IsString() @HasText() @MaxLength(QUESTION_BODY_MAX) context!: string;
   @ApiProperty({ description: 'Résultat attendu.' }) @IsString() @HasText() @MaxLength(QUESTION_BODY_MAX) expected!: string;
@@ -90,6 +94,8 @@ export class QuestionPublicationResultDto {
 }
 
 export class UpdateQuestionDto {
+  @ApiPropertyOptional({type:[String],maxItems:3,description:'Liste complète ordonnée des captures conservées et préparées. [] retire toutes les captures ; absence les conserve.'})
+  @OptionalButNotNull() @IsArray() @ArrayMaxSize(3) @ArrayUnique() @IsUUID('all',{each:true}) imageIds?:string[];
   @ApiPropertyOptional({ minLength: TITLE_MIN, maxLength: TITLE_MAX }) @OptionalButNotNull() @IsString() @HasText() @MinLength(TITLE_MIN) @MaxLength(TITLE_MAX) title?: string;
   @ApiPropertyOptional() @OptionalButNotNull() @IsString() @HasText() @MaxLength(QUESTION_BODY_MAX) context?: string;
   @ApiPropertyOptional() @OptionalButNotNull() @IsString() @HasText() @MaxLength(QUESTION_BODY_MAX) expected?: string;

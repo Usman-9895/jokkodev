@@ -13,6 +13,7 @@ import { searchPage } from '../../common/http/search';
 import { publicAuthorSelect, toPublicAuthor } from '../users/projections';
 import type {PendingQuestionPublicationDto,QuestionPublicationResultDto} from './questions.dto';
 import {publicationHash,publicationTime,PUBLICATION_RECEIPT_MS} from './publication-policy';
+import {QuestionImagesService,questionImageUrl} from './question-images.service';
 import { QUESTION_BODY_MAX, type AnswerDto, type AnswerWithQuestionDto, type CreateAnswerDto, type CreateQuestionDto, type OwnQuestionQueryDto, type OwnQuestionSummaryDto, type QuestionDetailDto, type QuestionListQueryDto, type QuestionSummaryDto, type UpdateAnswerDto, type UpdateQuestionDto } from './questions.dto';
 
 const HOUR = 60 * 60 * 1000;
@@ -23,7 +24,7 @@ const summarySelect = {
   technologies: { select: { technology: { select: technologySelect } }, orderBy: { technology: { name: 'asc' } } },
   _count: { select: { answers: { where: { visibility: 'VISIBLE' } } } }
 } as const satisfies Prisma.QuestionSelect;
-const detailSelect = { ...summarySelect, authorId: true, expected: true, actual: true, attempts: true, code: true, codeLanguage: true, acceptedAnswer: { select: answerSelect } } as const satisfies Prisma.QuestionSelect;
+const detailSelect = { ...summarySelect, images:{select:{id:true},orderBy:{position:'asc'}}, authorId: true, expected: true, actual: true, attempts: true, code: true, codeLanguage: true, acceptedAnswer: { select: answerSelect } } as const satisfies Prisma.QuestionSelect;
 
 type SummaryRow = Prisma.QuestionGetPayload<{ select: typeof summarySelect }>;
 type DetailRow = Prisma.QuestionGetPayload<{ select: typeof detailSelect }>;
@@ -35,7 +36,7 @@ const notAuthor = () => new ApiException(403, 'NOT_AUTHOR', 'Seul l’auteur peu
 
 @Injectable()
 export class QuestionsService {
-  constructor(private readonly database: DatabaseService, private readonly technologies: TechnologiesService, private readonly limiter: RateLimiter, private readonly reputation: ReputationService) {}
+  constructor(private readonly database: DatabaseService, private readonly technologies: TechnologiesService, private readonly limiter: RateLimiter, private readonly reputation: ReputationService, private readonly images:QuestionImagesService) {}
 
   async list(query: QuestionListQueryDto): Promise<Page<QuestionSummaryDto>> {
     return searchPage(this.database.prisma, 'question', query, async (tx, ids) => {
@@ -66,9 +67,14 @@ export class QuestionsService {
     const content = { title: cleanText(input.title), context: cleanText(input.context), expected: cleanText(input.expected), actual: cleanText(input.actual), attempts: cleanText(input.attempts), ...codeFields(undefined, input) };
     assertBodyLength(content);
     await this.technologies.assertExist(input.technologyIds, 'technologyIds');
-    const question = await this.database.prisma.question.create({
+    const question = await this.database.prisma.$transaction(async tx => {
+      await this.images.lockOwner(tx,user.id);
+      const created = await tx.question.create({
       data: { ...content, authorId: user.id, technologies: { create: input.technologyIds.map(technologyId => ({ technologyId })) } },
-      select: detailSelect
+      select: {id:true}
+      });
+      await this.images.attach(tx,user.id,created.id,input.imageIds);
+      return tx.question.findUniqueOrThrow({where:{id:created.id},select:detailSelect});
     });
     return this.toDetail(question, user);
   }
@@ -94,6 +100,7 @@ export class QuestionsService {
       assertBodyLength(content);
       await this.technologies.assertExist(q.technologyIds,'technologyIds');
       const question=await tx.question.create({data:{...content,authorId:user.id,technologies:{create:q.technologyIds.map(technologyId=>({technologyId}))}},select:{id:true}});
+      await this.images.attach(tx,user.id,question.id,q.imageIds);
       const receipt=await tx.questionPublication.create({data:{userId:user.id,action,key:input.idempotencyKey,payloadHash:hash,questionId:question.id,retainUntil:new Date(at+PUBLICATION_RECEIPT_MS)}});
       return {questionId:receipt.questionId,confirmedAt:receipt.createdAt.toISOString()};
     });
@@ -102,6 +109,8 @@ export class QuestionsService {
   async update(user: AuthenticatedUser, id: string, input: UpdateQuestionDto): Promise<QuestionDetailDto> {
     await this.database.prisma.$transaction(async tx => {
     await this.lockOwnQuestion(tx, user, id);
+    // Same Question -> User order as retention; never hold the owner lock while waiting for this question.
+    await this.images.lockOwner(tx,user.id);
     const current = await tx.question.findFirst({ where: { id, visibility: 'VISIBLE', deletedAt: null }, select: { authorId: true, context: true, expected: true, actual: true, attempts: true, code: true, codeLanguage: true } });
     if (!current) throw notFound();
     if (current.authorId !== user.id) throw notAuthor();
@@ -116,6 +125,7 @@ export class QuestionsService {
     assertBodyLength({ context: changes.context ?? current.context, expected: changes.expected ?? current.expected, actual: changes.actual ?? current.actual, attempts: changes.attempts ?? current.attempts });
     if (input.technologyIds) await this.technologies.assertExist(input.technologyIds, 'technologyIds');
       await tx.question.update({ where: { id }, data: changes });
+      await this.images.attach(tx,user.id,id,input.imageIds);
       if (input.technologyIds) {
         await tx.questionTechnology.deleteMany({ where: { questionId: id } });
         await tx.questionTechnology.createMany({ data: input.technologyIds.map(technologyId => ({ questionId: id, technologyId })) });
@@ -244,6 +254,7 @@ export class QuestionsService {
   private toDetail(row: DetailRow, viewer?: AuthenticatedUser): QuestionDetailDto {
     return {
       ...this.toSummary(row), context: row.context, expected: row.expected, actual: row.actual, attempts: row.attempts, code: row.code, codeLanguage: row.codeLanguage,
+      images:row.images.map(image=>({id:image.id,url:questionImageUrl(image.id)})),
       acceptedAnswerId: row.acceptedAnswerId, acceptedAnswer: row.acceptedAnswer ? toAnswer(row.acceptedAnswer, row.acceptedAnswerId) : null,
       viewerIsAuthor: viewer?.id === row.authorId
     };

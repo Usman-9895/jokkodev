@@ -13,6 +13,7 @@ export function publicationTime(key:string,now=Date.now()){
 }
 export function publicationHash(input:CreateQuestionDto){
  // Fixed field order; raw validated values, including array order and null/omitted distinction.
- const {title,context,expected,actual,attempts,technologyIds,code,codeLanguage}=input;
- return createHash('sha256').update(JSON.stringify({title,context,expected,actual,attempts,technologyIds,code,codeLanguage})).digest('hex');
+ const {title,context,expected,actual,attempts,technologyIds,code,codeLanguage,imageIds}=input;
+ // Undefined is omitted, preserving all text-only receipts created by older API releases.
+ return createHash('sha256').update(JSON.stringify({title,context,expected,actual,attempts,technologyIds,code,codeLanguage,imageIds})).digest('hex');
 }

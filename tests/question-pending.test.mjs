@@ -22,4 +22,5 @@ test('unconfirmed states cannot fabricate links and expired copies contain no pa
 test('pending storage is bounded and rejects unknown payload fields',()=>{
  const r=record();r.payload.context='x'.repeat(DRAFT_MAX_BYTES);assert.throws(()=>validatePending(r,owner,now),e=>e.kind==='large');
  assert.throws(()=>validatePending({...record(),payload:{...payload,session:'not-allowed'}},owner,now));
+ for(const extra of [{imageIds:[]},{imageIds:[randomUUID()]},{file:new Uint8Array([1,2])},{screenshots:['blob:local']}])assert.throws(()=>validatePending({...record(),payload:{...payload,...extra}},owner,now));
 });

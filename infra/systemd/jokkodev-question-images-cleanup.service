@@ -1,0 +1,18 @@
+[Unit]
+Description=Nettoyage explicite des captures JokkoHelp expirées et orphelines
+After=postgresql.service
+
+[Service]
+Type=oneshot
+User=jokkodev
+Group=jokkodev
+WorkingDirectory=/opt/jokkodev/current/backend
+EnvironmentFile=/etc/jokkodev/api.env
+ExecStart=/usr/bin/node dist/src/cli/question-images-cleanup.js --confirm-dir /var/lib/jokkodev/question-images --confirm-database jokkodev --execute
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/jokkodev/question-images
+
+# Template only: install/enable after destination, permissions and backup validation.

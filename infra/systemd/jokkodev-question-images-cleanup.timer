@@ -1,0 +1,11 @@
+[Unit]
+Description=Nettoyage quotidien des captures JokkoHelp
+
+[Timer]
+OnCalendar=*-*-* 04:40:00 UTC
+Persistent=true
+RandomizedDelaySec=5m
+Unit=jokkodev-question-images-cleanup.service
+
+[Install]
+WantedBy=timers.target

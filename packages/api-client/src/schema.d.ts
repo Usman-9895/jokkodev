@@ -628,6 +628,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/question-images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["QuestionImagesController_prepare"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/question-images/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["QuestionImagesController_read"];
+        put?: never;
+        post?: never;
+        delete: operations["QuestionImagesController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/projects": {
         parameters: {
             query?: never;
@@ -1171,6 +1203,8 @@ export interface components {
             meta: components["schemas"]["PageMetaDto"];
         };
         CreateQuestionDto: {
+            /** @description Captures privées préparées par la session, liées atomiquement à la publication. Absence : aucune capture. */
+            imageIds?: string[];
             title: string;
             /** @description Contexte du problème. */
             context: string;
@@ -1187,6 +1221,12 @@ export interface components {
              */
             codeLanguage?: string | null;
             technologyIds: string[];
+        };
+        QuestionImageDto: {
+            /** Format: uuid */
+            id: string;
+            /** @description URL API, accès réévalué à chaque lecture ; jamais une URL statique. */
+            url: string;
         };
         AnswerDto: {
             /** Format: uuid */
@@ -1226,6 +1266,7 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            images: components["schemas"]["QuestionImageDto"][];
             context: string;
             expected: string;
             actual: string;
@@ -1262,6 +1303,8 @@ export interface components {
             confirmedAt: string;
         };
         UpdateQuestionDto: {
+            /** @description Liste complète ordonnée des captures conservées et préparées. [] retire toutes les captures ; absence les conserve. */
+            imageIds?: string[];
             title?: string;
             context?: string;
             expected?: string;
@@ -1360,6 +1403,17 @@ export interface components {
         AnswerWithQuestionPageDto: {
             data: components["schemas"]["AnswerWithQuestionDto"][];
             meta: components["schemas"]["PageMetaDto"];
+        };
+        PreparedQuestionImageDto: {
+            /** Format: uuid */
+            id: string;
+            /** @description URL API, accès réévalué à chaque lecture ; jamais une URL statique. */
+            url: string;
+            /**
+             * Format: date-time
+             * @description Préparation privée huit jours, sans prolongation. Aucune conservation hors connexion.
+             */
+            expiresAt: string;
         };
         ProjectSummaryDto: {
             /** Format: uuid */
@@ -3227,6 +3281,77 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ApiErrorDto"];
                 };
+            };
+        };
+    };
+    QuestionImagesController_prepare: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: binary
+                     * @description PNG, JPEG ou WebP non animé, 5 Mo (5 Mio), 4096 px par dimension, 4 millions de pixels.
+                     */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreparedQuestionImageDto"];
+                };
+            };
+        };
+    };
+    QuestionImagesController_read: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description JPEG réencodé sans métadonnées. Préparation : auteur uniquement ; publication : question visible non supprimée. Toujours private, no-store. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+        };
+    };
+    QuestionImagesController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Retire une préparation privée appartenant à la session. Une capture publiée se retire par modification de la question. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

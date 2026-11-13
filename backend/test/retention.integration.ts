@@ -57,6 +57,12 @@ test('legacy accounts: observation baseline, no invented last login and no first
  const u=await user();await db.user.update({where:{id:u.id},data:{createdAt:new Date('2018-01-01Z'),lastLoginAt:null}});await service.run(true);
  assert.equal(await db.inactivityNotice.count(),0);assert.equal((await db.user.findUniqueOrThrow({where:{id:u.id}})).lastLoginAt,null);
 });
+test('private question image is an account dependency, never an accidental physical account deletion',async()=>{
+ const owner=await user(false);await db.user.update({where:{id:owner.id},data:{createdAt:days(now,-30)}});
+ await db.questionImage.create({data:{ownerId:owner.id,key:'qi-00000000000000000000000000000001.jpg',expiresAt:days(now,1)}});
+ await service.run(true);assert.equal(await db.user.count({where:{id:owner.id}}),1);assert.equal(await db.questionImage.count(),1);
+ assert.equal((await db.retentionReview.findFirstOrThrow()).reason,'ACCOUNT_DEPENDENCIES');
+});
 test('inactivity: one notice, delayed closure waits full notice, successful login cancels it',async()=>{
  const u=await user(),basis=months(now,-24),due=inactivityDue(basis);await db.user.update({where:{id:u.id},data:{lastLoginAt:basis}});now=days(due,-30);
  await service.run(true);await service.run(true);assert.equal(await db.inactivityNotice.count(),1);let sent=0;await service.notify(async()=>{sent++;});await service.notify(async()=>{sent++;});assert.equal(sent,1);

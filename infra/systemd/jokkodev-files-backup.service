@@ -1,0 +1,11 @@
+[Unit]
+Description=Sauvegarde chiffrée des avatars et captures JokkoHelp
+
+[Service]
+Type=oneshot
+User=jokkodev-backup
+EnvironmentFile=/etc/jokkodev/backup.env
+# backup.env must provide both storage directories, BACKUP_DIR and BACKUP_KEY_FILE.
+# Read ACLs on both private directories and existing/new files are required.
+ExecStart=/bin/sh /opt/jokkodev/current/infra/scripts/backup-files.sh
+# Coordinate the same write-free snapshot boundary as PostgreSQL; see question-images.md.
