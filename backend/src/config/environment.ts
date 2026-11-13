@@ -19,6 +19,7 @@ export interface Environment {
   notificationEventsEnabled?: boolean;
   google?: {clientId:string;clientSecret:string;redirectUri:string};
   github?: {clientId:string;clientSecret:string;redirectUri:string};
+  githubDiagnosticsEnabled?: boolean;
 }
 
 // Secret de développement unique par processus : les jetons CSRF émis deviennent invalides au redémarrage, ce qui est acceptable hors production.
@@ -80,6 +81,7 @@ export function validateEnvironment(env: NodeJS.ProcessEnv): Environment {
     google={clientId:env.GOOGLE_CLIENT_ID??'',clientSecret:env.GOOGLE_CLIENT_SECRET??'',redirectUri:env.GOOGLE_REDIRECT_URI??''};
   }
   let github:Environment['github'];
+  if(env.GITHUB_AUTH_DIAGNOSTICS_ENABLED!==undefined&&!['0','1'].includes(env.GITHUB_AUTH_DIAGNOSTICS_ENABLED))errors.push('GITHUB_AUTH_DIAGNOSTICS_ENABLED');
   if(env.GITHUB_AUTH_ENABLED!==undefined&&!['0','1'].includes(env.GITHUB_AUTH_ENABLED))errors.push('GITHUB_AUTH_ENABLED');
   if(env.GITHUB_AUTH_ENABLED==='1'){
     if(!env.GITHUB_CLIENT_ID||!/^[A-Za-z0-9_.-]{5,200}$/.test(env.GITHUB_CLIENT_ID))errors.push('GITHUB_CLIENT_ID');
@@ -92,7 +94,7 @@ export function validateEnvironment(env: NodeJS.ProcessEnv): Environment {
     nodeEnv: nodeEnv as Environment['nodeEnv'], host, port, databaseUrl, corsOrigins, appOrigin,
     sessionCookieSecure: rawSecure === 'true', csrfSecret, trustProxy: trustProxy as Environment['trustProxy'],
     avatarDir, notificationEventsEnabled:env.NOTIFICATION_EVENTS_ENABLED==='1',
-    mail: { transport, from, fileDir: env.MAIL_FILE_DIR || '.cache/mail', smtp },google,github
+    mail: { transport, from, fileDir: env.MAIL_FILE_DIR || '.cache/mail', smtp },google,github,githubDiagnosticsEnabled:env.GITHUB_AUTH_DIAGNOSTICS_ENABLED==='1'
   };
 }
 

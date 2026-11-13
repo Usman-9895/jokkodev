@@ -13,6 +13,7 @@ import type {Csrf} from './csrf';
 import {openSession} from './session-cookies';
 import {ApiException} from '../../common/http/api-exception';
 import {ApiErrorDto} from '../../common/filters/api-error.filter';
+import {reportGitHubFailure} from './github-diagnostics';
 @ApiTags('auth')
 @Controller('auth/github')
 export class GitHubController {
@@ -48,6 +49,8 @@ export class GitHubController {
   }catch(error){
    let reason='failed';
    const code=error instanceof ApiException?(error.getResponse() as {code?:string}).code:'';
+   // Protocol failures have already emitted their one sanitized stage record.
+   if(code!=='GITHUB_UNAVAILABLE'&&code!=='GITHUB_NO_VERIFIED_EMAIL')reportGitHubFailure(this.env.githubDiagnosticsEnabled,'callback',error);
    if(code==='GITHUB_NO_VERIFIED_EMAIL')reason='no-email';if(code==='GITHUB_DENIED')reason='cancelled';if(code==='ACCOUNT_SUSPENDED')reason='suspended';if(code==='GITHUB_FLOW_INVALID')reason='expired';
    res.clearCookie(githubCookieName(this.env.sessionCookieSecure),this.options());
    res.redirect(303,this.env.appOrigin+'/connexion/github?error='+reason);

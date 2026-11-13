@@ -18,6 +18,27 @@ Le lot utilise le jeton reçu immédiatement pour l'identité, puis le laisse en
 
 Source : [création d'une OAuth App](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app), [échange serveur et callback](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps). Les libellés peuvent varier selon la console et les politiques de l'organisation. Aucun vrai client GitHub ni compte réel n'a été utilisé pour la recette de ce lot.
 
+## Diagnostic d'un échec réel
+
+Le retour utilisateur reste générique pour éviter d'exposer des détails du fournisseur. Si un essai réel échoue, désactiver d'abord GitHub avec la procédure de la release déployée, conserver Google et le mot de passe, puis vérifier la configuration et la connectivité. Un contrôle de client/secret accepté ne valide pas l'échange du code OAuth, les scopes ni la lecture des adresses.
+
+Le diagnostic serveur optionnel `GITHUB_AUTH_DIAGNOSTICS_ENABLED=1` ajoute uniquement des événements d'échec `github_auth_failed` avec les champs fixes `event`, `stage`, `reason` et, lorsqu'il est connu, un `status` HTTP entier. Il vaut **0 par défaut**, n'active pas GitHub, n'accorde aucune permission et ne modifie ni les réponses utilisateur, ni la validation OAuth, ni les sessions, ni la liaison. Aucun événement de succès n'est émis. Google n'utilise pas ce diagnostic.
+
+| `stage` | Contrôle concerné |
+|---|---|
+| `token_exchange` | Échange et validation de la réponse de jeton |
+| `granted_scope` | Scope exact `user:email`, absence ou permissions supplémentaires refusées |
+| `identity_request` / `identity_response` | Requête `/user` et identifiant stable |
+| `emails_request` / `emails_response` | Requête `/user/emails` et structure de réponse |
+| `verified_email` | Présence d'une adresse vérifiée |
+| `callback` | Contrôles du retour et suite du traitement interne, dont base de données |
+
+Exemple sans donnée privée : `{"event":"github_auth_failed","stage":"emails_request","reason":"http_error","status":403}`. Les catégories sont une liste fermée ; aucun message ou objet d'exception n'est sérialisé. Ne sont jamais inscrits : corps ou description de réponse, URL, code OAuth, state/nonce/PKCE, cookie, jeton, secret, scope brut, adresse, identifiant de compte ou stack. Les échecs d'écriture du diagnostic ne doivent pas remplacer le résultat d'authentification. Un échec de protocole n'est pas réinscrit une seconde fois par le contrôleur.
+
+Après revue et déploiement de ce code, l'opérateur peut activer le diagnostic sur une fenêtre courte, avec une seule nouvelle tentative volontaire autorisée et une surveillance simultanée du journal. Lire uniquement les événements JSON conformes à ces champs et catégories ; ne pas copier un journal brut dans le chat. Les journaux suivent la conservation d'exploitation existante, sans fichier de trace séparé ni stockage de données OAuth. Après lecture, remettre le flag à0 et redémarrer l'API selon la procédure validée de la release. En cas d'échec réel, désactiver GitHub et son nettoyage avant de poursuivre l'analyse. Ne pas rejouer l'ancien callback, élargir les scopes, contourner une validation ou réactiver automatiquement GitHub à partir d'un statut de diagnostic.
+
+Ce mécanisme est un ajout de diagnostic : il ne constitue pas une correction démontrée d'un échec réel. La cause du parcours de production et la réussite d'une connexion GitHub réelle doivent être consignées séparément des simulations et tests locaux.
+
 ## Environnement local
 
 Dans le worktree `.cache/auth-github/worktree/backend/.env`, ignoré par Git :
