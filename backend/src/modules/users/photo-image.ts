@@ -18,12 +18,15 @@ function orientation(bytes: Buffer): number {
   } catch { /* Malformed optional metadata grants no extra allocation. */ }
   return 1;
 }
-export async function normalizePhoto(b: Buffer): Promise<Buffer> {
-  if (!b.length || b.length > 2 * 1024 * 1024) throw Error('size');
+export async function normalizePhoto(b: Buffer, screenshot = false): Promise<Buffer> {
+  if (!b.length || b.length > (screenshot ? 5 : 2) * 1024 * 1024) throw Error('size');
   let image: {width: number; height: number; data: Uint8Array | Uint8ClampedArray}, orient = 1;
   if (b.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10]))) {
+    if (b.length < 33 || b.readUInt32BE(8) !== 13 || b.toString('ascii',12,16) !== 'IHDR') throw Error('png');
     dimensions(b.readUInt32BE(16), b.readUInt32BE(20));
-    for (let p = 8; p < b.length;) { const length = b.readUInt32BE(p), type = b.toString('ascii', p + 4, p + 8); if (p + length + 12 > b.length) throw Error('chunk'); if (type === 'acTL' || type === 'fcTL' || type === 'fdAT') throw Error('animated'); if (type === 'eXIf') orient = orientation(b.subarray(p + 8, p + 8 + length)); p += length + 12; }
+    let ended = false;
+    for (let p = 8, chunks = 0; p < b.length;) { if (++chunks > 1024 || ended || p+12 > b.length) throw Error('chunk'); const length = b.readUInt32BE(p), type = b.toString('ascii', p + 4, p + 8); if (p + length + 12 > b.length || type === 'IHDR' && p !== 8) throw Error('chunk'); if (type === 'acTL' || type === 'fcTL' || type === 'fdAT') throw Error('animated'); if (type === 'IEND') {if(length)throw Error('chunk');ended=true;} if (type === 'eXIf') orient = orientation(b.subarray(p + 8, p + 8 + length)); p += length + 12; }
+    if (!ended) throw Error('png');
     image = PNG.sync.read(b, { checkCRC: true });
   } else if (b[0] === 255 && b[1] === 216) {
     let found = false;
@@ -44,9 +47,13 @@ export async function normalizePhoto(b: Buffer): Promise<Buffer> {
     if (image.width !== w || image.height !== h) throw Error('dimensions');
   } else throw Error('format');
   dimensions(image.width, image.height);
-  const swapped = orient >= 5, width = swapped ? image.height : image.width, height = swapped ? image.width : image.height, side = Math.min(width, height), out = new Uint8Array(256 * 256 * 4);
-  for (let y = 0; y < 256; y++) for (let x = 0; x < 256; x++) {
-    const ox = (width - side) / 2 + (x + .5) * side / 256 - .5, oy = (height - side) / 2 + (y + .5) * side / 256 - .5;
+  const swapped = orient >= 5, width = swapped ? image.height : image.width, height = swapped ? image.width : image.height, side = Math.min(width, height);
+  const scale = Math.min(1, 2048 / Math.max(width, height));
+  const outWidth = screenshot ? Math.max(1, Math.round(width * scale)) : 256, outHeight = screenshot ? Math.max(1, Math.round(height * scale)) : 256;
+  const out = new Uint8Array(outWidth * outHeight * 4);
+  for (let y = 0; y < outHeight; y++) for (let x = 0; x < outWidth; x++) {
+    const ox = screenshot ? (x + .5) * width / outWidth - .5 : (width - side) / 2 + (x + .5) * side / 256 - .5;
+    const oy = screenshot ? (y + .5) * height / outHeight - .5 : (height - side) / 2 + (y + .5) * side / 256 - .5;
     let sx = ox, sy = oy;
     if (orient === 2) sx = image.width - 1 - ox;
     if (orient === 3) { sx = image.width - 1 - ox; sy = image.height - 1 - oy; }
@@ -56,9 +63,9 @@ export async function normalizePhoto(b: Buffer): Promise<Buffer> {
     if (orient === 7) { sx = image.width - 1 - oy; sy = image.height - 1 - ox; }
     if (orient === 8) { sx = image.width - 1 - oy; sy = ox; }
     sx = Math.max(0, Math.min(image.width - 1, sx)); sy = Math.max(0, Math.min(image.height - 1, sy));
-    const x0 = Math.floor(sx), y0 = Math.floor(sy), dx = sx - x0, dy = sy - y0, indexes = [y0 * image.width + x0, y0 * image.width + Math.min(x0 + 1, image.width - 1), Math.min(y0 + 1, image.height - 1) * image.width + x0, Math.min(y0 + 1, image.height - 1) * image.width + Math.min(x0 + 1, image.width - 1)], weights = [(1-dx)*(1-dy), dx*(1-dy), (1-dx)*dy, dx*dy], o = (y * 256 + x) * 4;
+    const x0 = Math.floor(sx), y0 = Math.floor(sy), dx = sx - x0, dy = sy - y0, indexes = [y0 * image.width + x0, y0 * image.width + Math.min(x0 + 1, image.width - 1), Math.min(y0 + 1, image.height - 1) * image.width + x0, Math.min(y0 + 1, image.height - 1) * image.width + Math.min(x0 + 1, image.width - 1)], weights = [(1-dx)*(1-dy), dx*(1-dy), (1-dx)*dy, dx*dy], o = (y * outWidth + x) * 4;
     for (let c = 0; c < 3; c++) out[o + c] = Math.round(indexes.reduce((v, i, n) => { const alpha = image.data[i * 4 + 3] / 255; return v + weights[n] * (image.data[i * 4 + c] * alpha + 255 * (1-alpha)); }, 0));
     out[o + 3] = 255;
   }
-  return jpeg.encode({ width: 256, height: 256, data: out }, 85).data;
+  return jpeg.encode({ width: outWidth, height: outHeight, data: out }, screenshot ? 90 : 85).data;
 }

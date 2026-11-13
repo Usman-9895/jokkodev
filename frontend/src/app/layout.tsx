@@ -4,6 +4,7 @@ import {SITE_ORIGIN,SITE_DESCRIPTION} from '../lib/seo/metadata';
 import type { ReactNode } from 'react';
 import { inter, sourceSerif, jetbrainsMono } from '../styles/fonts';
 import '../styles/globals.css';
+import '../styles/question-images.css';
 import {PwaClient} from '../components/layout/pwa-client';
 export const metadata: Metadata = {
   metadataBase:new URL(SITE_ORIGIN),

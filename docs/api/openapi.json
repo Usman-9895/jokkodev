@@ -2091,6 +2091,109 @@
         ]
       }
     },
+    "/api/v1/question-images": {
+      "post": {
+        "operationId": "QuestionImagesController_prepare",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "PNG, JPEG ou WebP non animé, 5 Mo (5 Mio), 4096 px par dimension, 4 millions de pixels."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreparedQuestionImageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      }
+    },
+    "/api/v1/question-images/{id}": {
+      "delete": {
+        "operationId": "QuestionImagesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Retire une préparation privée appartenant à la session. Une capture publiée se retire par modification de la question."
+          }
+        },
+        "security": [
+          {
+            "cookie": []
+          }
+        ],
+        "tags": [
+          "questions"
+        ]
+      },
+      "get": {
+        "operationId": "QuestionImagesController_read",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JPEG réencodé sans métadonnées. Préparation : auteur uniquement ; publication : question visible non supprimée. Toujours private, no-store.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "questions"
+        ]
+      }
+    },
     "/api/v1/projects": {
       "get": {
         "operationId": "ProjectsController_list",
@@ -4326,6 +4429,14 @@
       "CreateQuestionDto": {
         "type": "object",
         "properties": {
+          "imageIds": {
+            "maxItems": 3,
+            "description": "Captures privées préparées par la session, liées atomiquement à la publication. Absence : aucune capture.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "title": {
             "type": "string",
             "minLength": 10,
@@ -4375,6 +4486,23 @@
           "actual",
           "attempts",
           "technologyIds"
+        ]
+      },
+      "QuestionImageDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL API, accès réévalué à chaque lecture ; jamais une URL statique."
+          }
+        },
+        "required": [
+          "id",
+          "url"
         ]
       },
       "AnswerDto": {
@@ -4469,6 +4597,13 @@
             "type": "string",
             "format": "date-time"
           },
+          "images": {
+            "maxItems": 3,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionImageDto"
+            }
+          },
           "context": {
             "type": "string"
           },
@@ -4522,6 +4657,7 @@
           "answerCount",
           "createdAt",
           "updatedAt",
+          "images",
           "context",
           "expected",
           "actual",
@@ -4574,6 +4710,14 @@
       "UpdateQuestionDto": {
         "type": "object",
         "properties": {
+          "imageIds": {
+            "maxItems": 3,
+            "description": "Liste complète ordonnée des captures conservées et préparées. [] retire toutes les captures ; absence les conserve.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "title": {
             "type": "string",
             "minLength": 10,
@@ -4851,6 +4995,29 @@
         "required": [
           "data",
           "meta"
+        ]
+      },
+      "PreparedQuestionImageDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string",
+            "description": "URL API, accès réévalué à chaque lecture ; jamais une URL statique."
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Préparation privée huit jours, sans prolongation. Aucune conservation hors connexion."
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "expiresAt"
         ]
       },
       "ProjectSummaryDto": {

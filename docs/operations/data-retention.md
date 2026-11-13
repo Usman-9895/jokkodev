@@ -4,6 +4,8 @@ Politique : [décision 007](../decisions/007-data-retention.md), validée par Ou
 
 ## Matrice de conservation
 
+Captures JokkoHelp : elles suivent le retrait public de la question et restent privées en préparation pendant huit jours maximum. Les fichiers abandonnés et les captures dont la conservation de la question a été traitée disposent d’un nettoyage explicite séparé ; les images préparées comptent aussi comme dépendance du compte. [Règles et sauvegardes du lot](question-images.md). Les unités du nettoyage images restent à installer et valider séparément.
+
 | Catégorie | Durée / départ | Traitement préparé | Intervention et limites |
 |---|---|---|---|
 | Compte non vérifié | 30 jours après inscription, borne incluse | Effacement physique de User et de son profil, sessions et liens par les cascades déjà prévues, seulement sans contribution, relation, historique, réputation ni photo | Toute dépendance, photo ou sanction → revue ; tous les ADMIN restent manuels, y compris le dernier. Aucun DELETE User aveugle |

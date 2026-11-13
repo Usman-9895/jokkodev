@@ -1,5 +1,7 @@
 # JokkoDev — socle local
 
+Captures facultatives des questions préparées localement : [configuration, nettoyage, sauvegarde et recette](docs/operations/question-images.md), [résultats observés](docs/frontend/question-images-verification.md). Migration additive, stockage privé contrôlé par l’API, brouillons et attente hors connexion limités au texte. Aucun déploiement de ce lot effectué.
+
 Notifications e-mail transactionnelles préparées localement, désactivées par défaut : [exploitation et recette](docs/operations/transactional-email-notifications.md), [résultats observés](docs/operations/transactional-email-notifications-verification.md). Migration additive et traitement CLI séparé ; aucune activation ou livraison SMTP externe réalisée.
 
 Lot F2 validé localement par Ousmane, publication en PR autorisée : [question en attente, reprise et aperçu](docs/frontend/question-pending-publication.md), [décision d'idempotence et migration additive](docs/decisions/010-question-pending-publication.md), [recette PostgreSQL et navigateur](docs/frontend/question-pending-publication-verification.md). Envoi toujours volontaire, copie locale sept jours, reçu serveur minimal éligible à purge après huit jours. Aucun déploiement de F2 effectué.

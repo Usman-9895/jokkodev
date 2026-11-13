@@ -24,7 +24,7 @@ test('precache is fixed, anonymous and bounded; no API/Next pages stored',async(
 });
 test('mutations, auth, private paths, tokens, no-store and RSC are never intercepted',async()=>{
  const f=fixture();await f.event('install');f.setOffline();
- for(const path of ['/api/v1/auth/me','/api/v1/users/me','/connexion','/espace','/admin','/profils/demo','/security/csp-report','/verification-email?token=secret','/ressources?token=secret','/_next/static/example.js'])assert.equal(await f.get(f.request(path)),null,path);
+ for(const path of ['/api/v1/auth/me','/api/v1/users/me','/api/v1/question-images/00000000-0000-4000-8000-000000000001','/connexion','/espace','/admin','/profils/demo','/security/csp-report','/verification-email?token=secret','/ressources?token=secret','/_next/static/example.js'])assert.equal(await f.get(f.request(path)),null,path);
  for(const extra of [{method:'POST'},{cache:'no-store'},{headers:new Headers({RSC:'1'})},{headers:new Headers({Accept:'text/x-component'})},{headers:new Headers({Authorization:'Bearer fictional'})}])assert.equal(await f.get(f.request('/ressources',extra)),null);
 });
 test('resources fallback contains only authored document, not any live Next HTML',async()=>{

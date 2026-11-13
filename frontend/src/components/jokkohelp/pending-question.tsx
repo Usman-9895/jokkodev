@@ -15,7 +15,7 @@ import {Button,Heading,Message} from '../ui';
 import {FailureMessage} from '../accounts/live-account-form';
 import {invalidateHelp} from './live-resource';
 
-export function usePendingQuestion(owner:string|null,fields:QuestionDraft,technologies:HelpSchemas['TechnologyDto'][],blocked:boolean,onQueue:()=>void,onFinish:()=>void,afterConfirmed:(version:string|null)=>Promise<boolean>){
+export function usePendingQuestion(owner:string|null,fields:QuestionDraft,technologies:HelpSchemas['TechnologyDto'][],blocked:boolean,onQueue:()=>void,onFinish:()=>void,afterConfirmed:(version:string|null)=>Promise<boolean>,capturesSelected=false){
  const {client,phase}=useSession();const [record,setRecord]=useState<PendingPublication|null>(null),[sending,setSending]=useState(false),[notice,setNotice]=useState(''),[failure,setFailure]=useState<ApiFailure|null>(null);
  const current=useRef<PendingPublication|null>(null),busy=useRef(false),dialog=useRef<HTMLDialogElement>(null),safe=useRef<HTMLButtonElement>(null),trigger=useRef<HTMLElement|null>(null);
  const permit=()=>!!owner&&client.snapshot().draftOwnerId===owner;
@@ -65,6 +65,7 @@ export function usePendingQuestion(owner:string|null,fields:QuestionDraft,techno
   panel:owner?<section className="question-local-draft question-pending" aria-label="Question en attente sur cet appareil">
    <Heading as="h2" size="card">{record?labels[record.state]:'Mettre une question en attente'}</Heading>
    <p>Une seule question en attente par compte et profil navigateur. Copie figée, 256 Kio maximum ; reprise pendant <strong>7 jours</strong>, sans prolongation. Le retour du réseau n’envoie rien.</p>
+   {capturesSelected&&<Message tone="warning" title="Captures : connexion nécessaire">L’attente conserve uniquement le texte. <a href="#question-images">Retire explicitement les captures sélectionnées</a> avant de mettre cette question en attente. Elles ne seront pas retirées automatiquement.</Message>}
    {!record&&<Button variant="secondary" disabled={blocked||sending} onClick={onQueue}>Mettre en attente sur cet appareil</Button>}
    {record&&<>
     {record.payload&&<p><strong>Copie à envoyer :</strong> {record.payload.title}</p>}

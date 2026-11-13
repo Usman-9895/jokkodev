@@ -56,6 +56,7 @@ enum ModerationDecision {
 }
 
 model User {
+  questionImages QuestionImage[]
   googleIdentity GoogleIdentity?
   githubIdentity GitHubIdentity?
   questionPublications QuestionPublication[]
@@ -207,6 +208,7 @@ model ProfileTechnology {
 }
 
 model Question {
+  images QuestionImage[]
   publication QuestionPublication?
   retentionErasedAt DateTime? @db.Timestamptz(3)
   reputation ReputationEvent[]
@@ -242,6 +244,21 @@ model Question {
 }
 
 /// Minimal idempotency receipt, never a second copy of the question text.
+model QuestionImage {
+  id String @id @default(uuid(7)) @db.Uuid
+  ownerId String @db.Uuid
+  questionId String? @db.Uuid
+  key String @unique @db.VarChar(40)
+  position Int?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  expiresAt DateTime @db.Timestamptz(3)
+  owner User @relation(fields:[ownerId],references:[id],onDelete:Restrict)
+  question Question? @relation(fields:[questionId],references:[id],onDelete:Restrict)
+  @@unique([questionId,position])
+  @@index([ownerId,questionId])
+  @@index([expiresAt])
+}
+
 model QuestionPublication {
   userId String @db.Uuid
   action String @db.VarChar(32)
