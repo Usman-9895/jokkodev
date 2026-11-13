@@ -13,7 +13,8 @@ export class GitHubOAuth {
  constructor(@Inject(ENVIRONMENT) protected readonly env:Environment){}
  protected configuration():oauth.Configuration {
   if(!this.env.github)throw new ApiException(404,'GITHUB_DISABLED','La connexion GitHub n’est pas disponible.');
-  return new oauth.Configuration({issuer:'https://github.com',authorization_endpoint:'https://github.com/login/oauth/authorize',token_endpoint:'https://github.com/login/oauth/access_token'},this.env.github.clientId,{client_secret:this.env.github.clientSecret},oauth.ClientSecretPost(this.env.github.clientSecret));
+  // GitHub's OAuth issuer is distinct from its origin; validate callback iss exactly.
+  return new oauth.Configuration({issuer:'https://github.com/login/oauth',authorization_endpoint:'https://github.com/login/oauth/authorize',token_endpoint:'https://github.com/login/oauth/access_token'},this.env.github.clientId,{client_secret:this.env.github.clientSecret},oauth.ClientSecretPost(this.env.github.clientSecret));
  }
  async authorization(checks:GoogleChecks):Promise<string>{
   return oauth.buildAuthorizationUrl(this.configuration(),{response_type:'code',redirect_uri:this.env.github!.redirectUri,scope:'user:email',state:checks.state,code_challenge:await oauth.calculatePKCECodeChallenge(checks.verifier),code_challenge_method:'S256',prompt:'select_account'}).href;

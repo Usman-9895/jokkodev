@@ -37,8 +37,8 @@ export class SimulatedGitHub {
   const address=this.server.address();if(!address||typeof address==='string')throw Error('No simulator port');this.origin='http://127.0.0.1:'+address.port;return this;
  }
  configuration(){const config=new oauth.Configuration({issuer:this.origin,authorization_endpoint:this.origin+'/authorize',token_endpoint:this.origin+'/token'},'local-github',{client_secret:'fixture-only'},oauth.ClientSecretPost('fixture-only'));oauth.allowInsecureRequests(config);return config;}
- callback(authorization:URL,fixture:GitHubFixture={}){const code=randomBytes(24).toString('hex');this.codes.set(code,{challenge:authorization.searchParams.get('code_challenge')??'',fixture});const url=new URL(authorization.searchParams.get('redirect_uri')!);url.searchParams.set('state',authorization.searchParams.get('state')!);url.searchParams.set('code',code);return url.href;}
- cancel(authorization:URL){const url=new URL(authorization.searchParams.get('redirect_uri')!);url.searchParams.set('state',authorization.searchParams.get('state')!);url.searchParams.set('error','access_denied');return url.href;}
+ callback(authorization:URL,fixture:GitHubFixture={}){const code=randomBytes(24).toString('hex');this.codes.set(code,{challenge:authorization.searchParams.get('code_challenge')??'',fixture});const url=new URL(authorization.searchParams.get('redirect_uri')!);url.searchParams.set('state',authorization.searchParams.get('state')!);url.searchParams.set('iss',this.origin);url.searchParams.set('code',code);return url.href;}
+ cancel(authorization:URL){const url=new URL(authorization.searchParams.get('redirect_uri')!);url.searchParams.set('state',authorization.searchParams.get('state')!);url.searchParams.set('iss',this.origin);url.searchParams.set('error','access_denied');return url.href;}
  async api(path:string,token:string){const response=await fetch(this.origin+path,{headers:{Authorization:'Bearer '+token},redirect:'error'});if(!response.ok)throw Error('Simulated unavailable');return response.json() as Promise<unknown>;}
  async close(){await new Promise<void>((resolve,reject)=>this.server?.close(error=>error?reject(error):resolve()));}
 }
